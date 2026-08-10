@@ -94,7 +94,9 @@ const procedureSchema = {
       relatedServices={relatedServices}
     />
 
-    <Contact2 client:visible title={`Agenda tu consulta de ${service.name}`} />
+    <div data-animate="up">
+      <Contact2 client:visible title={`Agenda tu consulta de ${service.name}`} />
+    </div>
   </main>
 
   <FooterSection />

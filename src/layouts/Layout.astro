@@ -150,18 +150,27 @@ const schemas = [clinicSchema, ...extraSchema];
           el.style.opacity = '1';
         });
       } else {
-        // Reveal por scroll: data-animate="up|down|left|right|scale|blur" + data-delay
-        document.querySelectorAll<HTMLElement>('[data-animate]').forEach((el) => {
+        // Reveals por posición real en cada frame de scroll: a prueba de
+        // saltos rápidos (ScrollTrigger once y el IntersectionObserver pueden
+        // perderse el disparo cuando el elemento atraviesa el viewport entre
+        // dos frames — el IO coalesce transiciones).
+        const reveal = (el: HTMLElement) => {
+          if (el.hasAttribute('data-stagger')) {
+            gsap.set(el, { opacity: 1 });
+            gsap.from(el.children, {
+              opacity: 0,
+              y: 40,
+              duration: 0.7,
+              ease: 'power3.out',
+              stagger: 0.09,
+            });
+            return;
+          }
+
           const direction = el.getAttribute('data-animate') || 'up';
           const delay = parseFloat(el.getAttribute('data-delay') || '0');
 
-          const fromVars: gsap.TweenVars = {
-            opacity: 0,
-            duration: 0.9,
-            delay,
-            ease: 'power3.out',
-          };
-
+          const fromVars: gsap.TweenVars = { opacity: 0 };
           if (direction === 'up') fromVars.y = 56;
           if (direction === 'down') fromVars.y = -56;
           if (direction === 'left') fromVars.x = -56;
@@ -175,24 +184,41 @@ const schemas = [clinicSchema, ...extraSchema];
             y: 0,
             scale: 1,
             filter: 'blur(0px)',
-            duration: fromVars.duration,
+            duration: 0.9,
             delay,
             ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 85%', once: true },
           });
-        });
+        };
 
-        // Stagger de hijos: data-stagger en el contenedor
-        document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((el) => {
-          gsap.from(el.children, {
-            opacity: 0,
-            y: 40,
-            duration: 0.7,
-            ease: 'power3.out',
-            stagger: 0.09,
-            scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        const pending = new Set<HTMLElement>(
+          document.querySelectorAll<HTMLElement>('[data-animate], [data-stagger]'),
+        );
+
+        let checking = false;
+        const check = () => {
+          checking = false;
+          const limit = window.innerHeight * 0.88;
+          pending.forEach((el) => {
+            if (el.getBoundingClientRect().top < limit) {
+              pending.delete(el);
+              reveal(el);
+            }
           });
-        });
+          if (pending.size === 0) {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+          }
+        };
+        const onScroll = () => {
+          if (!checking) {
+            checking = true;
+            requestAnimationFrame(check);
+          }
+        };
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+        check();
 
         // Parallax: data-parallax="-0.2..0.3"
         document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
@@ -204,20 +230,41 @@ const schemas = [clinicSchema, ...extraSchema];
           });
         });
 
-        // Contadores: data-count="1000" (+sufijo data-count-suffix)
-        document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
-          const target = parseInt(el.getAttribute('data-count') || '0', 10);
-          const suffix = el.getAttribute('data-count-suffix') || '';
-          const obj = { n: 0 };
-          gsap.to(obj, {
-            n: target,
-            duration: 1.8,
-            ease: 'power2.out',
-            snap: { n: 1 },
-            onUpdate: () => { el.textContent = `${obj.n.toLocaleString('es-DO')}${suffix}`; },
-            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+        // Contadores: data-count="1000" (+sufijo data-count-suffix) — mismo
+        // mecanismo por posición que los reveals
+        const pendingCounts = new Set<HTMLElement>(
+          document.querySelectorAll<HTMLElement>('[data-count]'),
+        );
+
+        let checkingCounts = false;
+        const checkCounts = () => {
+          checkingCounts = false;
+          const limit = window.innerHeight * 0.92;
+          pendingCounts.forEach((el) => {
+            if (el.getBoundingClientRect().top < limit) {
+              pendingCounts.delete(el);
+              const target = parseInt(el.getAttribute('data-count') || '0', 10);
+              const suffix = el.getAttribute('data-count-suffix') || '';
+              const obj = { n: 0 };
+              gsap.to(obj, {
+                n: target,
+                duration: 1.8,
+                ease: 'power2.out',
+                snap: { n: 1 },
+                onUpdate: () => { el.textContent = `${obj.n.toLocaleString('es-DO')}${suffix}`; },
+              });
+            }
           });
-        });
+          if (pendingCounts.size === 0) window.removeEventListener('scroll', onScrollCounts);
+        };
+        const onScrollCounts = () => {
+          if (!checkingCounts) {
+            checkingCounts = true;
+            requestAnimationFrame(checkCounts);
+          }
+        };
+        window.addEventListener('scroll', onScrollCounts, { passive: true });
+        checkCounts();
 
         // Firma: arco de sonrisa que se dibuja con el scroll
         document.querySelectorAll<SVGPathElement>('.smile-arc path').forEach((path) => {

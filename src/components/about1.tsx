@@ -44,9 +44,9 @@ const About1 = ({ className, historyImageSrc, missionImageSrc }: About1Props) =>
         <div className="grid gap-6 md:grid-cols-2" data-stagger>
           <img
             src={historyImageSrc}
-            alt="Instalaciones de JS Dental Group en Santiago de los Caballeros"
+            alt="Dra. Julissa Saint-Hilaire Espinal, fundadora de JS Dental Group"
             loading="lazy"
-            className="size-full max-h-96 rounded-2xl object-cover"
+            className="size-full max-h-96 rounded-2xl bg-accent object-cover object-top"
           />
           <div
             className="relative flex flex-col justify-between gap-10 overflow-hidden rounded-2xl bg-navy bg-cover bg-center p-10"

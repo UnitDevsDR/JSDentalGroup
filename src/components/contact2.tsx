@@ -52,7 +52,7 @@ const Contact2 = ({
     <section className={cn("py-24 md:py-32", className)} id="contacto">
       <div className="container">
         <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:gap-16">
-          <div data-animate="left">
+          <div>
             <h2 className="mb-4 font-heading text-4xl font-bold text-navy md:text-5xl">{title}</h2>
             <p className="mb-8 text-lg text-muted-foreground">{description}</p>
 
@@ -131,7 +131,7 @@ const Contact2 = ({
             </ul>
           </div>
 
-          <div data-animate="right" className="rounded-2xl border bg-card p-8 shadow-sm">
+          <div className="rounded-2xl border bg-card p-8 shadow-sm">
             <h3 className="font-heading text-2xl font-semibold text-navy">{formHeading}</h3>
             <p className="mt-1 mb-6 text-sm text-muted-foreground">{formSubheading}</p>
 

@@ -11,11 +11,11 @@ import { SITE, TEAM } from '../data/site';
 
 import { TEAM_IMAGES } from '../lib/team-images';
 
-import banner1 from '../assets/img/home/banner-1.jpg';
 import banner2 from '../assets/img/home/banner-2.jpg';
 
+// Historia: retrato HD de la fundadora (Dra. Julissa Saint-Hilaire)
 const [historia, mision] = await Promise.all([
-  getImage({ src: banner1, width: 900 }),
+  getImage({ src: TEAM_IMAGES['julissa-saint-hilaire'], width: 900 }),
   getImage({ src: banner2, width: 900 }),
 ]);
 
@@ -47,7 +47,9 @@ const breadcrumbSchema = {
   <main id="contenido" class="pt-20">
     <About1 historyImageSrc={historia.src} missionImageSrc={mision.src} />
     <Team13 client:visible members={members} whatsapp={SITE.whatsapp} />
-    <Contact2 client:visible />
+    <div data-animate="up">
+      <Contact2 client:visible />
+    </div>
   </main>
 
   <FooterSection />
