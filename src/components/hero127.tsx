@@ -51,7 +51,7 @@ function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
       {avatars.map((item, i) => (
         <span
           key={`avatar-hero-${i}`}
-          className="relative flex h-14 w-14 shrink-0 overflow-hidden rounded-full border bg-accent before:absolute before:top-1/2 before:left-1/2 before:z-10 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-['']"
+          className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-full border bg-accent before:absolute before:top-1/2 before:left-1/2 before:z-10 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-[''] sm:h-14 sm:w-14"
         >
           <img
             src={item.src}
@@ -63,7 +63,7 @@ function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
           />
         </span>
       ))}
-      <div className="relative flex h-14 w-14 overflow-hidden rounded-full bg-navy before:absolute before:top-1/2 before:left-1/2 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-['']">
+      <div className="relative flex h-11 w-11 overflow-hidden rounded-full bg-navy before:absolute before:top-1/2 before:left-1/2 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-[''] sm:h-14 sm:w-14">
         <Plus className="m-auto h-4 w-4 stroke-white" aria-hidden="true" />
       </div>
     </a>
@@ -190,7 +190,7 @@ const Hero127 = ({
 
           {image && (
             <div className="order-first flex justify-center lg:order-none" data-animate="scale" data-delay="0.3">
-              <div className="relative w-[300px] sm:w-[380px] lg:w-[440px]">
+              <div className="relative w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[440px]">
                 <div className="overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-accent shadow-2xl shadow-navy/15">
                   <img
                     src={image.src}

@@ -68,7 +68,10 @@ const Contact2 = ({
                   </a>
                   <p className="text-sm text-muted-foreground">
                     Emergencias:{" "}
-                    <a href={`tel:${SITE.emergencyPhone}`} className="text-terracotta hover:underline">
+                    <a
+                      href={`tel:${SITE.emergencyPhone}`}
+                      className="inline-block py-2 font-medium text-terracotta hover:underline"
+                    >
                       {SITE.emergencyPhoneDisplay}
                     </a>
                   </p>

@@ -83,7 +83,7 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
             <a
               key={s.slug}
               href={`/${s.slug}`}
-              className="group flex h-72 flex-col justify-between gap-4 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent"
+              className="group flex flex-col gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:h-72 md:justify-between md:gap-4"
             >
               {renderIcon(s.icon)}
               <div>
