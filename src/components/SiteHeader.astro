@@ -16,13 +16,68 @@ const items = [
       title: s.name,
       href: `/${s.slug}`,
       description: s.tagline,
+      icon: s.icon,
     })),
   },
   { name: 'Sobre nosotros', link: '/about-us' },
   { name: 'Contáctanos', link: '/contactus' },
 ];
+
+const currentPath = Astro.url.pathname;
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
-  <Navbar18 client:load logoSrc={logo.src} whatsapp={SITE.whatsapp} items={items} />
+<a
+  href="#contenido"
+  class="sr-only z-[60] rounded-md bg-teal px-4 py-2 font-semibold text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+>
+  Saltar al contenido
+</a>
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out">
+  <Navbar18
+    client:load
+    logoSrc={logo.src}
+    whatsapp={SITE.whatsapp}
+    items={items}
+    currentPath={currentPath}
+  />
 </header>
+
+<script>
+  // Header inteligente: se oculta al bajar, reaparece al subir.
+  // Sin dependencias; respeta prefers-reduced-motion (solo mueve, no anima).
+  const header = document.getElementById('site-header');
+  if (header) {
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+      const y = window.scrollY;
+      const goingDown = y > lastY;
+
+      // nunca ocultar cerca del tope ni con el menú móvil/desktop abierto
+      const menuOpen = !!document.querySelector('[data-state="open"]');
+      if (y < 80 || menuOpen) {
+        header.style.transform = 'translateY(0)';
+      } else if (goingDown && y - lastY > 4) {
+        header.style.transform = 'translateY(-110%)';
+      } else if (!goingDown && lastY - y > 4) {
+        header.style.transform = 'translateY(0)';
+      }
+
+      lastY = y;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+  }
+</script>
