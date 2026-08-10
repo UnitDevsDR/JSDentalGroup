@@ -47,7 +47,7 @@ interface Hero127Props {
 
 function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
   return (
-    <a href={url ?? "#equipo"} className="flex items-center gap-2" aria-label="Conoce a nuestros especialistas">
+    <a href={url ?? "#equipo"} className="group/avatars flex items-center gap-3" aria-label="Conoce a nuestros especialistas">
       {avatars.map((item, i) => (
         <span
           key={`avatar-hero-${i}`}
@@ -63,9 +63,12 @@ function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
           />
         </span>
       ))}
-      <div className="relative flex h-11 w-11 overflow-hidden rounded-full bg-navy before:absolute before:top-1/2 before:left-1/2 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-[''] sm:h-14 sm:w-14">
+      <div className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-full bg-navy before:absolute before:top-1/2 before:left-1/2 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-[''] sm:h-14 sm:w-14">
         <Plus className="m-auto h-4 w-4 stroke-white" aria-hidden="true" />
       </div>
+      <span className="max-w-[130px] text-left text-sm leading-snug font-medium text-muted-foreground transition-colors group-hover/avatars:text-navy">
+        Conoce a nuestros doctores
+      </span>
     </a>
   );
 }

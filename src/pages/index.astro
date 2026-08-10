@@ -5,7 +5,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { Hero127 } from '../components/hero127';
-import { Logos12 } from '../components/logos12';
+import { Integration6 } from '../components/integration6';
 import { Feature101 } from '../components/feature101';
 import { Team13 } from '../components/team13';
 import { Gallery29 } from '../components/gallery29';
@@ -42,11 +42,14 @@ const members = await Promise.all(
   })),
 );
 
-// Avatares del hero: 4 doctoras reales (social proof)
-const heroAvatars = members
-  .filter((m) => m.name.startsWith('Dr'))
-  .slice(0, 4)
-  .map((m) => ({ src: m.imageSrc, alt: m.name }));
+// Avatares del hero: doctores reales visualmente distintos (social proof)
+const HERO_DOCTOR_KEYS = ['julissa-saint-hilaire', 'simon-dominguez', 'rosanny-minaya', 'laura-bueno'];
+const heroAvatars = await Promise.all(
+  HERO_DOCTOR_KEYS.map(async (key) => {
+    const member = TEAM.find((m) => m.image === key)!;
+    return { src: (await opt(TEAM_IMAGES[key], 160)).src, alt: member.name };
+  }),
+);
 
 const services = SERVICES.map((s) => ({
   slug: s.slug,
@@ -94,7 +97,16 @@ const faqSchema = {
       image={{ src: heroOpt.src, alt: 'Especialistas de JS Dental Group, clínica dental en Santiago' }}
     />
 
-    <Logos12 items={SERVICES.map((s) => ({ name: s.name, href: `/${s.slug}`, icon: s.icon }))} />
+    <div data-animate="up">
+      <Integration6
+        client:visible
+        heading="Ocho especialidades, un solo equipo"
+        description="Cada tratamiento se aborda en conjunto entre nuestros especialistas, para que tu atención sea completa de principio a fin."
+        ctaText="Ver todos los servicios"
+        ctaHref="/our-services"
+        items={SERVICES.map((s) => ({ name: s.name, href: `/${s.slug}`, icon: s.icon }))}
+      />
+    </div>
 
     <Feature101
       heading="Nuestros servicios"
