@@ -1,0 +1,9 @@
+---
+import { getImage } from 'astro:assets';
+import { Footer14 } from './footer14';
+import logoBlanco from '../assets/img/brand/logo-blanco.png';
+
+const logo = await getImage({ src: logoBlanco, height: 96 });
+---
+
+<Footer14 logoSrc={logo.src} />

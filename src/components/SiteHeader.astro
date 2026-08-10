@@ -1,0 +1,28 @@
+---
+import { getImage } from 'astro:assets';
+import { Navbar18 } from './navbar18';
+import { SITE, SERVICES } from '../data/site';
+import logoImg from '../assets/img/brand/logo.png';
+
+const logo = await getImage({ src: logoImg, height: 72 });
+
+const items = [
+  { name: 'Inicio', link: '/' },
+  {
+    name: 'Servicios',
+    link: '/our-services',
+    hasSubmenu: true,
+    submenu: SERVICES.map((s) => ({
+      title: s.name,
+      href: `/${s.slug}`,
+      description: s.tagline,
+    })),
+  },
+  { name: 'Sobre nosotros', link: '/about-us' },
+  { name: 'Contáctanos', link: '/contactus' },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50">
+  <Navbar18 client:load logoSrc={logo.src} whatsapp={SITE.whatsapp} items={items} />
+</header>

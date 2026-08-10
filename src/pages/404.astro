@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+---
+
+<Layout
+  title="Página no encontrada | JS Dental Group"
+  description="La página que buscas no existe. Vuelve al inicio o explora nuestros servicios dentales en Santiago."
+>
+  <SiteHeader />
+
+  <main class="flex min-h-[70vh] items-center pt-24">
+    <div class="container text-center">
+      <p class="font-heading text-8xl font-bold text-teal">404</p>
+      <h1 class="mt-4 font-heading text-3xl font-bold text-navy md:text-4xl">
+        Esta página no existe
+      </h1>
+      <p class="mx-auto mt-3 max-w-md text-lg text-muted-foreground">
+        Pero tu sonrisa sí. Vuelve al inicio o explora nuestros servicios.
+      </p>
+      <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center rounded-full bg-teal px-8 py-3.5 font-semibold text-white"
+        >
+          Ir al inicio
+        </a>
+        <a
+          href="/our-services"
+          class="inline-flex items-center justify-center rounded-full border-2 border-navy/15 px-8 py-3.5 font-semibold text-navy hover:border-teal hover:text-teal"
+        >
+          Ver servicios
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <FooterSection />
+</Layout>

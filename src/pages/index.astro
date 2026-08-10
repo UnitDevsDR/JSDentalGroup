@@ -1,0 +1,146 @@
+---
+import { getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import Hero from '../components/Hero.astro';
+import SpecialtiesMarquee from '../components/SpecialtiesMarquee.astro';
+import ContactSection from '../components/ContactSection.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { Feature101 } from '../components/feature101';
+import { Team13 } from '../components/team13';
+import { Gallery29 } from '../components/gallery29';
+import { Faq1 } from '../components/faq1';
+import { Cta15 } from '../components/cta15';
+import { SITE, SERVICES, TEAM, FAQS } from '../data/site';
+
+import rehabImg from '../assets/img/services/rehabilitacion-bucal.webp';
+import odontopedImg from '../assets/img/services/odontopediatria.jpg';
+import banner2 from '../assets/img/home/banner-2.jpg';
+import ig1 from '../assets/img/home/ig-1.webp';
+import ig2 from '../assets/img/home/ig-2.webp';
+import ig3 from '../assets/img/home/ig-3.webp';
+import ig4 from '../assets/img/home/ig-4.webp';
+import destacado1 from '../assets/img/home/destacado-1.png';
+
+import julissa from '../assets/img/team/julissa-saint-hilaire.webp';
+import rosangel from '../assets/img/team/rosangel-tatis.png';
+import melissa from '../assets/img/team/melissa-lantigua.webp';
+import mairenys from '../assets/img/team/mairenys-estevez.webp';
+import denisse from '../assets/img/team/denisse-dominguez.png';
+import siddy from '../assets/img/team/siddy-dominguez.png';
+import laura from '../assets/img/team/laura-bueno.png';
+import simon from '../assets/img/team/simon-dominguez.png';
+import rosanny from '../assets/img/team/rosanny-minaya.png';
+import arianny from '../assets/img/team/arianny-pena.webp';
+
+const TEAM_IMAGES: Record<string, ImageMetadata> = {
+  'julissa-saint-hilaire': julissa,
+  'rosangel-tatis': rosangel,
+  'melissa-lantigua': melissa,
+  'mairenys-estevez': mairenys,
+  'denisse-dominguez': denisse,
+  'siddy-dominguez': siddy,
+  'laura-bueno': laura,
+  'simon-dominguez': simon,
+  'rosanny-minaya': rosanny,
+  'arianny-pena': arianny,
+};
+
+const opt = (src: ImageMetadata, width: number) => getImage({ src, width });
+
+const [rehabOpt, odontopedOpt, banner2Opt, destacado1Opt] = await Promise.all([
+  opt(rehabImg, 800),
+  opt(odontopedImg, 640),
+  opt(banner2, 800),
+  opt(destacado1, 640),
+]);
+
+const igOpt = await Promise.all([ig1, ig2, ig3, ig4].map((i) => opt(i, 640)));
+
+const members = await Promise.all(
+  TEAM.map(async (m) => ({
+    name: m.name,
+    role: m.role,
+    imageSrc: (await opt(TEAM_IMAGES[m.image], 480)).src,
+  })),
+);
+
+const services = SERVICES.map((s) => ({
+  slug: s.slug,
+  name: s.name,
+  tagline: s.tagline,
+  icon: s.icon,
+  imageSrc:
+    s.slug === 'rehabilitacion-bucal'
+      ? rehabOpt.src
+      : s.slug === 'odontopediatria'
+        ? odontopedOpt.src
+        : undefined,
+}));
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout
+  title="JS Dental Group — Clínica Dental en Santiago | Ortodoncia e Implantes"
+  description="Clínica dental en Santiago, República Dominicana. Especialistas en ortodoncia, implantes dentales, endodoncia, periodoncia, cirugía maxilofacial y odontopediatría. Atención integral para toda la familia. Agenda tu cita."
+  extraSchema={[faqSchema]}
+>
+  <SiteHeader />
+
+  <main>
+    <Hero />
+
+    <SpecialtiesMarquee />
+
+    <Feature101
+      heading="Nuestros servicios"
+      description="Descubre todo lo que puedes lograr con una atención dental de primer nivel."
+      services={services}
+    />
+
+    <Cta15
+      byline="Cuidamos tu sonrisa"
+      heading="Con la ciencia de hoy y la pasión de siempre"
+      description="Un grupo de expertos que trabaja de forma multidisciplinaria para abordar cada caso con la máxima excelencia: tratamientos más completos, personalizados y exitosos."
+      image={{ src: banner2Opt.src, alt: 'Instalaciones de JS Dental Group en Santiago' }}
+      buttons={{
+        primary: { text: 'Agenda tu cita', url: SITE.whatsapp },
+        secondary: { text: 'Conoce la clínica', url: '/about-us' },
+      }}
+    />
+
+    <Team13 client:visible members={members} whatsapp={SITE.whatsapp} />
+
+    <Gallery29
+      heading="Nuestra sonrisa también está en Instagram"
+      description="Momentos reales de nuestros pacientes y nuestro equipo."
+      images={igOpt.map((img, i) => ({ src: img.src, alt: `JS Dental Group en Instagram ${i + 1}` }))}
+      featured={{ src: destacado1Opt.src, alt: 'JS Dental Group en Instagram' }}
+      instagramUrl={SITE.instagram}
+    />
+
+    <section class="py-24 md:py-32" data-animate="up">
+      <Faq1
+        client:visible
+        heading="Preguntas frecuentes"
+        items={FAQS.map((f, i) => ({ id: `faq-${i + 1}`, question: f.q, answer: f.a }))}
+        className="py-0"
+      />
+    </section>
+
+    <ContactSection />
+  </main>
+
+  <FooterSection />
+  <WhatsAppFloat />
+</Layout>

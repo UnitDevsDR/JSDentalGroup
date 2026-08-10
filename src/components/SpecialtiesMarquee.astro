@@ -1,0 +1,39 @@
+---
+import { SERVICES } from '../data/site';
+---
+
+<div class="border-y border-border bg-accent/60 py-4" aria-hidden="true">
+  <div class="marquee-track flex w-max items-center gap-10 whitespace-nowrap">
+    {
+      [0, 1].map(() =>
+        SERVICES.map((s) => (
+          <span class="flex items-center gap-10 font-heading text-lg font-medium tracking-wide text-navy/70">
+            {s.name}
+            <svg class="h-2.5 w-2.5 text-teal" viewBox="0 0 10 10" fill="currentColor">
+              <circle cx="5" cy="5" r="5" />
+            </svg>
+          </span>
+        )),
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .marquee-track {
+    animation: specialties-marquee 32s linear infinite;
+  }
+  @keyframes specialties-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+import { getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { Feature101 } from '../components/feature101';
+import { SITE, SERVICES } from '../data/site';
+
+import rehabImg from '../assets/img/services/rehabilitacion-bucal.webp';
+import odontopedImg from '../assets/img/services/odontopediatria.jpg';
+
+const [rehabOpt, odontopedOpt] = await Promise.all([
+  getImage({ src: rehabImg, width: 800 }),
+  getImage({ src: odontopedImg, width: 640 }),
+]);
+
+const services = SERVICES.map((s) => ({
+  slug: s.slug,
+  name: s.name,
+  tagline: s.tagline,
+  icon: s.icon,
+  imageSrc:
+    s.slug === 'rehabilitacion-bucal'
+      ? rehabOpt.src
+      : s.slug === 'odontopediatria'
+        ? odontopedOpt.src
+        : undefined,
+}));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Servicios', item: `${SITE.url}/our-services` },
+  ],
+};
+---
+
+<Layout
+  title="Servicios Dentales en Santiago | JS Dental Group"
+  description="Todos nuestros servicios dentales en Santiago: rehabilitación bucal, implantología, endodoncia, ortodoncia, periodoncia, cirugía maxilofacial, odontología general y odontopediatría."
+  extraSchema={[breadcrumbSchema]}
+>
+  <SiteHeader />
+
+  <main class="pt-24">
+    <section class="container pt-12 text-center" data-animate="up">
+      <h1 class="mx-auto max-w-3xl font-heading text-4xl font-bold text-navy md:text-6xl">
+        Atención dental integral, <span class="text-gradient">en un solo lugar</span>
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+        Ocho especialidades trabajando en equipo para que tu tratamiento sea completo,
+        personalizado y exitoso.
+      </p>
+    </section>
+
+    <Feature101
+      heading="Nuestros servicios"
+      description="Cada servicio es realizado por especialistas certificados."
+      services={services}
+    />
+
+    <ContactSection />
+  </main>
+
+  <FooterSection />
+  <WhatsAppFloat />
+</Layout>

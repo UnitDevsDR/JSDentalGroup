@@ -1,0 +1,206 @@
+---
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/instrument-sans';
+import '../styles/global.css';
+import { SITE, TEAM } from '../data/site';
+import ogDefault from '../assets/img/brand/logo-og.png';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  /** JSON-LD adicional específico de la página (FAQPage, BreadcrumbList, MedicalProcedure…) */
+  extraSchema?: object[];
+}
+
+const { title, description, ogImage, extraSchema = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImageUrl = ogImage ?? new URL(ogDefault.src, SITE.url).href;
+
+const clinicSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dentist',
+  '@id': `${SITE.url}/#clinic`,
+  name: SITE.name,
+  legalName: SITE.legalName,
+  description:
+    'Clínica dental en Santiago, República Dominicana. Especialistas en ortodoncia, implantes dentales, endodoncia, periodoncia, cirugía maxilofacial y odontopediatría.',
+  url: SITE.url,
+  telephone: SITE.phone,
+  email: SITE.email,
+  foundingDate: String(SITE.founded),
+  slogan: SITE.slogan,
+  priceRange: '$$',
+  image: ogImageUrl,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: SITE.address.street,
+    addressLocality: SITE.address.city,
+    addressRegion: SITE.address.region,
+    addressCountry: SITE.address.country,
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '19.4442', longitude: '-70.6668' },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '18:00',
+    },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '08:00', closes: '12:00' },
+  ],
+  sameAs: [SITE.instagram],
+  employee: TEAM.filter((m) => m.name.startsWith('Dr')).map((m) => ({
+    '@type': 'Physician',
+    name: m.name,
+    jobTitle: m.role,
+  })),
+};
+
+const schemas = [clinicSchema, ...extraSchema];
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO primario -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="es_DO" />
+    <meta property="og:site_name" content={SITE.name} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- SEO local -->
+    <meta name="geo.region" content="DO-25" />
+    <meta name="geo.placename" content="Santiago de los Caballeros" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Datos estructurados -->
+    {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class="antialiased">
+    <slot />
+
+    <script>
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        document.querySelectorAll<HTMLElement>('[data-animate]').forEach((el) => {
+          el.style.opacity = '1';
+        });
+      } else {
+        // Reveal por scroll: data-animate="up|down|left|right|scale|blur" + data-delay
+        document.querySelectorAll<HTMLElement>('[data-animate]').forEach((el) => {
+          const direction = el.getAttribute('data-animate') || 'up';
+          const delay = parseFloat(el.getAttribute('data-delay') || '0');
+
+          const fromVars: gsap.TweenVars = {
+            opacity: 0,
+            duration: 0.9,
+            delay,
+            ease: 'power3.out',
+          };
+
+          if (direction === 'up') fromVars.y = 56;
+          if (direction === 'down') fromVars.y = -56;
+          if (direction === 'left') fromVars.x = -56;
+          if (direction === 'right') fromVars.x = 56;
+          if (direction === 'scale') { fromVars.scale = 0.92; fromVars.y = 24; }
+          if (direction === 'blur') { fromVars.filter = 'blur(12px)'; fromVars.y = 24; }
+
+          gsap.fromTo(el, fromVars, {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: fromVars.duration,
+            delay,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          });
+        });
+
+        // Stagger de hijos: data-stagger en el contenedor
+        document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((el) => {
+          gsap.from(el.children, {
+            opacity: 0,
+            y: 40,
+            duration: 0.7,
+            ease: 'power3.out',
+            stagger: 0.09,
+            scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          });
+        });
+
+        // Parallax: data-parallax="-0.2..0.3"
+        document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
+          const speed = parseFloat(el.getAttribute('data-parallax') || '0.2');
+          gsap.to(el, {
+            y: () => speed * 120,
+            ease: 'none',
+            scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
+          });
+        });
+
+        // Contadores: data-count="1000" (+sufijo data-count-suffix)
+        document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+          const target = parseInt(el.getAttribute('data-count') || '0', 10);
+          const suffix = el.getAttribute('data-count-suffix') || '';
+          const obj = { n: 0 };
+          gsap.to(obj, {
+            n: target,
+            duration: 1.8,
+            ease: 'power2.out',
+            snap: { n: 1 },
+            onUpdate: () => { el.textContent = `${obj.n.toLocaleString('es-DO')}${suffix}`; },
+            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          });
+        });
+
+        // Firma: arco de sonrisa que se dibuja con el scroll
+        document.querySelectorAll<SVGPathElement>('.smile-arc path').forEach((path) => {
+          gsap.fromTo(
+            path,
+            { strokeDashoffset: 1 },
+            {
+              strokeDashoffset: 0,
+              ease: 'none',
+              scrollTrigger: { trigger: path.closest('section'), start: 'top 80%', end: 'bottom 60%', scrub: 0.6 },
+            },
+          );
+        });
+      }
+    </script>
+  </body>
+</html>
