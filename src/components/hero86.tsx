@@ -106,7 +106,7 @@ const Hero86 = ({
             </div>
             <div className="absolute bottom-0 w-full overflow-hidden" aria-hidden="true">
               <div className="relative aspect-2/1">
-                <div className="absolute aspect-square w-full rounded-full bg-gradient-to-b from-teal/25 to-teal/5" />
+                <div className="absolute aspect-square w-full rounded-full bg-teal/15" />
               </div>
             </div>
           </div>

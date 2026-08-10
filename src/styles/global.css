@@ -133,11 +133,9 @@
 }
 
 @layer utilities {
-  .text-gradient {
-    background: linear-gradient(115deg, var(--teal), oklch(0.55 0.1 220), var(--navy));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /* Palabra destacada del titular: teal plano (sin degradados) */
+  .text-highlight {
+    color: var(--teal);
   }
 
   .container {

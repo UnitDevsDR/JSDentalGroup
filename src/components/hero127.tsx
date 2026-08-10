@@ -32,7 +32,7 @@ interface Stat {
 
 interface Hero127Props {
   badge?: BadgeProps;
-  /** palabras del titular; highlightWord se pinta con .text-gradient */
+  /** palabras del titular; highlightWord se pinta en teal (.text-highlight) */
   headingWords: string[];
   highlightWord: string;
   description: string;
@@ -86,11 +86,11 @@ const Hero127 = ({
     <section className={cn("relative overflow-hidden py-12 md:py-20", className)} id="inicio">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <div
-          className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-teal/10 to-navy/5 blur-3xl"
+          className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-teal/8 blur-3xl"
           data-parallax="-0.15"
         />
         <div
-          className="absolute -bottom-24 -left-24 h-[420px] w-[420px] rounded-full bg-gradient-to-tr from-terracotta/10 to-teal/5 blur-3xl"
+          className="absolute -bottom-24 -left-24 h-[420px] w-[420px] rounded-full bg-terracotta/8 blur-3xl"
           data-parallax="0.1"
         />
         <div className="dot-grid absolute inset-0 opacity-40" />
@@ -130,7 +130,7 @@ const Hero127 = ({
                   {w}&nbsp;
                 </span>
               ))}
-              <span className="hero-word text-gradient inline-block">{highlightWord}</span>
+              <span className="hero-word text-highlight inline-block">{highlightWord}</span>
             </h1>
 
             <p data-animate="up" data-delay="0.45" className="max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
@@ -191,7 +191,7 @@ const Hero127 = ({
           {image && (
             <div className="order-first flex justify-center lg:order-none" data-animate="scale" data-delay="0.3">
               <div className="relative w-[300px] sm:w-[380px] lg:w-[440px]">
-                <div className="overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-gradient-to-b from-teal/20 via-accent to-white shadow-2xl shadow-navy/15">
+                <div className="overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-accent shadow-2xl shadow-navy/15">
                   <img
                     src={image.src}
                     alt={image.alt}
