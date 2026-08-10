@@ -2,20 +2,20 @@
 import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import Hero from '../components/Hero.astro';
-import SpecialtiesMarquee from '../components/SpecialtiesMarquee.astro';
-import ContactSection from '../components/ContactSection.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { Hero127 } from '../components/hero127';
+import { Logos12 } from '../components/logos12';
 import { Feature101 } from '../components/feature101';
 import { Team13 } from '../components/team13';
 import { Gallery29 } from '../components/gallery29';
 import { Faq1 } from '../components/faq1';
 import { Cta15 } from '../components/cta15';
+import { Contact2 } from '../components/contact2';
 import { SITE, SERVICES, TEAM, FAQS } from '../data/site';
+import { TEAM_IMAGES } from '../lib/team-images';
 
-import rehabImg from '../assets/img/services/rehabilitacion-bucal.webp';
-import odontopedImg from '../assets/img/services/odontopediatria.jpg';
+import heroImg from '../assets/img/home/banner-1.jpg';
 import banner2 from '../assets/img/home/banner-2.jpg';
 import ig1 from '../assets/img/home/ig-1.webp';
 import ig2 from '../assets/img/home/ig-2.webp';
@@ -23,35 +23,10 @@ import ig3 from '../assets/img/home/ig-3.webp';
 import ig4 from '../assets/img/home/ig-4.webp';
 import destacado1 from '../assets/img/home/destacado-1.png';
 
-import julissa from '../assets/img/team/julissa-saint-hilaire.webp';
-import rosangel from '../assets/img/team/rosangel-tatis.png';
-import melissa from '../assets/img/team/melissa-lantigua.webp';
-import mairenys from '../assets/img/team/mairenys-estevez.webp';
-import denisse from '../assets/img/team/denisse-dominguez.png';
-import siddy from '../assets/img/team/siddy-dominguez.png';
-import laura from '../assets/img/team/laura-bueno.png';
-import simon from '../assets/img/team/simon-dominguez.png';
-import rosanny from '../assets/img/team/rosanny-minaya.png';
-import arianny from '../assets/img/team/arianny-pena.webp';
-
-const TEAM_IMAGES: Record<string, ImageMetadata> = {
-  'julissa-saint-hilaire': julissa,
-  'rosangel-tatis': rosangel,
-  'melissa-lantigua': melissa,
-  'mairenys-estevez': mairenys,
-  'denisse-dominguez': denisse,
-  'siddy-dominguez': siddy,
-  'laura-bueno': laura,
-  'simon-dominguez': simon,
-  'rosanny-minaya': rosanny,
-  'arianny-pena': arianny,
-};
-
 const opt = (src: ImageMetadata, width: number) => getImage({ src, width });
 
-const [rehabOpt, odontopedOpt, banner2Opt, destacado1Opt] = await Promise.all([
-  opt(rehabImg, 800),
-  opt(odontopedImg, 640),
+const [heroOpt, banner2Opt, destacado1Opt] = await Promise.all([
+  opt(heroImg, 880),
   opt(banner2, 800),
   opt(destacado1, 640),
 ]);
@@ -66,17 +41,18 @@ const members = await Promise.all(
   })),
 );
 
+// Avatares del hero: 4 doctoras reales (social proof)
+const heroAvatars = members
+  .filter((m) => m.name.startsWith('Dr'))
+  .slice(0, 4)
+  .map((m) => ({ src: m.imageSrc, alt: m.name }));
+
 const services = SERVICES.map((s) => ({
   slug: s.slug,
   name: s.name,
   tagline: s.tagline,
   icon: s.icon,
-  imageSrc:
-    s.slug === 'rehabilitacion-bucal'
-      ? rehabOpt.src
-      : s.slug === 'odontopediatria'
-        ? odontopedOpt.src
-        : undefined,
+  copy: s.copy,
 }));
 
 const faqSchema = {
@@ -98,9 +74,26 @@ const faqSchema = {
   <SiteHeader />
 
   <main>
-    <Hero />
+    <Hero127
+      badge={{ text: 'Santiago, R.D.', announcement: 'Atención para toda la familia', url: '#contacto' }}
+      headingWords={['Es', 'el', 'turno', 'de', 'tu']}
+      highlightWord="sonrisa"
+      description="Inspirados en la más avanzada tecnología y un trato humano, en JS Dental Group te ofrecemos una experiencia única para que sonrías sin límites."
+      buttons={{
+        primary: { text: 'Agenda tu cita por WhatsApp', url: SITE.whatsapp },
+        secondary: { text: 'Nuestros servicios', url: '#servicios' },
+      }}
+      stats={[
+        { count: 1000, suffix: '+', label: 'Pacientes felices' },
+        { count: 9, label: 'Especialistas' },
+        { value: '2020', label: 'Cuidando sonrisas' },
+      ]}
+      avatars={heroAvatars}
+      avatarsUrl="/about-us"
+      image={{ src: heroOpt.src, alt: 'Paciente sonriendo en JS Dental Group, clínica dental en Santiago' }}
+    />
 
-    <SpecialtiesMarquee />
+    <Logos12 items={SERVICES.map((s) => ({ name: s.name, href: `/${s.slug}`, icon: s.icon }))} />
 
     <Feature101
       heading="Nuestros servicios"
@@ -138,7 +131,7 @@ const faqSchema = {
       />
     </section>
 
-    <ContactSection />
+    <Contact2 client:visible />
   </main>
 
   <FooterSection />

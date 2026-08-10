@@ -29,8 +29,8 @@ interface ServiceTile {
   name: string;
   tagline: string;
   icon: string;
-  /** URL de imagen optimizada (solo los tiles grandes la muestran) */
-  imageSrc?: string;
+  /** descripción corta: los tiles grandes del bento la muestran */
+  copy?: string;
 }
 
 interface Feature101Props {
@@ -70,15 +70,8 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
                 {renderIcon(first.icon)}
                 <h3 className="mb-1 font-heading text-2xl font-medium text-navy">{first.name}</h3>
                 <p className="text-muted-foreground">{first.tagline}</p>
+                {first.copy && <p className="mt-4 max-w-md leading-relaxed text-muted-foreground">{first.copy}</p>}
               </div>
-              {first.imageSrc && (
-                <img
-                  src={first.imageSrc}
-                  alt={first.name}
-                  loading="lazy"
-                  className="ml-auto max-h-80 w-full rounded-lg object-cover transition-transform duration-300 group-hover:-translate-y-3 sm:w-11/12"
-                />
-              )}
               <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal">
                 Ver tratamiento
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
@@ -119,13 +112,8 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                 </div>
-                {last.imageSrc && (
-                  <img
-                    src={last.imageSrc}
-                    alt={last.name}
-                    loading="lazy"
-                    className="max-h-56 w-full rounded-lg object-cover transition-transform duration-300 group-hover:-translate-y-2 sm:w-1/2"
-                  />
+                {last.copy && (
+                  <p className="max-w-sm leading-relaxed text-white/75 sm:w-1/2">{last.copy}</p>
                 )}
               </div>
             </a>

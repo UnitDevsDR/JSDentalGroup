@@ -32,6 +32,10 @@ export interface Service {
   h1: string;
   tagline: string;
   copy: string;
+  /** Copy extendido extraído de las artes gráficas del sitio Odoo (texto real indexable) */
+  longCopy: string;
+  /** Especialista a cargo (nombre, rol y clave de foto en src/assets/img/team) */
+  specialist: { name: string; role: string; image: string };
   icon: string; // nombre de icono lucide
   image: string; // clave en src/assets/img/services
 }
@@ -46,6 +50,13 @@ export const SERVICES: Service[] = [
     h1: 'Rehabilitación Bucal y Estética',
     tagline: 'Mejore su sonrisa',
     copy: 'La rehabilitación bucal restaura la función de tu boca —masticación, habla, mordida correcta— y la estética dental se enfoca en que tu sonrisa luzca saludable, armónica y bonita. Nuestro enfoque personalizado le ayudará a lograr una sonrisa más saludable y radiante.',
+    longCopy:
+      'Transforma tu sonrisa con tratamientos personalizados que restauran la función, salud y belleza de tu boca. Desde coronas, carillas y prótesis hasta blanqueamientos y diseño de sonrisa, combinamos técnicas avanzadas con un enfoque estético para devolverte confianza y bienestar.',
+    specialist: {
+      name: 'Dra. Julissa Saint-Hilaire Espinal',
+      role: 'Rehabilitación Bucal y Estética',
+      image: 'julissa-saint-hilaire',
+    },
     icon: 'Sparkles',
     image: 'rehabilitacion-bucal',
   },
@@ -58,6 +69,13 @@ export const SERVICES: Service[] = [
     h1: 'Implantología',
     tagline: 'Transforme su sonrisa hoy',
     copy: 'Descubra cómo nuestros tratamientos personalizados pueden brindarle una sonrisa más saludable, brillante y llena de confianza. En JS Dental Group nos comprometemos a ofrecerte el mejor cuidado dental, adaptado a tus necesidades para lograr resultados visibles y duraderos.',
+    longCopy:
+      'Recupera la funcionalidad y estética de tu sonrisa con nuestros tratamientos de implantología oral. Colocamos implantes dentales seguros y duraderos para reemplazar dientes perdidos, preservando la salud de tu boca y devolviéndote confianza, comodidad y una sonrisa completa.',
+    specialist: {
+      name: 'Dr. Simón Domínguez',
+      role: 'Implantología Oral',
+      image: 'simon-dominguez',
+    },
     icon: 'Anchor',
     image: 'implantologia',
   },
@@ -70,6 +88,13 @@ export const SERVICES: Service[] = [
     h1: 'Endodoncia',
     tagline: 'Salvamos tus dientes desde la raíz',
     copy: 'La endodoncia, conocida como tratamiento de conducto, permite conservar dientes dañados por caries profundas, traumatismos o infecciones. Eliminamos el dolor, limpiamos el interior del diente y lo sellamos para devolverle su función y salud.',
+    longCopy:
+      'Protege tu sonrisa desde la raíz. Nuestros tratamientos de endodoncia eliminan infecciones, calman el dolor y salvan piezas dentales que de otro modo se perderían. Con tecnología moderna y un cuidado especializado, devolvemos fuerza, salud y tranquilidad a tu boca, para que sigas sonriendo sin preocupaciones.',
+    specialist: {
+      name: 'Dra. Rosangel A. Tatis Soto',
+      role: 'Endodoncia',
+      image: 'rosangel-tatis',
+    },
     icon: 'Activity',
     image: 'endodoncia',
   },
@@ -82,6 +107,13 @@ export const SERVICES: Service[] = [
     h1: 'Ortodoncia',
     tagline: 'Transforme su sonrisa con ortodoncia avanzada',
     copy: 'El tratamiento de ortodoncia mejora la salud dental restaurando la funcionalidad y estética de sus dientes. Con nuestro equipo experto y tecnología avanzada —brackets tradicionales o alineadores invisibles— restauramos su sonrisa y su confianza.',
+    longCopy:
+      'Logra la sonrisa que siempre soñaste con nuestros tratamientos de ortodoncia. Corregimos la posición de tus dientes y maxilares, mejorando la función y la estética de tu boca. Ya sea con brackets tradicionales o técnicas modernas y discretas, te ayudamos a alinear tu sonrisa de forma personalizada, cómoda y efectiva.',
+    specialist: {
+      name: 'Dra. Siddy Domínguez',
+      role: 'Ortodoncia',
+      image: 'siddy-dominguez',
+    },
     icon: 'AlignHorizontalDistributeCenter',
     image: 'ortodoncia',
   },
@@ -94,6 +126,13 @@ export const SERVICES: Service[] = [
     h1: 'Periodoncia',
     tagline: 'La solución para sus encías',
     copy: 'Recupere la salud de sus encías con tratamientos periodontales avanzados. Le ofrecemos un tratamiento periodontal diseñado para restaurar la salud de sus encías, garantizando una sonrisa más saludable y duradera.',
+    longCopy:
+      'Protege la base de tu sonrisa con tratamientos de periodoncia especializados. Nos enfocamos en la prevención, diagnóstico y cuidado de las encías y tejidos de soporte dental, evitando problemas como la gingivitis y la periodontitis. Con un abordaje integral, trabajamos para mantener tus dientes firmes, tu boca saludable y tu sonrisa llena de confianza.',
+    specialist: {
+      name: 'Dra. Denisse Domínguez Iglesia',
+      role: 'Periodoncia',
+      image: 'denisse-dominguez',
+    },
     icon: 'ShieldCheck',
     image: 'periodoncia',
   },
@@ -106,6 +145,13 @@ export const SERVICES: Service[] = [
     h1: 'Cirugía Maxilofacial',
     tagline: 'Soluciones quirúrgicas para tu salud bucal y facial',
     copy: 'La cirugía maxilofacial trata desde extracciones complejas, quistes y fracturas, hasta problemas de articulación mandibular y corrección de malformaciones faciales. Nuestro equipo especializado te ofrece atención segura y precisa en cada procedimiento.',
+    longCopy:
+      'Combinamos cirugía buco-maxilofacial y armonización facial para ofrecer un cuidado integral. Restauramos la función y corregimos alteraciones, mientras equilibramos y realzamos tus rasgos, devolviéndote bienestar, seguridad y una apariencia natural.',
+    specialist: {
+      name: 'Dra. Laura P. Bueno',
+      role: 'Cirugía Buco-Maxilofacial y Armonización Facial',
+      image: 'laura-bueno',
+    },
     icon: 'Scissors',
     image: 'cirugia-maxilofacial',
   },
@@ -118,6 +164,13 @@ export const SERVICES: Service[] = [
     h1: 'Odontología General',
     tagline: 'Tu salud dental comienza con una buena atención general',
     copy: 'La odontología general es la base para mantener una sonrisa sana. Realizamos limpiezas, empastes, tratamientos contra caries y evaluaciones completas para detectar cualquier problema a tiempo. Prevención, diagnóstico y cuidado personalizado para toda la familia.',
+    longCopy:
+      'La odontología general es la base de una sonrisa saludable. Con revisiones, limpiezas y tratamientos preventivos, cuidamos tu boca día a día, detectando a tiempo cualquier problema y manteniendo tus dientes y encías en óptimas condiciones.',
+    specialist: {
+      name: 'Dra. Mairenys J. Estévez García',
+      role: 'Odontología General',
+      image: 'mairenys-estevez',
+    },
     icon: 'Stethoscope',
     image: 'odontologia-general',
   },
@@ -130,6 +183,13 @@ export const SERVICES: Service[] = [
     h1: 'Odontopediatría',
     tagline: 'Cuidamos las sonrisas más importantes: las de tus hijos',
     copy: 'La odontopediatría se encarga de la salud bucal de los más pequeños, desde los primeros dientes hasta la adolescencia. Brindamos atención cálida y especializada para que cada visita al dentista sea una experiencia positiva y sin miedo.',
+    longCopy:
+      'Cuida la sonrisa de los más pequeños con nuestra odontopediatría especializada. Realizamos revisiones, limpiezas y tratamientos preventivos adaptados a cada edad, enseñando hábitos saludables y asegurando que sus dientes y encías crezcan fuertes y sanos, para que disfruten de una sonrisa feliz y confiada.',
+    specialist: {
+      name: 'Dra. Rosanny Minaya',
+      role: 'Odontopediatría',
+      image: 'rosanny-minaya',
+    },
     icon: 'Baby',
     image: 'odontopediatria',
   },

@@ -93,13 +93,18 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Chromium no propaga `clip` desde body al viewport: se pone aquí.
+       Bloquea el scroll-x que crearían los offsets X iniciales de GSAP. */
+    overflow-x: clip;
   }
 
   body {
     font-family: var(--font-body);
     color: var(--color-foreground);
     background-color: var(--color-background);
-    overflow-x: hidden;
+    /* clip: bloquea también el scroll programático (los offsets X iniciales
+       de GSAP no deben crear scroll horizontal) */
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4 {

@@ -31,7 +31,7 @@ export const Footer14 = ({ logoSrc }: Footer14Props) => {
   return (
     <footer className="bg-navy py-12 text-white sm:py-16 md:py-24">
       <div className="container mx-auto max-w-6xl px-5 md:px-6">
-        <div className="mb-10 flex flex-col items-start justify-between gap-10 border-b border-white/15 pb-10 sm:mb-16 sm:pb-12 md:flex-row">
+        <div className="mb-10 flex flex-col items-start justify-between gap-10 border-b border-white/15 pb-10 sm:mb-16 sm:pb-12 lg:flex-row">
           <div className="w-full max-w-full sm:max-w-sm">
             <a href="/" aria-label="JS Dental Group — Inicio">
               <img
@@ -84,7 +84,7 @@ export const Footer14 = ({ logoSrc }: Footer14Props) => {
             </ul>
           </div>
 
-          <div className="w-full border-t border-white/15 pt-8 sm:border-t-0 sm:pt-0">
+          <div className="w-full border-t border-white/15 pt-8 lg:border-t-0 lg:pt-0">
             <nav
               className="grid w-full grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2 md:w-auto md:grid-cols-3"
               aria-label="Enlaces del pie de página"

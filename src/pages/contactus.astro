@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
-import ContactSection from '../components/ContactSection.astro';
+import { Contact2 } from '../components/contact2';
 import { SITE } from '../data/site';
 
 const breadcrumbSchema = {
@@ -33,7 +33,7 @@ const breadcrumbSchema = {
       </p>
     </section>
 
-    <ContactSection />
+    <Contact2 client:load />
 
     <section class="pb-24" aria-label="Ubicación">
       <div class="container">

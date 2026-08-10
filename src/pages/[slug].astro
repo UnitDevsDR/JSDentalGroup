@@ -1,16 +1,13 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import ContactSection from '../components/ContactSection.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { Hero1 } from '../components/hero1';
+import { Contact2 } from '../components/contact2';
 import { SITE, SERVICES } from '../data/site';
-
-// Las imágenes de servicio se resuelven dinámicamente desde src/assets
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '../assets/img/services/*.{webp,jpg,png}',
-);
+import { TEAM_IMAGES } from '../lib/team-images';
 
 export function getStaticPaths() {
   return SERVICES.map((service) => ({ params: { slug: service.slug }, props: { service } }));
@@ -18,15 +15,7 @@ export function getStaticPaths() {
 
 const { service } = Astro.props;
 
-const findImage = async (key: string) => {
-  const entry = Object.entries(images).find(([path]) => {
-    const base = path.split('/').pop() ?? '';
-    return base.startsWith(key) && !base.includes('-2.');
-  });
-  return entry ? (await entry[1]()).default : null;
-};
-const mainImage = await findImage(service.image);
-
+const specialistImg = await getImage({ src: TEAM_IMAGES[service.specialist.image], width: 800 });
 const otherServices = SERVICES.filter((s) => s.slug !== service.slug);
 
 const breadcrumbSchema = {
@@ -56,95 +45,56 @@ const procedureSchema = {
 >
   <SiteHeader />
 
-  <main>
-    <section class="relative overflow-hidden pt-32 pb-20 md:pt-40 md:pb-28">
-      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div
-          class="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-teal/10 to-navy/5 blur-3xl"
-          data-parallax="-0.12"
-        >
+  <main class="pt-16">
+    <nav aria-label="Miga de pan" class="container pt-10 text-sm text-muted-foreground">
+      <a href="/" class="hover:text-teal">Inicio</a>
+      <span aria-hidden="true"> / </span>
+      <a href="/our-services" class="hover:text-teal">Servicios</a>
+      <span aria-hidden="true"> / </span>
+      <span class="text-navy">{service.name}</span>
+    </nav>
+
+    <Hero1
+      badge={service.name}
+      heading={service.h1}
+      tagline={service.tagline}
+      description={service.longCopy}
+      buttons={{
+        primary: { text: 'Agenda tu evaluación', url: SITE.whatsapp },
+        secondary: { text: SITE.phoneDisplay, url: `tel:${SITE.phone}` },
+      }}
+      specialist={{
+        name: service.specialist.name,
+        role: service.specialist.role,
+        imageSrc: specialistImg.src,
+      }}
+    />
+
+    <section class="bg-accent/50 py-16" aria-label="Sobre el tratamiento">
+      <div class="container grid gap-10 lg:grid-cols-[2fr_1fr]">
+        <div data-animate="up">
+          <h2 class="mb-4 font-heading text-2xl font-semibold text-navy md:text-3xl">
+            ¿En qué consiste?
+          </h2>
+          <p class="max-w-3xl text-lg leading-relaxed text-muted-foreground">{service.copy}</p>
         </div>
-        <div class="dot-grid absolute inset-0 opacity-30"></div>
-      </div>
-
-      <div class="container relative">
-        <nav aria-label="Miga de pan" class="mb-8 text-sm text-muted-foreground" data-animate="up">
-          <a href="/" class="hover:text-teal">Inicio</a>
-          <span aria-hidden="true"> / </span>
-          <a href="/our-services" class="hover:text-teal">Servicios</a>
-          <span aria-hidden="true"> / </span>
-          <span class="text-navy">{service.name}</span>
-        </nav>
-
-        <div class="grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <h1
-              data-animate="blur"
-              class="mb-4 font-heading text-4xl leading-[1.08] font-bold text-navy sm:text-5xl lg:text-6xl"
-            >
-              {service.h1}
-            </h1>
-            <p data-animate="up" data-delay="0.15" class="mb-6 text-xl font-medium text-teal">
-              {service.tagline}
-            </p>
-            <p data-animate="up" data-delay="0.25" class="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              {service.copy}
-            </p>
-            <div data-animate="up" data-delay="0.35" class="flex flex-col gap-4 sm:flex-row">
-              <a
-                href={SITE.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center justify-center gap-2 rounded-full bg-teal px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-all duration-300 hover:-translate-y-0.5"
-              >
-                Agenda tu evaluación
-              </a>
-              <a
-                href={`tel:${SITE.phone}`}
-                class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-navy/15 px-8 py-4 text-base font-semibold text-navy transition-colors hover:border-teal hover:text-teal"
-              >
-                {SITE.phoneDisplay}
-              </a>
-            </div>
-          </div>
-
-          {
-            mainImage && (
-              <div data-animate="scale" data-delay="0.2" class="relative">
-                <div class="overflow-hidden rounded-3xl border-8 border-white shadow-2xl shadow-navy/15">
-                  <Image
-                    src={mainImage}
-                    alt={`${service.name} en JS Dental Group, Santiago`}
-                    width={880}
-                    widths={[440, 880]}
-                    sizes="(max-width: 1024px) 90vw, 520px"
-                    loading="eager"
-                    fetchpriority="high"
-                    class="h-auto w-full"
-                  />
-                </div>
-                <svg
-                  class="smile-arc pointer-events-none absolute -bottom-8 left-1/2 w-[110%] -translate-x-1/2"
-                  viewBox="0 0 400 120"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M20 20 C 110 130, 290 130, 380 20"
-                    stroke="oklch(0.71 0.09 187)"
-                    stroke-width="6"
-                    stroke-linecap="round"
-                    pathLength="1"
-                  />
-                </svg>
-              </div>
-            )
-          }
+        <div data-animate="up" data-delay="0.15" class="rounded-2xl border bg-card p-6 shadow-sm">
+          <p class="text-sm font-semibold tracking-widest text-teal uppercase">Especialista a cargo</p>
+          <p class="mt-2 font-heading text-xl font-semibold text-navy">{service.specialist.name}</p>
+          <p class="text-muted-foreground">{service.specialist.role}</p>
+          <a
+            href={SITE.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-teal hover:underline"
+          >
+            Agenda con {service.specialist.name.split(' ')[0]} {service.specialist.name.split(' ')[1]} →
+          </a>
         </div>
       </div>
     </section>
 
-    <section class="bg-accent/50 py-16" aria-label="Otros servicios">
+    <section class="py-16" aria-label="Otros servicios">
       <div class="container">
         <h2 class="mb-8 font-heading text-2xl font-semibold text-navy" data-animate="up">
           También te puede interesar
@@ -165,7 +115,7 @@ const procedureSchema = {
       </div>
     </section>
 
-    <ContactSection heading={`Agenda tu consulta de ${service.name}`} />
+    <Contact2 client:visible title={`Agenda tu consulta de ${service.name}`} />
   </main>
 
   <FooterSection />

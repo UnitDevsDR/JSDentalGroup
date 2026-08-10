@@ -17,6 +17,11 @@ const { title, description, ogImage, extraSchema = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImageUrl = ogImage ?? new URL(ogDefault.src, SITE.url).href;
 
+// Analítica y verificación: se activan poniendo los IDs en .env / variables
+// de entorno del build (PUBLIC_GTM_ID=GTM-XXXXXXX, PUBLIC_GSC_VERIFICATION=token)
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
+const GSC_VERIFICATION = import.meta.env.PUBLIC_GSC_VERIFICATION;
+
 const clinicSchema = {
   '@context': 'https://schema.org',
   '@type': 'Dentist',
@@ -93,6 +98,19 @@ const schemas = [clinicSchema, ...extraSchema];
     <meta name="geo.region" content="DO-25" />
     <meta name="geo.placename" content="Santiago de los Caballeros" />
 
+    <!-- Google Search Console -->
+    {GSC_VERIFICATION && <meta name="google-site-verification" content={GSC_VERIFICATION} />}
+
+    <!-- Google Tag Manager (vía Partytown: corre en un web worker) -->
+    {
+      GTM_ID && (
+        <script
+          type="text/partytown"
+          set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`}
+        />
+      )
+    }
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
@@ -104,6 +122,19 @@ const schemas = [clinicSchema, ...extraSchema];
     </script>
   </head>
   <body class="antialiased">
+    {
+      GTM_ID && (
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
+            title="Google Tag Manager"
+          />
+        </noscript>
+      )
+    }
     <slot />
 
     <script>

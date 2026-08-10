@@ -1,32 +1,19 @@
 ---
-import { getImage } from 'astro:assets';
+
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
-import ContactSection from '../components/ContactSection.astro';
+import { Contact2 } from '../components/contact2';
 import { Feature101 } from '../components/feature101';
 import { SITE, SERVICES } from '../data/site';
-
-import rehabImg from '../assets/img/services/rehabilitacion-bucal.webp';
-import odontopedImg from '../assets/img/services/odontopediatria.jpg';
-
-const [rehabOpt, odontopedOpt] = await Promise.all([
-  getImage({ src: rehabImg, width: 800 }),
-  getImage({ src: odontopedImg, width: 640 }),
-]);
 
 const services = SERVICES.map((s) => ({
   slug: s.slug,
   name: s.name,
   tagline: s.tagline,
   icon: s.icon,
-  imageSrc:
-    s.slug === 'rehabilitacion-bucal'
-      ? rehabOpt.src
-      : s.slug === 'odontopediatria'
-        ? odontopedOpt.src
-        : undefined,
+  copy: s.copy,
 }));
 
 const breadcrumbSchema = {
@@ -63,7 +50,7 @@ const breadcrumbSchema = {
       services={services}
     />
 
-    <ContactSection />
+    <Contact2 client:visible />
   </main>
 
   <FooterSection />
