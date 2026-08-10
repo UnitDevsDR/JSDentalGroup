@@ -82,7 +82,7 @@ const Cta15 = (props: Props) => {
             <img
               src={image.src}
               alt={image.alt}
-              className="relative z-10 h-full max-h-[400px] w-full rounded-tl-2xl rounded-br-2xl object-cover"
+              className="relative z-10 h-full max-h-[400px] w-full rounded-tl-2xl rounded-br-2xl object-contain object-bottom"
             />
           </div>
         </div>

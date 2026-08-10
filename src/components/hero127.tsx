@@ -191,14 +191,14 @@ const Hero127 = ({
           {image && (
             <div className="order-first flex justify-center lg:order-none" data-animate="scale" data-delay="0.3">
               <div className="relative w-[300px] sm:w-[380px] lg:w-[440px]">
-                <div className="overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white shadow-2xl shadow-navy/15">
+                <div className="overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-gradient-to-b from-teal/20 via-accent to-white shadow-2xl shadow-navy/15">
                   <img
                     src={image.src}
                     alt={image.alt}
-                    width={880}
-                    height={1100}
+                    width={772}
+                    height={877}
                     fetchPriority="high"
-                    className="aspect-[4/5] h-auto w-full object-cover"
+                    className="aspect-[4/5] h-auto w-full object-contain object-bottom pt-10"
                   />
                 </div>
                 <svg

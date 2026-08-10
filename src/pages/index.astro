@@ -15,23 +15,24 @@ import { Contact2 } from '../components/contact2';
 import { SITE, SERVICES, TEAM, FAQS } from '../data/site';
 import { TEAM_IMAGES } from '../lib/team-images';
 
-import heroImg from '../assets/img/home/banner-1.jpg';
-import banner2 from '../assets/img/home/banner-2.jpg';
+import heroImg from '../assets/img/home/clinica-1.png';
+import ctaImg from '../assets/img/home/clinica-2.png';
 import ig1 from '../assets/img/home/ig-1.webp';
 import ig2 from '../assets/img/home/ig-2.webp';
 import ig3 from '../assets/img/home/ig-3.webp';
 import ig4 from '../assets/img/home/ig-4.webp';
-import destacado1 from '../assets/img/home/destacado-1.png';
+import ig5 from '../assets/img/home/ig-5.png';
 
 const opt = (src: ImageMetadata, width: number) => getImage({ src, width });
 
-const [heroOpt, banner2Opt, destacado1Opt] = await Promise.all([
-  opt(heroImg, 880),
-  opt(banner2, 800),
-  opt(destacado1, 640),
+// Anchos limitados a la resolución nativa de cada fuente (sin upscaling)
+const [heroOpt, ctaOpt, destacadoOpt] = await Promise.all([
+  opt(heroImg, 772),
+  opt(ctaImg, 711),
+  opt(ig5, 800),
 ]);
 
-const igOpt = await Promise.all([ig1, ig2, ig3, ig4].map((i) => opt(i, 640)));
+const igOpt = await Promise.all([ig1, ig2, ig3, ig4].map((i) => opt(i, 500)));
 
 const members = await Promise.all(
   TEAM.map(async (m) => ({
@@ -90,7 +91,7 @@ const faqSchema = {
       ]}
       avatars={heroAvatars}
       avatarsUrl="/about-us"
-      image={{ src: heroOpt.src, alt: 'Paciente sonriendo en JS Dental Group, clínica dental en Santiago' }}
+      image={{ src: heroOpt.src, alt: 'Especialistas de JS Dental Group, clínica dental en Santiago' }}
     />
 
     <Logos12 items={SERVICES.map((s) => ({ name: s.name, href: `/${s.slug}`, icon: s.icon }))} />
@@ -105,7 +106,7 @@ const faqSchema = {
       byline="Cuidamos tu sonrisa"
       heading="Con la ciencia de hoy y la pasión de siempre"
       description="Un grupo de expertos que trabaja de forma multidisciplinaria para abordar cada caso con la máxima excelencia: tratamientos más completos, personalizados y exitosos."
-      image={{ src: banner2Opt.src, alt: 'Instalaciones de JS Dental Group en Santiago' }}
+      image={{ src: ctaOpt.src, alt: 'Paciente feliz con su sonrisa en JS Dental Group' }}
       buttons={{
         primary: { text: 'Agenda tu cita', url: SITE.whatsapp },
         secondary: { text: 'Conoce la clínica', url: '/about-us' },
@@ -118,7 +119,7 @@ const faqSchema = {
       heading="Nuestra sonrisa también está en Instagram"
       description="Momentos reales de nuestros pacientes y nuestro equipo."
       images={igOpt.map((img, i) => ({ src: img.src, alt: `JS Dental Group en Instagram ${i + 1}` }))}
-      featured={{ src: destacado1Opt.src, alt: 'JS Dental Group en Instagram' }}
+      featured={{ src: destacadoOpt.src, alt: 'JS Dental Group en Instagram' }}
       instagramUrl={SITE.instagram}
     />
 

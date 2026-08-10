@@ -9,32 +9,10 @@ import { About1 } from '../components/about1';
 import { Team13 } from '../components/team13';
 import { SITE, TEAM } from '../data/site';
 
+import { TEAM_IMAGES } from '../lib/team-images';
+
 import banner1 from '../assets/img/home/banner-1.jpg';
 import banner2 from '../assets/img/home/banner-2.jpg';
-
-import julissa from '../assets/img/team/julissa-saint-hilaire.webp';
-import rosangel from '../assets/img/team/rosangel-tatis.png';
-import melissa from '../assets/img/team/melissa-lantigua.webp';
-import mairenys from '../assets/img/team/mairenys-estevez.webp';
-import denisse from '../assets/img/team/denisse-dominguez.png';
-import siddy from '../assets/img/team/siddy-dominguez.png';
-import laura from '../assets/img/team/laura-bueno.png';
-import simon from '../assets/img/team/simon-dominguez.png';
-import rosanny from '../assets/img/team/rosanny-minaya.png';
-import arianny from '../assets/img/team/arianny-pena.webp';
-
-const TEAM_IMAGES: Record<string, ImageMetadata> = {
-  'julissa-saint-hilaire': julissa,
-  'rosangel-tatis': rosangel,
-  'melissa-lantigua': melissa,
-  'mairenys-estevez': mairenys,
-  'denisse-dominguez': denisse,
-  'siddy-dominguez': siddy,
-  'laura-bueno': laura,
-  'simon-dominguez': simon,
-  'rosanny-minaya': rosanny,
-  'arianny-pena': arianny,
-};
 
 const [historia, mision] = await Promise.all([
   getImage({ src: banner1, width: 900 }),
