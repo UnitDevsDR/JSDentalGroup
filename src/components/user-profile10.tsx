@@ -89,7 +89,7 @@ const UserProfile10 = ({
           {doctor.href ? (
             <a
               href={doctor.href}
-              className="inline-flex items-center gap-1.5 py-2 text-xs font-semibold tracking-widest text-teal-text uppercase hover:underline"
+              className="inline-flex min-h-10 items-center gap-1.5 py-2 text-xs font-semibold tracking-widest text-teal-text uppercase hover:underline"
             >
               {t.viewSpecialty}
               <ArrowRight
