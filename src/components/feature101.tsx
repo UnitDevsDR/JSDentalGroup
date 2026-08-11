@@ -8,6 +8,8 @@ interface ServiceTile {
   tagline: string;
   /** descripción corta: los tiles grandes del bento la muestran */
   copy?: string;
+  /** icono 3D real de la especialidad (assets del sitio de la clínica) */
+  iconSrc?: string;
 }
 
 interface Feature101Props {
@@ -17,9 +19,31 @@ interface Feature101Props {
   services: ServiceTile[];
 }
 
+const Icon3d = ({ src, name, big = false }: { src?: string; name: string; big?: boolean }) => {
+  if (!src) return null;
+  return (
+    <span
+      className={cn(
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm",
+        big ? "size-28 p-3" : "size-20 p-2.5",
+      )}
+    >
+      <img
+        src={src}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        width={big ? 112 : 80}
+        height={big ? 112 : 80}
+        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
+      />
+    </span>
+  );
+};
+
 /**
- * Bento de servicios tipográfico: el primer y el último servicio ocupan
- * tiles grandes con descripción; todos enlazan a su página /:slug.
+ * Bento de servicios con los iconos 3D reales de cada especialidad.
+ * El primer y el último servicio ocupan tiles grandes con descripción.
  */
 const Feature101 = ({ className, heading, description, services }: Feature101Props) => {
   const [first, ...rest] = services;
@@ -36,8 +60,9 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
           {first && (
             <a
               href={`/${first.slug}`}
-              className="group flex flex-col justify-between gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:col-span-2 lg:row-span-2"
+              className="group flex flex-col justify-between gap-8 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:col-span-2 lg:row-span-2"
             >
+              <Icon3d src={first.iconSrc} name={first.name} big />
               <div>
                 <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{first.tagline}</p>
                 <h3 className="mb-4 font-heading text-3xl font-semibold text-navy md:text-4xl">{first.name}</h3>
@@ -54,16 +79,17 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
             <a
               key={s.slug}
               href={`/${s.slug}`}
-              className="group flex flex-col gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:h-72 md:justify-between md:gap-4"
+              className="group flex flex-col gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:h-80 md:justify-between md:gap-4"
             >
+              <Icon3d src={s.iconSrc} name={s.name} />
               <div>
                 <h3 className="mb-2 font-heading text-2xl font-medium text-navy">{s.name}</h3>
                 <p className="text-muted-foreground">{s.tagline}</p>
+                <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal">
+                  Ver tratamiento
+                  <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+                </span>
               </div>
-              <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal">
-                Ver tratamiento
-                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
-              </span>
             </a>
           ))}
 
@@ -73,6 +99,7 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
               className="group flex flex-col justify-between gap-6 rounded-2xl bg-navy p-8 text-white transition-colors hover:bg-navy/90 md:col-span-2"
             >
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                <Icon3d src={last.iconSrc} name={last.name} big />
                 <div className="flex-1">
                   <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{last.tagline}</p>
                   <h3 className="mb-2 font-heading text-3xl font-semibold">{last.name}</h3>
@@ -81,7 +108,7 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                 </div>
-                {last.copy && <p className="max-w-sm leading-relaxed text-white/75 sm:w-1/2">{last.copy}</p>}
+                {last.copy && <p className="max-w-sm leading-relaxed text-white/75 sm:w-2/5">{last.copy}</p>}
               </div>
             </a>
           )}

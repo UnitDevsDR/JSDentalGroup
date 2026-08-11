@@ -89,6 +89,15 @@
 }
 
 @layer base {
+  /* Tailwind v4: el color de borde por defecto es currentColor (se veía
+     azul marino); restauramos el gris claro del sistema como en v3 */
+  *,
+  ::after,
+  ::before,
+  ::backdrop {
+    border-color: var(--color-border);
+  }
+
   html {
     /* Escala global compacta: la UI completa al ~80% (todo es rem) */
     font-size: 80%;

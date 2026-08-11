@@ -31,6 +31,40 @@ export const Footer14 = ({ logoSrc }: Footer14Props) => {
   return (
     <footer className="bg-navy py-12 text-white sm:py-16 md:py-24">
       <div className="container mx-auto px-5 md:px-6">
+        {/* Franja de contacto (réplica de la del sitio original) */}
+        <div className="mb-12 grid gap-8 border-b border-white/15 pb-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex items-center gap-4">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white">
+              <Mail className="size-5 text-navy" aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-sm text-white/70">Correo</p>
+              <a href={`mailto:${SITE.email}`} className="font-semibold break-all hover:underline">
+                {SITE.email}
+              </a>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white">
+              <MapPin className="size-5 text-navy" aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-sm text-white/70">Dirección</p>
+              <p className="font-semibold">{SITE.address.street}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white">
+              <Clock className="size-5 text-navy" aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-sm text-white/70">Horario de la Clínica</p>
+              <p className="font-semibold">
+                {SITE.hours.weekdays} y {SITE.hours.saturday}
+              </p>
+            </div>
+          </div>
+        </div>
         <div className="mb-10 flex flex-col items-start justify-between gap-10 border-b border-white/15 pb-10 sm:mb-16 sm:pb-12 lg:flex-row">
           <div className="w-full max-w-full sm:max-w-sm">
             <a href="/" aria-label="JS Dental Group — Inicio">

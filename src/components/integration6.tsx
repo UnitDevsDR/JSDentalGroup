@@ -36,7 +36,7 @@ const Integration6 = ({
   return (
     <section className={cn("py-16 md:py-24", className)} aria-label="Nuestras especialidades">
       <div className="container">
-        <div className="flex flex-col gap-8 overflow-hidden rounded-xl border bg-accent/40 py-4 md:gap-10 md:py-10">
+        <div className="flex flex-col gap-8 overflow-hidden rounded-xl bg-accent/40 py-4 md:gap-10 md:py-10">
           <div className="flex w-full flex-col justify-between gap-5 px-6 py-5 md:px-10 lg:flex-row lg:items-end">
             <div className="flex-1">
               <div className="flex w-full max-w-[32rem] flex-col gap-5">
@@ -93,8 +93,9 @@ const Integration6 = ({
             className="w-full"
           >
             <CarouselContent>
-              {items.map((item) => (
-                <CarouselItem key={item.name} className="basis-auto pl-14">
+              {/* items x3: garantiza desborde (embla desactiva el loop si todos caben en pantalla) */}
+              {[...items, ...items, ...items].map((item, idx) => (
+                <CarouselItem key={`${item.name}-${idx}`} className="basis-auto pl-14">
                   <a
                     href={item.href}
                     className="flex items-center py-3 text-navy/70 transition-colors hover:text-teal"
