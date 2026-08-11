@@ -244,15 +244,14 @@ const Hero127 = ({
                 </div>
                 <svg
                   className="smile-arc pointer-events-none absolute -bottom-10 left-1/2 w-[116%] -translate-x-1/2"
-                  viewBox="0 0 400 110"
+                  viewBox="0 0 400 118"
                   fill="none"
                   aria-hidden="true"
                 >
-                  {/* Sonrisa tipo trazo de pincel: barrido poco profundo con
-                      la punta izquierda baja y el extremo derecho subiendo con
-                      fuerza (la sonrisa de Amazon, sin la flecha). */}
+                  {/* Sonrisa caligráfica simétrica: vientre grueso al centro y
+                      puntas finas idénticas que suben a ambos lados. */}
                   <path
-                    d="M 12 30 C 100 74, 260 86, 386 12 C 390 10, 393 13, 390 18 C 320 78, 150 100, 40 62 C 22 55, 8 40, 12 30 Z"
+                    d="M 12 20 C 100 80, 300 80, 388 20 C 389 18, 391 19, 390 22 C 368 92, 240 108, 200 108 C 160 108, 32 92, 10 22 C 9 19, 11 18, 12 20 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
