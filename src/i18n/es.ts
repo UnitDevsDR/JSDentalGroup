@@ -34,9 +34,9 @@ export const es = {
   },
 
   home: {
-    title: 'JS Dental Group — Clínica Dental en Santiago | Ortodoncia e Implantes',
+    title: 'Clínica Dental en Santiago | JS Dental Group',
     description:
-      'Clínica dental en Santiago, República Dominicana. Especialistas en ortodoncia, implantes dentales, endodoncia, periodoncia, cirugía maxilofacial y odontopediatría. Atención integral para toda la familia. Agenda tu cita.',
+      'Clínica dental en Santiago, R.D. Ortodoncia, implantes, endodoncia, periodoncia y odontopediatría. Atención integral para toda la familia.',
     badge: 'Santiago, R.D.',
     badgeAnnouncement: 'Atención para toda la familia',
     badgeAnnouncementShort: 'Toda la familia',
@@ -87,7 +87,7 @@ export const es = {
   servicesPage: {
     title: 'Servicios Dentales en Santiago | JS Dental Group',
     description:
-      'Todos nuestros servicios dentales en Santiago: rehabilitación bucal, implantología, endodoncia, ortodoncia, periodoncia, cirugía maxilofacial, odontología general y odontopediatría.',
+      'Ocho especialidades dentales en Santiago: rehabilitación bucal, implantes, endodoncia, ortodoncia, periodoncia, cirugía y odontopediatría.',
     h1Before: 'Atención dental integral,',
     h1Highlight: 'en un solo lugar',
     intro:
@@ -113,7 +113,7 @@ export const es = {
   about: {
     title: 'Sobre Nosotros | Historia y Especialistas | JS Dental Group',
     description:
-      'Conoce la historia de J Saint Hilaire Dental Expert Group: un equipo multidisciplinario de especialistas dentales en Santiago, R.D., fundado en 2020. Ética, respeto y amor por lo que hacemos.',
+      'La historia de J Saint Hilaire Dental Expert Group: 9 especialistas dentales en Santiago, R.D., trabajando en equipo desde 2020.',
     heading: 'Historia de la clínica',
     sideLabel: 'Nuestra historia',
     intro:
@@ -129,7 +129,7 @@ export const es = {
   contact: {
     title: 'Contáctanos | Agenda tu Cita | JS Dental Group Santiago',
     description:
-      'Agenda tu cita en JS Dental Group: WhatsApp, teléfono +1 (809) 966-3113 o visítanos en Calle México No. 42, Plaza Catrina, Santiago de los Caballeros. Lunes a sábado.',
+      'Agenda tu cita por WhatsApp o al +1 (809) 966-3113. Calle México No. 42, Plaza Catrina, Santiago. Lunes a sábado.',
     h1: 'Contáctanos',
     intro: 'Estamos listos para recibirte. Escríbenos por WhatsApp, llámanos o visítanos en la clínica.',
     heading: '¿Tienes dudas? Agenda tu consulta',
@@ -257,9 +257,9 @@ export const es = {
   services: {
     'rehabilitacion-bucal': {
       name: 'Rehabilitación Bucal',
-      title: 'Rehabilitación Bucal en Santiago | Prótesis y Coronas | JS Dental Group',
+      title: 'Rehabilitación Bucal en Santiago | JS Dental Group',
       metaDescription:
-        'Rehabilitación bucal completa en Santiago. Prótesis dentales, coronas, puentes y restauraciones. Recupera tu sonrisa y función masticatoria con especialistas certificados.',
+        'Rehabilitación bucal en Santiago: prótesis, coronas, puentes y carillas. Recupera la función y la estética de tu sonrisa.',
       h1: 'Rehabilitación Bucal y Estética',
       tagline: 'Mejore su sonrisa',
       copy: 'La rehabilitación bucal restaura la función de tu boca —masticación, habla, mordida correcta— y la estética dental se enfoca en que tu sonrisa luzca saludable, armónica y bonita. Nuestro enfoque personalizado le ayudará a lograr una sonrisa más saludable y radiante.',
@@ -269,7 +269,7 @@ export const es = {
     },
     implantologia: {
       name: 'Implantología',
-      title: 'Implantes Dentales en Santiago | Implantología | JS Dental Group',
+      title: 'Implantes Dentales en Santiago | JS Dental Group',
       metaDescription:
         'Implantes dentales de última generación en Santiago. Restaura tu sonrisa con tecnología avanzada y especialistas en implantología oral. Agenda tu consulta.',
       h1: 'Implantología',
@@ -281,7 +281,7 @@ export const es = {
     },
     endodoncia: {
       name: 'Endodoncia',
-      title: 'Endodoncia en Santiago | Tratamiento de Conducto | JS Dental Group',
+      title: 'Endodoncia y Conducto en Santiago | JS Dental Group',
       metaDescription:
         'Tratamiento de endodoncia y conducto radicular en Santiago. Salva tus dientes con nuestros especialistas y tecnología moderna. Agenda en JS Dental Group.',
       h1: 'Endodoncia',
@@ -293,7 +293,7 @@ export const es = {
     },
     ortodoncia: {
       name: 'Ortodoncia',
-      title: 'Ortodoncia en Santiago | Brackets y Alineadores Invisibles | JS Dental Group',
+      title: 'Ortodoncia y Brackets en Santiago | JS Dental Group',
       metaDescription:
         'Tratamiento de ortodoncia en Santiago. Brackets tradicionales y alineadores invisibles con especialistas certificados. Agenda tu consulta en JS Dental Group.',
       h1: 'Ortodoncia',
@@ -305,7 +305,7 @@ export const es = {
     },
     periodoncia: {
       name: 'Periodoncia',
-      title: 'Periodoncia en Santiago | Salud de las Encías | JS Dental Group',
+      title: 'Periodoncia y Encías en Santiago | JS Dental Group',
       metaDescription:
         'Tratamiento de periodoncia y enfermedades de las encías en Santiago. Prevención y tratamiento con especialistas en salud periodontal. Agenda tu consulta.',
       h1: 'Periodoncia',
@@ -341,7 +341,7 @@ export const es = {
     },
     odontopediatria: {
       name: 'Odontopediatría',
-      title: 'Odontopediatría en Santiago | Dentista para Niños | JS Dental Group',
+      title: 'Odontopediatría en Santiago | JS Dental Group',
       metaDescription:
         'Atención dental especializada para niños en Santiago. Odontopediatría con trato amigable, desde los primeros dientes hasta la adolescencia. Agenda su cita.',
       h1: 'Odontopediatría',

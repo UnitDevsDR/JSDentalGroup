@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Páginas técnicas sin valor para búsqueda
+Disallow: /404
+Disallow: /en/404
+
 Sitemap: https://jsdentalgroup.com/sitemap-index.xml

@@ -33,9 +33,9 @@ export const en: Dictionary = {
   },
 
   home: {
-    title: 'JS Dental Group — Dental Clinic in Santiago | Orthodontics & Implants',
+    title: 'Dental Clinic in Santiago | JS Dental Group',
     description:
-      'Dental clinic in Santiago, Dominican Republic. Specialists in orthodontics, dental implants, endodontics, periodontics, maxillofacial surgery and pediatric dentistry. Complete care for the whole family. Book your appointment.',
+      'Dental clinic in Santiago, Dominican Republic. Orthodontics, implants, endodontics, periodontics and pediatric dentistry for the whole family.',
     badge: 'Santiago, D.R.',
     badgeAnnouncement: 'Care for the whole family',
     badgeAnnouncementShort: 'Whole family',
@@ -85,7 +85,7 @@ export const en: Dictionary = {
   servicesPage: {
     title: 'Dental Services in Santiago | JS Dental Group',
     description:
-      'All our dental services in Santiago: oral rehabilitation, implantology, endodontics, orthodontics, periodontics, maxillofacial surgery, general dentistry and pediatric dentistry.',
+      'Eight dental specialties in Santiago: oral rehabilitation, implants, endodontics, orthodontics, periodontics, surgery and pediatric dentistry.',
     h1Before: 'Complete dental care,',
     h1Highlight: 'all in one place',
     intro:
@@ -111,7 +111,7 @@ export const en: Dictionary = {
   about: {
     title: 'About Us | Our Story and Specialists | JS Dental Group',
     description:
-      'Discover the story of J Saint Hilaire Dental Expert Group: a multidisciplinary team of dental specialists in Santiago, Dominican Republic, founded in 2020. Ethics, respect and love for what we do.',
+      'The story of J Saint Hilaire Dental Expert Group: 9 dental specialists in Santiago, Dominican Republic, working as one team since 2020.',
     heading: 'Our clinic story',
     sideLabel: 'Our story',
     intro:
@@ -127,7 +127,7 @@ export const en: Dictionary = {
   contact: {
     title: 'Contact Us | Book an Appointment | JS Dental Group Santiago',
     description:
-      'Book your appointment at JS Dental Group: WhatsApp, phone +1 (809) 966-3113, or visit us at Calle México No. 42, Plaza Catrina, Santiago de los Caballeros. Monday to Saturday.',
+      'Book on WhatsApp or call +1 (809) 966-3113. Calle México No. 42, Plaza Catrina, Santiago. Monday to Saturday.',
     h1: 'Contact us',
     intro: "We're ready to welcome you. Message us on WhatsApp, call us, or visit the clinic.",
     heading: 'Have questions? Book your consultation',
@@ -252,9 +252,9 @@ export const en: Dictionary = {
   services: {
     'rehabilitacion-bucal': {
       name: 'Oral Rehabilitation',
-      title: 'Oral Rehabilitation in Santiago | Crowns & Prosthetics | JS Dental Group',
+      title: 'Oral Rehabilitation in Santiago | JS Dental Group',
       metaDescription:
-        'Complete oral rehabilitation in Santiago. Dental prosthetics, crowns, bridges and restorations. Recover your smile and chewing function with certified specialists.',
+        'Oral rehabilitation in Santiago: prosthetics, crowns, bridges and veneers. Recover the function and beauty of your smile.',
       h1: 'Oral Rehabilitation and Aesthetics',
       tagline: 'Improve your smile',
       copy: 'Oral rehabilitation restores the function of your mouth — chewing, speech, correct bite — while dental aesthetics focuses on making your smile look healthy, harmonious and beautiful. Our personalized approach helps you achieve a healthier, brighter smile.',
@@ -276,7 +276,7 @@ export const en: Dictionary = {
     },
     endodoncia: {
       name: 'Endodontics',
-      title: 'Endodontics in Santiago | Root Canal Treatment | JS Dental Group',
+      title: 'Root Canal Treatment in Santiago | JS Dental Group',
       metaDescription:
         'Endodontic and root canal treatment in Santiago. Save your teeth with our specialists and modern technology. Book at JS Dental Group.',
       h1: 'Endodontics',
@@ -288,7 +288,7 @@ export const en: Dictionary = {
     },
     ortodoncia: {
       name: 'Orthodontics',
-      title: 'Orthodontics in Santiago | Braces & Clear Aligners | JS Dental Group',
+      title: 'Orthodontics & Braces in Santiago | JS Dental Group',
       metaDescription:
         'Orthodontic treatment in Santiago. Traditional braces and clear aligners with certified specialists. Book your consultation at JS Dental Group.',
       h1: 'Orthodontics',
@@ -336,9 +336,9 @@ export const en: Dictionary = {
     },
     odontopediatria: {
       name: 'Pediatric Dentistry',
-      title: 'Pediatric Dentistry in Santiago | Kids Dentist | JS Dental Group',
+      title: 'Pediatric Dentistry in Santiago | JS Dental Group',
       metaDescription:
-        'Specialized dental care for children in Santiago. Pediatric dentistry with a friendly approach, from the first teeth through adolescence. Book their appointment.',
+        'Dental care for children in Santiago. Pediatric dentistry with a friendly, fear-free approach from first teeth to adolescence.',
       h1: 'Pediatric Dentistry',
       tagline: 'We care for the most important smiles: your children’s',
       copy: 'Pediatric dentistry looks after the oral health of the youngest patients, from their first teeth through adolescence. We provide warm, specialized care so every visit to the dentist is a positive, fear-free experience.',

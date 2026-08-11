@@ -15,3 +15,7 @@
 # así una imagen reemplazada se propaga sin quedar clavada un año
 /img/*
   Cache-Control: public, max-age=604800, must-revalidate
+
+/site.webmanifest
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=604800

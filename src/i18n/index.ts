@@ -24,7 +24,7 @@ export const getLangFromUrl = (url: URL): Lang =>
  * ingleses usan los términos que realmente se buscan en inglés.
  */
 export const ROUTES = {
-  home: { es: '/', en: '/en/' },
+  home: { es: '/', en: '/en' },
   services: { es: '/our-services', en: '/en/services' },
   about: { es: '/about-us', en: '/en/about-us' },
   contact: { es: '/contactus', en: '/en/contact' },

@@ -8,6 +8,11 @@ import sitemap from '@astrojs/sitemap';
 // es incompatible con el rolldown-vite de Astro 6.4.
 export default defineConfig({
   site: 'https://jsdentalgroup.com',
+  // URLs sin barra final, idénticas a las que Google ya indexó del Odoo
+  // (/ortodoncia, no /ortodoncia/). `format: 'file'` genera ortodoncia.html,
+  // así el canonical, el sitemap y la URL servida coinciden exactamente.
+  trailingSlash: 'never',
+  build: { format: 'file' },
   // Español en la raíz (mantiene los slugs que ya indexó Google desde Odoo),
   // inglés bajo /en/ con slugs traducidos.
   i18n: {
@@ -29,6 +34,10 @@ export default defineConfig({
     partytown({ config: { forward: ['dataLayer.push'] } }),
   ],
   vite: {
+    // Túneles para compartir el preview (cloudflared, ngrok): Vite bloquea
+    // hosts desconocidos por defecto
+    server: { allowedHosts: ['.trycloudflare.com', '.ngrok-free.app', '.ngrok.io'] },
+    preview: { allowedHosts: ['.trycloudflare.com', '.ngrok-free.app', '.ngrok.io'] },
     resolve: {
       alias: {
         // lucide-react no declara "exports": Node cae al build CJS y el

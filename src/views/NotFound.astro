@@ -13,7 +13,7 @@ const t = useTranslations(lang);
 const paths = pagePaths('home');
 ---
 
-<Layout lang={lang} paths={paths} title={t.notFound.title} description={t.notFound.description}>
+<Layout lang={lang} paths={paths} title={t.notFound.title} description={t.notFound.description} noindex>
   <SiteHeader lang={lang} paths={paths} />
 
   <main id="contenido" class="flex min-h-[70vh] items-center pt-24">

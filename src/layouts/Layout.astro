@@ -2,9 +2,9 @@
 import '@fontsource-variable/bricolage-grotesque';
 import '@fontsource-variable/instrument-sans';
 import '../styles/global.css';
-import { SITE, TEAM } from '../data/site';
-import { IMAGES } from '../lib/images';
-import { LOCALES, useTranslations, type Lang } from '../i18n';
+import { SITE, TEAM, SERVICE_KEYS } from '../data/site';
+import { IMAGES, teamPhoto } from '../lib/images';
+import { LOCALES, ROUTES, servicePath, useTranslations, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -15,9 +15,22 @@ interface Props {
   ogImage?: string;
   /** JSON-LD adicional de la página (FAQPage, BreadcrumbList, MedicalProcedure…) */
   extraSchema?: object[];
+  /** páginas que no deben indexarse (404) */
+  noindex?: boolean;
+  /** orígenes de terceros que esta página usa (embeds): abre la conexión antes */
+  preconnect?: string[];
 }
 
-const { lang, title, description, paths, ogImage, extraSchema = [] } = Astro.props;
+const {
+  lang,
+  title,
+  description,
+  paths,
+  ogImage,
+  extraSchema = [],
+  noindex = false,
+  preconnect = [],
+} = Astro.props;
 const t = useTranslations(lang);
 
 const canonical = new URL(paths[lang], SITE.url).href;
@@ -35,10 +48,33 @@ const alternates = LOCALES.map((l) => ({
   href: new URL(paths[l], SITE.url).href,
 }));
 
+const CLINIC_ID = `${SITE.url}/#clinic`;
+const WEBSITE_ID = `${SITE.url}/#website`;
+
+// Una entidad por doctor: refuerza el E-E-A-T del equipo médico
+const physicians = TEAM.filter((m) => m.title).map((m) => ({
+  '@type': 'Physician',
+  '@id': `${SITE.url}/#${m.key}`,
+  name: `${t.titles[m.title!]} ${m.name}`,
+  jobTitle: t.roles[m.key as keyof typeof t.roles],
+  medicalSpecialty: t.roles[m.key as keyof typeof t.roles],
+  image: new URL(teamPhoto(m.key, 'lg'), SITE.url).href,
+  worksFor: { '@id': CLINIC_ID },
+  url: new URL(ROUTES.about[lang], SITE.url).href,
+}));
+
+// Cada especialidad como servicio ofrecido por la clínica
+const availableService = SERVICE_KEYS.map((key) => ({
+  '@type': 'MedicalProcedure',
+  '@id': new URL(servicePath(key, lang), SITE.url).href + '#procedure',
+  name: t.services[key].name,
+  description: t.services[key].tagline,
+  url: new URL(servicePath(key, lang), SITE.url).href,
+}));
+
 const clinicSchema = {
-  '@context': 'https://schema.org',
   '@type': 'Dentist',
-  '@id': `${SITE.url}/#clinic`,
+  '@id': CLINIC_ID,
   name: SITE.name,
   legalName: SITE.legalName,
   description: t.schema.clinicDescription,
@@ -72,14 +108,44 @@ const clinicSchema = {
     { '@type': 'Language', name: 'English' },
   ],
   sameAs: [SITE.instagram],
-  employee: TEAM.filter((m) => m.title).map((m) => ({
-    '@type': 'Physician',
-    name: `${t.titles[m.title!]} ${m.name}`,
-    jobTitle: t.roles[m.key as keyof typeof t.roles],
-  })),
+  logo: new URL(IMAGES.logo, SITE.url).href,
+  medicalSpecialty: 'Dentistry',
+  areaServed: [
+    { '@type': 'City', name: SITE.address.city },
+    { '@type': 'AdministrativeArea', name: `${SITE.address.region}, República Dominicana` },
+  ],
+  hasMap: `https://www.google.com/maps?q=${encodeURIComponent(SITE.address.mapQuery)}`,
+  employee: physicians.map((p) => ({ '@id': p['@id'] })),
+  availableService,
 };
 
-const schemas = [clinicSchema, ...extraSchema];
+const websiteSchema = {
+  '@type': 'WebSite',
+  '@id': WEBSITE_ID,
+  url: SITE.url,
+  name: SITE.name,
+  inLanguage: t.htmlLang,
+  publisher: { '@id': CLINIC_ID },
+};
+
+const webPageSchema = {
+  '@type': 'WebPage',
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: title,
+  description,
+  inLanguage: t.htmlLang,
+  isPartOf: { '@id': WEBSITE_ID },
+  about: { '@id': CLINIC_ID },
+  primaryImageOfPage: { '@type': 'ImageObject', url: ogImageUrl },
+};
+
+// Un solo bloque JSON-LD con el grafo completo: las entidades se referencian
+// entre sí por @id en vez de repetirse en cada página
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [clinicSchema, ...physicians, websiteSchema, webPageSchema, ...extraSchema],
+};
 ---
 
 <!doctype html>
@@ -92,7 +158,10 @@ const schemas = [clinicSchema, ...extraSchema];
     <!-- SEO primario -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta
+      name="robots"
+      content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}
+    />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
@@ -137,11 +206,15 @@ const schemas = [clinicSchema, ...extraSchema];
       )
     }
 
+    {preconnect.map((origin) => <link rel="preconnect" href={origin} crossorigin />)}
+
+    <meta name="theme-color" content="#002554" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Datos estructurados -->
-    {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
 
     <script is:inline>
       document.documentElement.classList.add('js');
