@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { Feature101 } from '../components/feature101';
+import { Contact2 } from '../components/contact2';
+import { SITE, SERVICE_KEYS } from '../data/site';
+import { serviceIcon } from '../lib/images';
+import { ROUTES, pagePaths, servicePath, useTranslations, type Lang } from '../i18n';
+import { contactProps } from '../lib/view-helpers';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paths = pagePaths('services');
+
+const services = SERVICE_KEYS.map((key) => ({
+  href: servicePath(key, lang),
+  name: t.services[key].name,
+  tagline: t.services[key].tagline,
+  copy: t.services[key].copy,
+  iconSrc: serviceIcon(key),
+}));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.nav.home, item: new URL(ROUTES.home[lang], SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: t.nav.services, item: new URL(paths[lang], SITE.url).href },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  paths={paths}
+  title={t.servicesPage.title}
+  description={t.servicesPage.description}
+  extraSchema={[breadcrumbSchema]}
+>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="pt-24">
+    <section class="container pt-12 text-center" data-animate="up">
+      <h1 class="mx-auto max-w-3xl font-heading text-4xl font-bold text-navy md:text-6xl">
+        {t.servicesPage.h1Before} <span class="text-highlight">{t.servicesPage.h1Highlight}</span>
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">{t.servicesPage.intro}</p>
+    </section>
+
+    <Feature101
+      heading={t.servicesPage.heading}
+      description={t.servicesPage.description2}
+      services={services}
+      cta={t.servicesPage.viewTreatment}
+    />
+
+    <div data-animate="up">
+      <Contact2 client:visible {...contactProps(lang)} />
+    </div>
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+</Layout>

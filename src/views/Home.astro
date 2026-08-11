@@ -1,0 +1,194 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import InstagramEmbed from '../components/InstagramEmbed.astro';
+import LocationMap from '../components/LocationMap.astro';
+import { Hero127 } from '../components/hero127';
+import { Integration6 } from '../components/integration6';
+import { Feature101 } from '../components/feature101';
+import { TeamProfiles } from '../components/user-profile10';
+import { Faq11 } from '../components/faq11';
+import { Cta15 } from '../components/cta15';
+import { Contact2 } from '../components/contact2';
+import { SITE, TEAM, SERVICE_KEYS, hours } from '../data/site';
+import { IMAGES, serviceIcon, teamPhoto } from '../lib/images';
+import { ROUTES, pagePaths, servicePath, useTranslations, type Lang } from '../i18n';
+import { contactProps } from '../lib/view-helpers';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const h = hours(lang);
+const paths = pagePaths('home');
+
+const doctorName = (m: (typeof TEAM)[number]) =>
+  m.title ? `${t.titles[m.title]} ${m.name}` : m.name;
+
+const doctors = TEAM.map((m) => ({
+  name: doctorName(m),
+  role: t.roles[m.key as keyof typeof t.roles],
+  imageSrc: teamPhoto(m.key, 'md'),
+  verified: m.title !== null,
+}));
+
+// Avatares del hero: doctores visualmente distintos (prueba social)
+const HERO_KEYS = ['julissa-saint-hilaire', 'simon-dominguez', 'rosanny-minaya', 'laura-bueno', 'siddy-dominguez'];
+const heroAvatars = HERO_KEYS.slice(0, 4).map((key) => {
+  const m = TEAM.find((x) => x.key === key)!;
+  return { src: teamPhoto(key, 'sm'), alt: doctorName(m) };
+});
+
+// Carrusel del arco: foto de equipo + especialistas
+const heroSlides = [
+  {
+    src: IMAGES.heroEspecialistas,
+    name: t.home.heroSlideTitle,
+    role: t.home.heroSlideRole,
+    alt: t.home.description,
+    // recorte de las dos especialistas de cuerpo completo: no debe cortarse
+    fit: 'contain' as const,
+  },
+  ...HERO_KEYS.map((key) => {
+    const m = TEAM.find((x) => x.key === key)!;
+    const role = t.roles[m.key as keyof typeof t.roles];
+    return {
+      src: teamPhoto(key, 'lg'),
+      name: doctorName(m),
+      role,
+      alt: `${doctorName(m)} — ${role}`,
+      fit: 'cover' as const,
+    };
+  }),
+];
+
+const services = SERVICE_KEYS.map((key) => ({
+  href: servicePath(key, lang),
+  name: t.services[key].name,
+  tagline: t.services[key].tagline,
+  copy: t.services[key].copy,
+  iconSrc: serviceIcon(key),
+}));
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: t.htmlLang,
+  mainEntity: t.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout
+  lang={lang}
+  paths={paths}
+  title={t.home.title}
+  description={t.home.description}
+  extraSchema={[faqSchema]}
+>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido">
+    <Hero127
+      badge={{
+        text: t.home.badge,
+        announcement: t.home.badgeAnnouncement,
+        announcementShort: t.home.badgeAnnouncementShort,
+        url: '#contacto',
+      }}
+      headingWords={t.home.headingWords}
+      highlightWord={t.home.headingHighlight}
+      description={t.home.heroDescription}
+      buttons={{
+        primary: { text: t.nav.bookWhatsapp, url: SITE.whatsapp },
+        secondary: { text: t.home.heroSecondary, url: '#servicios' },
+      }}
+      stats={[
+        { count: 1000, suffix: '+', label: t.home.statPatients },
+        { count: 9, label: t.home.statSpecialists },
+        { value: String(SITE.founded), label: t.home.statSince },
+      ]}
+      avatars={heroAvatars}
+      avatarsUrl={ROUTES.about[lang]}
+      avatarsLabel={t.home.meetDoctors}
+      avatarsExtra="+5"
+      slides={heroSlides}
+    />
+
+    <div data-animate="up">
+      <Integration6
+        client:visible
+        heading={t.home.specialtiesHeading}
+        description={t.home.specialtiesDescription}
+        ctaText={t.nav.allServices}
+        ctaHref={ROUTES.services[lang]}
+        items={SERVICE_KEYS.map((key) => ({ name: t.services[key].name, href: servicePath(key, lang) }))}
+        avatars={heroAvatars}
+      />
+    </div>
+
+    <Feature101
+      heading={t.home.servicesHeading}
+      description={t.home.servicesDescription}
+      services={services}
+      cta={t.servicesPage.viewTreatment}
+    />
+
+    <Cta15
+      byline={t.home.ctaByline}
+      heading={t.home.ctaHeading}
+      description={t.home.ctaDescription}
+      highlights={t.home.ctaHighlights}
+      image={{ src: IMAGES.dienteCuidado3d, alt: t.home.ctaHeading }}
+      buttons={{
+        primary: { text: t.nav.book, url: SITE.whatsapp },
+        secondary: { text: t.home.ctaSecondary, url: ROUTES.about[lang] },
+      }}
+    />
+
+    <TeamProfiles
+      doctors={doctors}
+      whatsapp={SITE.whatsapp}
+      heading={t.team.heading}
+      description={t.team.description}
+      t={{ specialist: t.team.specialist, staff: t.team.staff, book: t.team.book, certified: t.team.certified }}
+    />
+
+    <InstagramEmbed
+      username={SITE.instagramUser}
+      heading={t.home.instagramHeading}
+      description={t.home.instagramDescription}
+      frameTitle={`Instagram @${SITE.instagramUser}`}
+    />
+
+    <div data-animate="up">
+      <Faq11
+        client:visible
+        heading={t.home.faqHeading}
+        note={t.home.faqNote}
+        linkText={t.home.faqWhatsapp}
+        whatsapp={SITE.whatsapp}
+        category={t.home.faqCategory}
+        items={t.faqs.map((f) => ({ question: f.q, answer: f.a }))}
+        imageSrc={IMAGES.agendaCita3d}
+        imageAlt={t.nav.book}
+      />
+    </div>
+
+    <div data-animate="up">
+      <Contact2 client:visible {...contactProps(lang)} />
+    </div>
+
+    <LocationMap lang={lang} withHeading />
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+</Layout>

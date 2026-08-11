@@ -38,6 +38,9 @@ interface Slide {
   name: string;
   role: string;
   alt: string;
+  /** 'contain': recortes de figura completa (no se cortan los pies);
+   *  'cover': retratos cuadrados que llenan el arco */
+  fit?: 'contain' | 'cover';
 }
 
 interface Hero127Props {
@@ -49,15 +52,18 @@ interface Hero127Props {
   buttons?: Buttons;
   avatars?: AvatarItem[];
   avatarsUrl?: string;
+  /** texto del enlace de los avatares y contador del resto del equipo */
+  avatarsLabel?: string;
+  avatarsExtra?: string;
   stats?: Stat[];
   /** carrusel del arco: equipo + especialistas (rota solo, sin framework) */
   slides?: Slide[];
   className?: string;
 }
 
-function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
+function Avatars({ avatars, url, label, extra }: { avatars: AvatarItem[]; url?: string; label: string; extra: string }) {
   return (
-    <a href={url ?? "#equipo"} className="group/avatars flex items-center gap-3" aria-label="Conoce a nuestros especialistas">
+    <a href={url ?? "#equipo"} className="group/avatars flex items-center gap-3" aria-label={label}>
       {avatars.map((item, i) => (
         <span
           key={`avatar-hero-${i}`}
@@ -74,10 +80,10 @@ function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
         </span>
       ))}
       <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-navy text-sm font-semibold text-white shadow-sm sm:h-14 sm:w-14">
-        +5
+        {extra}
       </div>
       <span className="max-w-[130px] text-left text-sm leading-snug font-medium text-muted-foreground transition-colors group-hover/avatars:text-navy">
-        Conoce a nuestros doctores
+        {label}
       </span>
     </a>
   );
@@ -91,6 +97,8 @@ const Hero127 = ({
   buttons,
   avatars = [],
   avatarsUrl,
+  avatarsLabel = '',
+  avatarsExtra = '',
   stats = [],
   slides = [],
   className,
@@ -198,7 +206,7 @@ const Hero127 = ({
                   </div>
                 ))}
               </div>
-              {avatars.length > 0 && <Avatars avatars={avatars} url={avatarsUrl} />}
+              {avatars.length > 0 && <Avatars avatars={avatars} url={avatarsUrl} label={avatarsLabel} extra={avatarsExtra} />}
             </div>
           </div>
 
@@ -224,7 +232,10 @@ const Hero127 = ({
                       data-name={slide.name}
                       data-role={slide.role}
                       className={cn(
-                        "absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 ease-out",
+                        "absolute inset-0 h-full w-full transition-opacity duration-700 ease-out",
+                        slide.fit === "contain"
+                          ? "object-contain object-bottom pt-8"
+                          : "object-cover object-top",
                         i === 0 ? "opacity-100" : "opacity-0",
                       )}
                     />

@@ -2,7 +2,6 @@ import { MessageCircle, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SITE } from "@/data/site";
 
 interface ButtonProps {
   text: string;
@@ -19,6 +18,12 @@ interface Specialist {
   imageSrc: string;
 }
 
+interface SpecialistCardCopy {
+  eyebrow: string;
+  cta: string;
+  ctaHref: string;
+}
+
 interface Hero86Props {
   /** parte del titular antes de la palabra enfatizada */
   headingBefore: string;
@@ -29,6 +34,7 @@ interface Hero86Props {
   description: string;
   buttons?: Buttons;
   specialist: Specialist;
+  card: SpecialistCardCopy;
   className?: string;
 }
 
@@ -40,6 +46,7 @@ const Hero86 = ({
   description,
   buttons,
   specialist,
+  card,
   className,
 }: Hero86Props) => {
   return (
@@ -94,7 +101,7 @@ const Hero86 = ({
             <div className="relative z-10 h-auto w-4/5 max-w-sm lg:w-full lg:max-w-md" data-animate="scale">
               <img
                 src={specialist.imageSrc}
-                alt={`${specialist.name} — ${specialist.role} en JS Dental Group`}
+                alt={`${specialist.name} — ${specialist.role}, JS Dental Group`}
                 width={800}
                 height={1000}
                 fetchPriority="high"
@@ -102,19 +109,19 @@ const Hero86 = ({
               />
               <div className="absolute inset-x-5 -bottom-12 z-20 rounded-2xl border bg-white px-6 py-4 shadow-xl shadow-navy/10 lg:-bottom-8">
                 <p className="text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
-                  Especialista a cargo
+                  {card.eyebrow}
                 </p>
                 <p className="mt-1.5 font-heading text-xl leading-tight font-semibold text-navy">
                   {specialist.name}
                 </p>
                 <p className="mt-0.5 text-sm text-muted-foreground">{specialist.role}</p>
                 <a
-                  href={SITE.whatsapp}
+                  href={card.ctaHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 inline-flex w-full items-center gap-1.5 border-t py-3 text-sm font-semibold text-teal hover:underline"
                 >
-                  Agendar cita
+                  {card.cta}
                   <span aria-hidden="true">→</span>
                 </a>
               </div>

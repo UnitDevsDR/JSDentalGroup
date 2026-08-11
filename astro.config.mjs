@@ -8,9 +8,22 @@ import sitemap from '@astrojs/sitemap';
 // es incompatible con el rolldown-vite de Astro 6.4.
 export default defineConfig({
   site: 'https://jsdentalgroup.com',
+  // Español en la raíz (mantiene los slugs que ya indexó Google desde Odoo),
+  // inglés bajo /en/ con slugs traducidos.
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [
     react(),
-    sitemap(),
+    // el sitemap emite <xhtml:link rel="alternate"> entre idiomas
+    sitemap({
+      i18n: {
+        defaultLocale: 'es',
+        locales: { es: 'es-DO', en: 'en-US' },
+      },
+    }),
     // GTM corre en un web worker para no bloquear el hilo principal
     // https://docs.astro.build/en/guides/integrations-guide/partytown/
     partytown({ config: { forward: ['dataLayer.push'] } }),

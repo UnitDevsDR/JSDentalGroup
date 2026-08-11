@@ -1,6 +1,67 @@
 ---
 import { Footer14 } from './footer14';
+import { SITE, SERVICE_KEYS, hours } from '../data/site';
 import { IMAGES } from '../lib/images';
+import { ROUTES, servicePath, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const h = hours(lang);
+
+const serviceLink = (key: (typeof SERVICE_KEYS)[number]) => ({
+  name: t.services[key].name,
+  href: servicePath(key, lang),
+});
+
+const navigation = [
+  { title: t.footer.services, links: SERVICE_KEYS.slice(0, 4).map(serviceLink) },
+  { title: t.footer.moreServices, links: SERVICE_KEYS.slice(4).map(serviceLink) },
+  {
+    title: t.footer.clinic,
+    links: [
+      { name: t.nav.home, href: ROUTES.home[lang] },
+      { name: t.nav.about, href: ROUTES.about[lang] },
+      { name: t.nav.contact, href: ROUTES.contact[lang] },
+      { name: t.footer.terms, href: ROUTES.terms[lang] },
+    ],
+  },
+];
+
+const info = {
+  phone: SITE.phone,
+  phoneDisplay: SITE.phoneDisplay,
+  emergencyPhone: SITE.emergencyPhone,
+  emergencyPhoneDisplay: SITE.emergencyPhoneDisplay,
+  email: SITE.email,
+  address: `${SITE.address.street}, ${SITE.address.city}, R.D.`,
+  hoursWeekdays: h.weekdays,
+  hoursSaturday: h.saturday,
+  instagram: SITE.instagram,
+};
 ---
 
-<Footer14 logoSrc={IMAGES.logoBlanco} />
+<Footer14
+  logoSrc={IMAGES.logoBlanco}
+  homeHref={ROUTES.home[lang]}
+  tagline={t.footer.tagline(SITE.founded)}
+  navigation={navigation}
+  info={info}
+  copy={{
+    labelEmail: t.contact.labelEmail,
+    labelAddress: t.contact.labelAddress,
+    hoursLabel: t.footer.hoursLabel,
+    labelEmergency: t.contact.labelEmergency,
+    instagramAria: t.footer.instagramAria,
+    linksAria: t.footer.linksAria,
+    homeAria: t.nav.homeAria,
+    rights: t.footer.rights,
+    madeBy: t.footer.madeBy,
+  }}
+  year={new Date().getFullYear()}
+  siteName={SITE.name}
+  legalName={SITE.legalName}
+/>

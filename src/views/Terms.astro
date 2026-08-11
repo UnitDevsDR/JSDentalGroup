@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { pagePaths, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paths = pagePaths('terms');
+---
+
+<Layout lang={lang} paths={paths} title={t.terms.title} description={t.terms.description}>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="pt-24">
+    <section class="container max-w-3xl py-16">
+      <h1 class="mb-10 font-heading text-4xl font-bold text-navy md:text-5xl">{t.terms.heading}</h1>
+      <div class="space-y-8">
+        {
+          t.terms.sections.map((s) => (
+            <section>
+              <h2 class="mb-2 font-heading text-xl font-semibold text-navy">{s.t}</h2>
+              <p class="leading-relaxed text-muted-foreground">{s.c}</p>
+            </section>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+</Layout>

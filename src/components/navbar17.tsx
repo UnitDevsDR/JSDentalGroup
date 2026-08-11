@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowRight, Clock, Menu, MessageCircle, Phone, X } from "lucide-react";
-import React, { useState } from "react";
+import { ArrowRight, Clock, Languages, Menu, MessageCircle, Phone, X } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,13 +18,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { SITE } from "@/data/site";
 
 interface NavSubItem {
   title: string;
   href: string;
   description: string;
-  icon?: string;
 }
 
 interface NavItem {
@@ -34,28 +32,67 @@ interface NavItem {
   submenu?: NavSubItem[];
 }
 
+interface LanguageOption {
+  label: string;
+  labelShort: string;
+  href: string;
+  active: boolean;
+}
+
+/** Textos ya resueltos en el idioma de la página (serializable para la isla). */
+interface NavbarCopy {
+  allServices: string;
+  book: string;
+  bookWhatsapp: string;
+  call: string;
+  callAria: string;
+  openMenu: string;
+  closeMenu: string;
+  homeAria: string;
+  mainMenu: string;
+  switchLanguage: string;
+  hoursWeekdays: string;
+  hoursSaturday: string;
+  phoneDisplay: string;
+}
+
 interface Navbar17Props {
   className?: string;
   logoSrc: string;
   whatsapp: string;
+  phone: string;
   items: NavItem[];
+  languages: LanguageOption[];
+  t: NavbarCopy;
+  /** ruta actual para marcar el enlace activo */
   currentPath?: string;
 }
 
+const norm = (p: string) => (p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p);
+
 const isActive = (item: NavItem, currentPath?: string) => {
   if (!currentPath) return false;
-  if (item.link === "/") return currentPath === "/";
-  if (currentPath === item.link || currentPath === `${item.link}/`) return true;
-  return !!item.submenu?.some((s) => currentPath === s.href || currentPath === `${s.href}/`);
+  const here = norm(currentPath);
+  if (norm(item.link) === here) return true;
+  return !!item.submenu?.some((s) => norm(s.href) === here);
 };
 
-const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17Props) => {
+const Navbar17 = ({
+  className,
+  logoSrc,
+  whatsapp,
+  phone,
+  items,
+  languages,
+  t,
+  currentPath,
+}: Navbar17Props) => {
   const activeItem = items.find((i) => isActive(i, currentPath))?.name;
 
   return (
     <section className={cn("bg-background/90 shadow-sm shadow-navy/5 backdrop-blur-md", className)}>
       <nav className="container flex h-16 items-center justify-between gap-4">
-        <a href="/" className="flex items-center gap-2" aria-label="JS Dental Group — Inicio">
+        <a href={items[0]?.link ?? "/"} className="flex items-center gap-2" aria-label={t.homeAria}>
           <img src={logoSrc} className="h-9 w-auto" alt="JS Dental Group" width={144} height={36} />
         </a>
 
@@ -67,7 +104,9 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                   <NavigationMenuTrigger
                     className={cn(
                       "h-10 bg-transparent px-3.5 text-base font-medium hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
-                      activeItem === item.name ? "font-semibold text-teal" : "text-muted-foreground hover:text-foreground",
+                      activeItem === item.name
+                        ? "font-semibold text-teal"
+                        : "text-muted-foreground hover:text-foreground",
                     )}
                   >
                     {item.name}
@@ -75,7 +114,7 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                   <NavigationMenuContent className="rounded-xl">
                     <ul className="grid w-[340px] gap-1 p-2 md:w-[540px] md:grid-cols-2">
                       {item.submenu?.map((sub) => {
-                        const subActive = currentPath === sub.href || currentPath === `${sub.href}/`;
+                        const subActive = norm(currentPath ?? "") === norm(sub.href);
                         return (
                           <li key={sub.title}>
                             <NavigationMenuLink asChild>
@@ -102,10 +141,10 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                       })}
                       <li className="md:col-span-2">
                         <a
-                          href="/our-services"
+                          href={item.link}
                           className="group/all flex items-center justify-between rounded-lg border border-dashed border-teal/40 p-3 text-sm font-medium text-teal transition-colors hover:bg-teal hover:text-white"
                         >
-                          Ver todos los servicios
+                          {t.allServices}
                           <ArrowRight
                             className="size-4 transition-transform duration-300 group-hover/all:translate-x-1"
                             aria-hidden="true"
@@ -122,7 +161,9 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                     aria-current={activeItem === item.name ? "page" : undefined}
                     className={cn(
                       "relative flex h-10 cursor-pointer items-center rounded-md px-3.5 text-base font-medium transition-colors hover:bg-transparent",
-                      activeItem === item.name ? "font-semibold text-teal" : "text-muted-foreground hover:text-foreground",
+                      activeItem === item.name
+                        ? "font-semibold text-teal"
+                        : "text-muted-foreground hover:text-foreground",
                     )}
                   >
                     {item.name}
@@ -130,65 +171,103 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                 </NavigationMenuItem>
               ),
             )}
-
           </NavigationMenuList>
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher languages={languages} label={t.switchLanguage} className="hidden lg:flex" />
+
           <a
-            href={`tel:${SITE.phone}`}
-            aria-label={`Llamar al ${SITE.phoneDisplay}`}
-            title={SITE.phoneDisplay}
+            href={`tel:${phone}`}
+            aria-label={t.callAria}
+            title={t.phoneDisplay}
             className="hidden size-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:flex"
           >
             <Phone className="size-4" aria-hidden="true" />
           </a>
           <Button
             asChild
-            size="sm"
             className="hidden h-10 rounded-md bg-teal px-5 text-base font-medium text-white hover:bg-teal/90 lg:inline-flex"
           >
             <a href={whatsapp} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="size-4" aria-hidden="true" />
-              Agenda tu cita
+              {t.book}
             </a>
           </Button>
 
-          <MobileNav items={items} whatsapp={whatsapp} currentPath={currentPath} />
+          <LanguageSwitcher languages={languages} label={t.switchLanguage} className="flex lg:hidden" />
+          <MobileNav items={items} whatsapp={whatsapp} phone={phone} t={t} currentPath={currentPath} />
         </div>
       </nav>
     </section>
   );
 };
 
-const AnimatedHamburger = ({ isOpen }: { isOpen: boolean }) => {
-  return (
-    <div className="group relative size-full">
-      <div className="absolute flex size-full items-center justify-center">
-        <Menu
-          className={`absolute size-6 text-muted-foreground transition-all duration-300 group-hover:text-foreground ${
-            isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
-          }`}
-          aria-hidden="true"
-        />
-        <X
-          className={`absolute size-6 text-muted-foreground transition-all duration-300 group-hover:text-foreground ${
-            isOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"
-          }`}
-          aria-hidden="true"
-        />
-      </div>
+const LanguageSwitcher = ({
+  languages,
+  label,
+  className,
+}: {
+  languages: LanguageOption[];
+  label: string;
+  className?: string;
+}) => (
+  <div
+    className={cn("items-center gap-1 rounded-full bg-muted/70 py-1 pr-1.5 pl-2.5", className)}
+    role="group"
+    aria-label={label}
+  >
+    <Languages className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+    {languages.map((l) => (
+      <a
+        key={l.labelShort}
+        href={l.href}
+        hrefLang={l.labelShort.toLowerCase()}
+        aria-current={l.active ? "true" : undefined}
+        title={l.label}
+        className={cn(
+          "flex h-[40px] min-w-[40px] items-center justify-center rounded-full px-2 text-sm font-semibold transition-colors",
+          l.active
+            ? "bg-background text-navy shadow-sm"
+            : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        {l.labelShort}
+      </a>
+    ))}
+  </div>
+);
+
+const AnimatedHamburger = ({ isOpen }: { isOpen: boolean }) => (
+  <div className="group relative size-full">
+    <div className="absolute flex size-full items-center justify-center">
+      <Menu
+        className={`absolute size-6 text-muted-foreground transition-all duration-300 group-hover:text-foreground ${
+          isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
+        }`}
+        aria-hidden="true"
+      />
+      <X
+        className={`absolute size-6 text-muted-foreground transition-all duration-300 group-hover:text-foreground ${
+          isOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"
+        }`}
+        aria-hidden="true"
+      />
     </div>
-  );
-};
+  </div>
+);
 
 const MobileNav = ({
   items,
   whatsapp,
+  phone,
+  t,
   currentPath,
 }: {
   items: NavItem[];
   whatsapp: string;
+  phone: string;
+  t: NavbarCopy;
   currentPath?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -197,17 +276,13 @@ const MobileNav = ({
     <div className="flex h-full items-center lg:hidden">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="icon" aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}>
+          <Button variant="ghost" size="icon" aria-label={isOpen ? t.closeMenu : t.openMenu}>
             <AnimatedHamburger isOpen={isOpen} />
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent
-          align="end"
-          sideOffset={14}
-          className="w-screen max-w-sm overflow-hidden rounded-xl p-0"
-        >
-          <nav aria-label="Menú principal" className="flex max-h-[75vh] flex-col overflow-y-auto">
+        <PopoverContent align="end" sideOffset={14} className="w-screen max-w-sm overflow-hidden rounded-xl p-0">
+          <nav aria-label={t.mainMenu} className="flex max-h-[75vh] flex-col overflow-y-auto">
             <ul className="p-2">
               {items.map((navItem) =>
                 navItem.hasSubmenu ? (
@@ -217,7 +292,7 @@ const MobileNav = ({
                     </p>
                     <ul className="grid grid-cols-2 gap-1">
                       {navItem.submenu?.map((sub) => {
-                        const subActive = currentPath === sub.href || currentPath === `${sub.href}/`;
+                        const subActive = norm(currentPath ?? "") === norm(sub.href);
                         return (
                           <li key={sub.title}>
                             <a
@@ -256,16 +331,19 @@ const MobileNav = ({
               <div className="mb-3 flex items-start gap-2.5 text-xs text-muted-foreground">
                 <Clock className="mt-0.5 size-3.5 shrink-0 text-teal" aria-hidden="true" />
                 <p>
-                  {SITE.hours.weekdays}
+                  {t.hoursWeekdays}
                   <br />
-                  {SITE.hours.saturday}
+                  {t.hoursSaturday}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
-                <Button asChild className="w-full rounded-md bg-teal py-5 text-sm font-semibold text-white hover:bg-teal/90">
+                <Button
+                  asChild
+                  className="w-full rounded-md bg-teal py-5 text-sm font-semibold text-white hover:bg-teal/90"
+                >
                   <a href={whatsapp} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="size-4" aria-hidden="true" />
-                    Agenda tu cita por WhatsApp
+                    {t.bookWhatsapp}
                   </a>
                 </Button>
                 <Button
@@ -273,9 +351,9 @@ const MobileNav = ({
                   variant="outline"
                   className="w-full rounded-md border-border py-5 text-sm font-semibold text-foreground"
                 >
-                  <a href={`tel:${SITE.phone}`}>
+                  <a href={`tel:${phone}`}>
                     <Phone className="size-4" aria-hidden="true" />
-                    Llamar: {SITE.phoneDisplay}
+                    {t.call}: {t.phoneDisplay}
                   </a>
                 </Button>
               </div>

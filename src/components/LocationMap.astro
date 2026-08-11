@@ -1,0 +1,41 @@
+---
+import { SITE, hours } from '../data/site';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** en el home lleva titular; en la página de contacto va sin él */
+  withHeading?: boolean;
+}
+
+const { lang, withHeading = false } = Astro.props;
+const t = useTranslations(lang);
+const h = hours(lang);
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(SITE.address.mapQuery)}&hl=${lang}&output=embed`;
+---
+
+<section class="pb-24" aria-label={t.contact.mapAria}>
+  <div class="container">
+    {
+      withHeading && (
+        <div class="mb-8 flex flex-col gap-4 text-center" data-animate="up">
+          <h2 class="font-heading text-4xl font-bold text-navy md:text-5xl">{t.contact.labelAddress}</h2>
+          <p class="text-lg text-muted-foreground">
+            {SITE.address.street}, {SITE.address.city} · {h.weekdays}
+          </p>
+        </div>
+      )
+    }
+    <div class="overflow-hidden rounded-2xl border shadow-sm" data-animate="up">
+      <iframe
+        title={t.contact.mapTitle}
+        src={mapSrc}
+        width="100%"
+        height="420"
+        style="border:0"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+</section>

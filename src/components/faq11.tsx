@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { SITE } from "@/data/site";
 
 interface FaqItem {
   question: string;
@@ -17,13 +16,19 @@ interface FaqItem {
 interface Faq11Props {
   heading: string;
   note: string;
+  /** texto del enlace a WhatsApp que cierra la nota */
+  linkText: string;
+  whatsapp: string;
+  /** título de la categoría del acordeón */
+  category: string;
   items: FaqItem[];
   /** ilustración 3D del sitio (flota con animación CSS) */
   imageSrc?: string;
+  imageAlt: string;
   className?: string;
 }
 
-const Faq11 = ({ heading, note, items, imageSrc, className }: Faq11Props) => {
+const Faq11 = ({ heading, note, linkText, whatsapp, category, items, imageSrc, imageAlt, className }: Faq11Props) => {
   return (
     <section className={cn("relative mx-2.5 mt-2.5 rounded-t-2xl rounded-b-[36px] bg-accent/40", className)} id="faq">
       <section className="py-24 md:py-32">
@@ -36,12 +41,12 @@ const Faq11 = ({ heading, note, items, imageSrc, className }: Faq11Props) => {
             <p className="max-w-md leading-snug font-medium text-muted-foreground">
               {note}{" "}
               <a
-                href={SITE.whatsapp}
+                href={whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-teal underline underline-offset-4"
               >
-                escríbenos por WhatsApp
+                {linkText}
               </a>
               .
             </p>
@@ -49,7 +54,7 @@ const Faq11 = ({ heading, note, items, imageSrc, className }: Faq11Props) => {
             {imageSrc && (
               <img
                 src={imageSrc}
-                alt="Agenda tu cita en JS Dental Group"
+                alt={imageAlt}
                 width={280}
                 height={280}
                 loading="lazy"
@@ -60,7 +65,7 @@ const Faq11 = ({ heading, note, items, imageSrc, className }: Faq11Props) => {
 
           <div className="grid gap-6 text-start">
             <div>
-              <h3 className="border-b py-4 font-medium text-muted-foreground">Sobre la clínica</h3>
+              <h3 className="border-b py-4 font-medium text-muted-foreground">{category}</h3>
               <Accordion type="single" collapsible className="w-full">
                 {items.map((item, i) => (
                   <AccordionItem key={i} value={`faq-${i}`}>

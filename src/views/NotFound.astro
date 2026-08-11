@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import { ROUTES, pagePaths, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paths = pagePaths('home');
+---
+
+<Layout lang={lang} paths={paths} title={t.notFound.title} description={t.notFound.description}>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="flex min-h-[70vh] items-center pt-24">
+    <div class="container text-center">
+      <p class="font-heading text-8xl font-bold text-teal">404</p>
+      <h1 class="mt-4 font-heading text-3xl font-bold text-navy md:text-4xl">{t.notFound.heading}</h1>
+      <p class="mx-auto mt-3 max-w-md text-lg text-muted-foreground">{t.notFound.body}</p>
+      <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+        <a
+          href={ROUTES.home[lang]}
+          class="inline-flex items-center justify-center rounded-full bg-teal px-8 py-3.5 font-semibold text-white"
+        >
+          {t.notFound.home}
+        </a>
+        <a
+          href={ROUTES.services[lang]}
+          class="inline-flex items-center justify-center rounded-full border-2 border-navy/15 px-8 py-3.5 font-semibold text-navy hover:border-teal hover:text-teal"
+        >
+          {t.notFound.services}
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <FooterSection lang={lang} />
+</Layout>

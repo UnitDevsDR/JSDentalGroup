@@ -3,12 +3,12 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ServiceTile {
-  slug: string;
+  href: string;
   name: string;
   tagline: string;
   /** descripción corta: los tiles grandes del bento la muestran */
   copy?: string;
-  /** icono 3D real de la especialidad (assets del sitio de la clínica) */
+  /** icono 3D real de la especialidad */
   iconSrc?: string;
 }
 
@@ -17,9 +17,11 @@ interface Feature101Props {
   heading: string;
   description: string;
   services: ServiceTile[];
+  /** texto del enlace de cada tarjeta */
+  cta: string;
 }
 
-const Icon3d = ({ src, name, big = false }: { src?: string; name: string; big?: boolean }) => {
+const Icon3d = ({ src, big = false }: { src?: string; big?: boolean }) => {
   if (!src) return null;
   return (
     <span
@@ -45,7 +47,7 @@ const Icon3d = ({ src, name, big = false }: { src?: string; name: string; big?: 
  * Bento de servicios con los iconos 3D reales de cada especialidad.
  * El primer y el último servicio ocupan tiles grandes con descripción.
  */
-const Feature101 = ({ className, heading, description, services }: Feature101Props) => {
+const Feature101 = ({ className, heading, description, services, cta }: Feature101Props) => {
   const [first, ...rest] = services;
   const last = rest.pop();
 
@@ -59,17 +61,17 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
         <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-stagger>
           {first && (
             <a
-              href={`/${first.slug}`}
+              href={first.href}
               className="group flex flex-col justify-between gap-8 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:col-span-2 lg:row-span-2"
             >
-              <Icon3d src={first.iconSrc} name={first.name} big />
+              <Icon3d src={first.iconSrc} big />
               <div>
                 <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{first.tagline}</p>
                 <h3 className="mb-4 font-heading text-3xl font-semibold text-navy md:text-4xl">{first.name}</h3>
                 {first.copy && <p className="max-w-md text-lg leading-relaxed text-muted-foreground">{first.copy}</p>}
               </div>
               <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal">
-                Ver tratamiento
+                {cta}
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
               </span>
             </a>
@@ -77,16 +79,16 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
 
           {rest.map((s) => (
             <a
-              key={s.slug}
-              href={`/${s.slug}`}
+              key={s.href}
+              href={s.href}
               className="group flex flex-col gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:h-80 md:justify-between md:gap-4"
             >
-              <Icon3d src={s.iconSrc} name={s.name} />
+              <Icon3d src={s.iconSrc} />
               <div>
                 <h3 className="mb-2 font-heading text-2xl font-medium text-navy">{s.name}</h3>
                 <p className="text-muted-foreground">{s.tagline}</p>
                 <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal">
-                  Ver tratamiento
+                  {cta}
                   <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                 </span>
               </div>
@@ -95,16 +97,16 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
 
           {last && (
             <a
-              href={`/${last.slug}`}
+              href={last.href}
               className="group flex flex-col justify-between gap-6 rounded-2xl bg-navy p-8 text-white transition-colors hover:bg-navy/90 md:col-span-2"
             >
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                <Icon3d src={last.iconSrc} name={last.name} big />
+                <Icon3d src={last.iconSrc} big />
                 <div className="flex-1">
                   <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{last.tagline}</p>
                   <h3 className="mb-2 font-heading text-3xl font-semibold">{last.name}</h3>
                   <span className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-teal">
-                    Ver tratamiento
+                    {cta}
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                 </div>

@@ -2,20 +2,16 @@
 // Feed real de Instagram embebido (patrón de la rama lpascual)
 interface Props {
   username: string;
-  heading?: string;
-  description?: string;
+  heading: string;
+  description: string;
+  frameTitle: string;
 }
 
-const {
-  username,
-  heading = 'Nuestra sonrisa también está en Instagram',
-  description = 'Momentos reales de nuestros pacientes y nuestro equipo.',
-} = Astro.props;
-
+const { username, heading, description, frameTitle } = Astro.props;
 const embedUrl = `https://www.instagram.com/${username}/embed`;
 ---
 
-<section class="py-24 md:py-32" aria-label="Instagram de la clínica">
+<section class="py-24 md:py-32" aria-label={frameTitle}>
   <div class="container">
     <div class="mb-10 flex flex-col gap-4 text-center" data-animate="up">
       <h2 class="font-heading text-4xl font-bold text-navy md:text-5xl">{heading}</h2>
@@ -30,27 +26,50 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
       </p>
     </div>
 
-    <div class="flex w-full justify-center" data-animate="up" data-delay="0.15">
+    <div class="ig-wrap flex w-full justify-center" data-animate="up" data-delay="0.15">
       <div class="ig-frame w-full overflow-hidden rounded-2xl border shadow-sm">
-        <iframe
-          src={embedUrl}
-          class="absolute inset-0 h-full w-full border-none"
-          scrolling="no"
-          title={`Instagram de @${username}`}
-          loading="lazy"></iframe>
+        <iframe src={embedUrl} scrolling="no" title={frameTitle} loading="lazy"></iframe>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* El embed muestra cabecera de perfil + 2 filas de 3 miniaturas cuadradas:
-     su alto real, medido a 364/589/1126/1510px de ancho, es 0.676*ancho + 147.
-     El padding-bottom en % se calcula sobre el ancho, así el marco se ajusta
-     al contenido en cualquier pantalla: ni hueco blanco ni recorte. */
+  /*
+    El embed de Instagram reflowea para RELLENAR el alto que se le da: si sobra
+    espacio empieza una tercera fila y se ve cortada. La solución es no dejar
+    que lo decida él:
+
+    1. El iframe se declara más alto que el marco (renderiza 3+ filas).
+    2. El marco recorta exactamente a la cabecera + 2 filas completas.
+
+    Medido en el embed real: la retícula empieza a 147px (ancho < 480px) o a
+    157px (ancho >= 480px, breakpoint propio de Instagram) y cada celda es
+    cuadrada = ancho/3, así que 2 filas = 66.667% del ancho. El padding-bottom
+    en % se calcula sobre el ancho, por eso encaja en cualquier pantalla.
+  */
+  .ig-wrap {
+    container-type: inline-size;
+  }
+
   .ig-frame {
     position: relative;
     height: 0;
-    padding-bottom: calc(66.7% + 158px);
+    padding-bottom: calc(66.667% + 147px);
+  }
+
+  @container (min-width: 480px) {
+    .ig-frame {
+      padding-bottom: calc(66.667% + 157px);
+    }
+  }
+
+  .ig-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    /* más alto que el marco: el embed maqueta 3 filas y recortamos a 2 */
+    height: calc(100% + 420px);
+    border: none;
   }
 </style>

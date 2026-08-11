@@ -1,0 +1,15 @@
+---
+import ServiceDetail from '../../views/ServiceDetail.astro';
+import { SERVICE_KEYS, SERVICE_SLUGS } from '../../i18n';
+
+export function getStaticPaths() {
+  return SERVICE_KEYS.map((key) => ({
+    params: { slug: SERVICE_SLUGS[key].en },
+    props: { serviceKey: key },
+  }));
+}
+
+const { serviceKey } = Astro.props;
+---
+
+<ServiceDetail lang="en" serviceKey={serviceKey} />

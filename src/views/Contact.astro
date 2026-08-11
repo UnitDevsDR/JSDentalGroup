@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { Contact2 } from '../components/contact2';
+import LocationMap from '../components/LocationMap.astro';
+import { SITE } from '../data/site';
+import { ROUTES, pagePaths, useTranslations, type Lang } from '../i18n';
+import { contactProps } from '../lib/view-helpers';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paths = pagePaths('contact');
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.nav.home, item: new URL(ROUTES.home[lang], SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: t.nav.contact, item: new URL(paths[lang], SITE.url).href },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  paths={paths}
+  title={t.contact.title}
+  description={t.contact.description}
+  extraSchema={[breadcrumbSchema]}
+>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="pt-24">
+    <section class="container pt-12 text-center" data-animate="up">
+      <h1 class="mx-auto max-w-3xl font-heading text-4xl font-bold text-navy md:text-6xl">{t.contact.h1}</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">{t.contact.intro}</p>
+    </section>
+
+    <Contact2 client:load {...contactProps(lang)} />
+
+    <LocationMap lang={lang} />
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+</Layout>

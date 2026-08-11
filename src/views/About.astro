@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { About13 } from '../components/about13';
+import { TeamProfiles } from '../components/user-profile10';
+import { Contact2 } from '../components/contact2';
+import { SITE, TEAM } from '../data/site';
+import { IMAGES, teamPhoto } from '../lib/images';
+import { ROUTES, pagePaths, useTranslations, type Lang } from '../i18n';
+import { contactProps } from '../lib/view-helpers';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paths = pagePaths('about');
+
+const doctorName = (m: (typeof TEAM)[number]) => (m.title ? `${t.titles[m.title]} ${m.name}` : m.name);
+
+const doctors = TEAM.map((m) => ({
+  name: doctorName(m),
+  role: t.roles[m.key as keyof typeof t.roles],
+  imageSrc: teamPhoto(m.key, 'md'),
+  verified: m.title !== null,
+}));
+
+const founder = TEAM[0];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.nav.home, item: new URL(ROUTES.home[lang], SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: t.nav.about, item: new URL(paths[lang], SITE.url).href },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  paths={paths}
+  title={t.about.title}
+  description={t.about.description}
+  extraSchema={[breadcrumbSchema]}
+>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="pt-20">
+    <About13
+      title={t.about.heading}
+      sideLabel={t.about.sideLabel}
+      intro={t.about.intro}
+      founder={{
+        name: doctorName(founder),
+        role: t.about.founderRole,
+        imageSrc: teamPhoto(founder.key, 'lg'),
+      }}
+      statement={t.about.statement}
+      support={t.about.support}
+      image={{ src: IMAGES.clinica, alt: t.about.imageAlt }}
+    />
+
+    <TeamProfiles
+      doctors={doctors}
+      whatsapp={SITE.whatsapp}
+      heading={t.team.heading}
+      description={t.team.description}
+      t={{ specialist: t.team.specialist, staff: t.team.staff, book: t.team.book, certified: t.team.certified }}
+    />
+
+    <div data-animate="up">
+      <Contact2 client:visible {...contactProps(lang)} />
+    </div>
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+</Layout>

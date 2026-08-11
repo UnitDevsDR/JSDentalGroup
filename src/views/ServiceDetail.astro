@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { Hero86 } from '../components/hero86';
+import { Service5 } from '../components/service5';
+import { Contact2 } from '../components/contact2';
+import { SITE, TEAM, SERVICE_KEYS, SERVICE_SPECIALIST } from '../data/site';
+import { servicePhoto, teamPhoto } from '../lib/images';
+import { ROUTES, servicePath, servicePaths, useTranslations, type Lang, type ServiceKey } from '../i18n';
+import { contactProps, serviceCopy } from '../lib/view-helpers';
+
+interface Props {
+  lang: Lang;
+  serviceKey: ServiceKey;
+}
+
+const { lang, serviceKey } = Astro.props;
+const t = useTranslations(lang);
+const s = t.services[serviceKey];
+const paths = servicePaths(serviceKey);
+
+const member = TEAM.find((m) => m.key === SERVICE_SPECIALIST[serviceKey])!;
+const specialistName = member.title ? `${t.titles[member.title]} ${member.name}` : member.name;
+
+// El titular subraya su última palabra (firma visual del bloque hero86)
+const words = s.h1.split(' ');
+const headingEmphasis = words.pop() ?? '';
+const headingBefore = words.join(' ');
+
+const related = SERVICE_KEYS.filter((k) => k !== serviceKey)
+  .slice(0, 4)
+  .map((k) => ({
+    title: t.services[k].name,
+    description: t.services[k].tagline,
+    link: servicePath(k, lang),
+  }));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.nav.home, item: new URL(ROUTES.home[lang], SITE.url).href },
+    { '@type': 'ListItem', position: 2, name: t.nav.services, item: new URL(ROUTES.services[lang], SITE.url).href },
+    { '@type': 'ListItem', position: 3, name: s.name, item: new URL(paths[lang], SITE.url).href },
+  ],
+};
+
+const procedureSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: s.name,
+  description: s.metaDescription,
+  inLanguage: t.htmlLang,
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  provider: { '@id': `${SITE.url}/#clinic` },
+};
+---
+
+<Layout
+  lang={lang}
+  paths={paths}
+  title={s.title}
+  description={s.metaDescription}
+  extraSchema={[breadcrumbSchema, procedureSchema]}
+>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="pt-16">
+    <nav aria-label={t.nav.breadcrumb} class="container pt-8 pb-4 text-sm text-muted-foreground">
+      <a href={ROUTES.home[lang]} class="inline-block py-1.5 hover:text-teal">{t.nav.home}</a>
+      <span aria-hidden="true"> / </span>
+      <a href={ROUTES.services[lang]} class="inline-block py-1.5 hover:text-teal">{t.nav.services}</a>
+      <span aria-hidden="true"> / </span>
+      <span class="text-navy">{s.name}</span>
+    </nav>
+
+    <Hero86
+      tagline={s.tagline}
+      headingBefore={headingBefore}
+      headingEmphasis={headingEmphasis}
+      description={s.longCopy}
+      buttons={{
+        primary: { text: t.serviceDetail.bookEvaluation, url: SITE.whatsapp },
+        secondary: { text: SITE.phoneDisplay, url: `tel:${SITE.phone}` },
+      }}
+      specialist={{
+        name: specialistName,
+        role: s.specialistRole,
+        imageSrc: teamPhoto(member.key, 'lg'),
+      }}
+      card={{
+        eyebrow: t.serviceDetail.specialistInCharge,
+        cta: t.serviceDetail.bookAppointment,
+        ctaHref: SITE.whatsapp,
+      }}
+    />
+
+    <Service5
+      heading={t.serviceDetail.whatIsIt}
+      intro={s.copy}
+      body={t.serviceDetail.teamNote}
+      photo={{ src: servicePhoto(serviceKey), alt: `${s.name} — ${SITE.name}, ${SITE.address.city}` }}
+      specialist={{
+        name: specialistName,
+        role: s.specialistRole,
+        imageSrc: teamPhoto(member.key, 'sm'),
+      }}
+      relatedServices={related}
+      copy={serviceCopy(lang)}
+      whatsapp={SITE.whatsapp}
+      phone={SITE.phone}
+    />
+
+    <div data-animate="up">
+      <Contact2 client:visible {...contactProps(lang, t.serviceDetail.consultHeading(s.name))} />
+    </div>
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+</Layout>

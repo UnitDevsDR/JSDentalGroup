@@ -4,23 +4,36 @@ import '@fontsource-variable/instrument-sans';
 import '../styles/global.css';
 import { SITE, TEAM } from '../data/site';
 import { IMAGES } from '../lib/images';
+import { LOCALES, useTranslations, type Lang } from '../i18n';
 
 interface Props {
+  lang: Lang;
   title: string;
   description: string;
+  /** URL equivalente de esta página en cada idioma (hreflang + selector) */
+  paths: Record<Lang, string>;
   ogImage?: string;
-  /** JSON-LD adicional específico de la página (FAQPage, BreadcrumbList, MedicalProcedure…) */
+  /** JSON-LD adicional de la página (FAQPage, BreadcrumbList, MedicalProcedure…) */
   extraSchema?: object[];
 }
 
-const { title, description, ogImage, extraSchema = [] } = Astro.props;
-const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const { lang, title, description, paths, ogImage, extraSchema = [] } = Astro.props;
+const t = useTranslations(lang);
+
+const canonical = new URL(paths[lang], SITE.url).href;
 const ogImageUrl = ogImage ?? new URL(IMAGES.og, SITE.url).href;
 
-// Analítica y verificación: se activan poniendo los IDs en .env / variables
-// de entorno del build (PUBLIC_GTM_ID=GTM-XXXXXXX, PUBLIC_GSC_VERIFICATION=token)
+// Analítica y verificación: se activan con variables de entorno del build
+// (PUBLIC_GTM_ID=GTM-XXXXXXX, PUBLIC_GSC_VERIFICATION=token)
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 const GSC_VERIFICATION = import.meta.env.PUBLIC_GSC_VERIFICATION;
+
+// hreflang: un enlace por idioma + x-default al idioma por defecto
+const HREFLANG: Record<Lang, string> = { es: 'es', en: 'en' };
+const alternates = LOCALES.map((l) => ({
+  hreflang: HREFLANG[l],
+  href: new URL(paths[l], SITE.url).href,
+}));
 
 const clinicSchema = {
   '@context': 'https://schema.org',
@@ -28,13 +41,13 @@ const clinicSchema = {
   '@id': `${SITE.url}/#clinic`,
   name: SITE.name,
   legalName: SITE.legalName,
-  description:
-    'Clínica dental en Santiago, República Dominicana. Especialistas en ortodoncia, implantes dentales, endodoncia, periodoncia, cirugía maxilofacial y odontopediatría.',
+  description: t.schema.clinicDescription,
+  inLanguage: t.htmlLang,
   url: SITE.url,
   telephone: SITE.phone,
   email: SITE.email,
   foundingDate: String(SITE.founded),
-  slogan: SITE.slogan,
+  slogan: t.home.heroSlideTitle,
   priceRange: '$$',
   image: ogImageUrl,
   address: {
@@ -44,7 +57,7 @@ const clinicSchema = {
     addressRegion: SITE.address.region,
     addressCountry: SITE.address.country,
   },
-  geo: { '@type': 'GeoCoordinates', latitude: '19.4442', longitude: '-70.6668' },
+  geo: { '@type': 'GeoCoordinates', ...SITE.geo },
   openingHoursSpecification: [
     {
       '@type': 'OpeningHoursSpecification',
@@ -54,11 +67,15 @@ const clinicSchema = {
     },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '08:00', closes: '12:00' },
   ],
+  availableLanguage: [
+    { '@type': 'Language', name: 'Spanish' },
+    { '@type': 'Language', name: 'English' },
+  ],
   sameAs: [SITE.instagram],
-  employee: TEAM.filter((m) => m.name.startsWith('Dr')).map((m) => ({
+  employee: TEAM.filter((m) => m.title).map((m) => ({
     '@type': 'Physician',
-    name: m.name,
-    jobTitle: m.role,
+    name: `${t.titles[m.title!]} ${m.name}`,
+    jobTitle: t.roles[m.key as keyof typeof t.roles],
   })),
 };
 
@@ -66,7 +83,7 @@ const schemas = [clinicSchema, ...extraSchema];
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang={t.htmlLang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -79,13 +96,22 @@ const schemas = [clinicSchema, ...extraSchema];
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <!-- Alternativas de idioma -->
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(paths.es, SITE.url).href} />
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:locale" content="es_DO" />
+    <meta property="og:locale" content={t.ogLocale} />
+    {
+      LOCALES.filter((l) => l !== lang).map((l) => (
+        <meta property="og:locale:alternate" content={useTranslations(l).ogLocale} />
+      ))
+    }
     <meta property="og:site_name" content={SITE.name} />
 
     <!-- Twitter Card -->
@@ -96,7 +122,7 @@ const schemas = [clinicSchema, ...extraSchema];
 
     <!-- SEO local -->
     <meta name="geo.region" content="DO-25" />
-    <meta name="geo.placename" content="Santiago de los Caballeros" />
+    <meta name="geo.placename" content={SITE.address.city} />
 
     <!-- Google Search Console -->
     {GSC_VERIFICATION && <meta name="google-site-verification" content={GSC_VERIFICATION} />}
@@ -276,6 +302,7 @@ const schemas = [clinicSchema, ...extraSchema];
         const checkCounts = () => {
           checkingCounts = false;
           const limit = window.innerHeight * 0.92;
+          const numberLocale = document.documentElement.lang === 'en' ? 'en-US' : 'es-DO';
           pendingCounts.forEach((el) => {
             if (el.getBoundingClientRect().top < limit) {
               pendingCounts.delete(el);
@@ -287,7 +314,7 @@ const schemas = [clinicSchema, ...extraSchema];
                 duration: 1.8,
                 ease: 'power2.out',
                 snap: { n: 1 },
-                onUpdate: () => { el.textContent = `${obj.n.toLocaleString('es-DO')}${suffix}`; },
+                onUpdate: () => { el.textContent = `${obj.n.toLocaleString(numberLocale)}${suffix}`; },
               });
             }
           });
