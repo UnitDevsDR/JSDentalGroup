@@ -16,7 +16,7 @@ import { SITE, SERVICES, TEAM, FAQS } from '../data/site';
 import { TEAM_IMAGES } from '../lib/team-images';
 
 import heroImg from '../assets/img/home/clinica-1.png';
-import ctaImg from '../assets/img/home/clinica-2.png';
+import ctaImg from '../assets/img/home/diente-3d.png';
 import agenda3d from '../assets/img/home/agenda-3d.webp';
 
 const opt = (src: ImageMetadata, width: number) => getImage({ src, width });
@@ -24,7 +24,7 @@ const opt = (src: ImageMetadata, width: number) => getImage({ src, width });
 // Anchos limitados a la resolución nativa de cada fuente (sin upscaling)
 const [heroOpt, ctaOpt, agenda3dOpt] = await Promise.all([
   opt(heroImg, 772),
-  opt(ctaImg, 711),
+  opt(ctaImg, 900),
   opt(agenda3d, 560),
 ]);
 
@@ -114,7 +114,7 @@ const faqSchema = {
       byline="Cuidamos tu sonrisa"
       heading="Con la ciencia de hoy y la pasión de siempre"
       description="Un grupo de expertos que trabaja de forma multidisciplinaria para abordar cada caso con la máxima excelencia: tratamientos más completos, personalizados y exitosos."
-      image={{ src: ctaOpt.src, alt: 'Paciente feliz con su sonrisa en JS Dental Group' }}
+      image={{ src: ctaOpt.src, alt: 'Ilustración 3D: dentistas cuidando un diente gigante' }}
       buttons={{
         primary: { text: 'Agenda tu cita', url: SITE.whatsapp },
         secondary: { text: 'Conoce la clínica', url: '/about-us' },
