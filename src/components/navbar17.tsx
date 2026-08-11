@@ -83,7 +83,7 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
   }, [indicatorTarget]);
 
   return (
-    <section className={cn("border-b border-border/80 bg-background/85 backdrop-blur-md", className)}>
+    <section className={cn("bg-background/90 shadow-sm shadow-navy/5 backdrop-blur-md", className)}>
       <nav className="container flex h-16 items-center justify-between gap-4">
         <a href="/" className="flex items-center gap-2" aria-label="JS Dental Group — Inicio">
           <img src={logoSrc} className="h-9 w-auto" alt="JS Dental Group" width={144} height={36} />
