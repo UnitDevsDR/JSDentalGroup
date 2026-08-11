@@ -30,7 +30,7 @@ const navigation = [
 export const Footer14 = ({ logoSrc }: Footer14Props) => {
   return (
     <footer className="bg-navy py-12 text-white sm:py-16 md:py-24">
-      <div className="container mx-auto max-w-6xl px-5 md:px-6">
+      <div className="container mx-auto px-5 md:px-6">
         <div className="mb-10 flex flex-col items-start justify-between gap-10 border-b border-white/15 pb-10 sm:mb-16 sm:pb-12 lg:flex-row">
           <div className="w-full max-w-full sm:max-w-sm">
             <a href="/" aria-label="JS Dental Group — Inicio">

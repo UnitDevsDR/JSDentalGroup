@@ -88,18 +88,18 @@ const Integration6 = ({
           <Carousel
             opts={{ loop: true, watchDrag: false }}
             plugins={[
-              AutoScroll({ speed: 0.8, startDelay: 0, stopOnInteraction: false, stopOnMouseEnter: true }),
+              AutoScroll({ speed: 1.4, startDelay: 0, stopOnInteraction: false }),
             ]}
             className="w-full"
           >
             <CarouselContent>
               {items.map((item) => (
-                <CarouselItem key={item.name} className="basis-auto pl-12">
+                <CarouselItem key={item.name} className="basis-auto pl-14">
                   <a
                     href={item.href}
                     className="flex items-center py-3 text-navy/70 transition-colors hover:text-teal"
                   >
-                    <span className="font-heading text-base font-medium whitespace-nowrap">{item.name}</span>
+                    <span className="font-heading text-2xl font-semibold whitespace-nowrap">{item.name}</span>
                   </a>
                 </CarouselItem>
               ))}

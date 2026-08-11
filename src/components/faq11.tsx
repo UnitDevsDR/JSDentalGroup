@@ -27,7 +27,7 @@ const Faq11 = ({ heading, note, items, imageSrc, className }: Faq11Props) => {
   return (
     <section className={cn("relative mx-2.5 mt-2.5 rounded-t-2xl rounded-b-[36px] bg-accent/40", className)} id="faq">
       <section className="py-24 md:py-32">
-        <div className="container grid max-w-5xl gap-16 lg:grid-cols-2">
+        <div className="container grid gap-16 lg:grid-cols-2">
           <div className="space-y-5">
             <h2 className="font-heading text-2xl font-semibold tracking-tight text-navy md:text-4xl lg:text-5xl">
               {heading}

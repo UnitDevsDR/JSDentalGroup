@@ -59,7 +59,7 @@ const Cta15 = (props: Props) => {
   return (
     <section className={cn("py-32", className)}>
       <div className="container">
-        <div className="mx-auto flex max-w-5xl flex-col justify-between gap-20 overflow-hidden rounded-2xl border bg-accent/50 pt-20 sm:pl-16 lg:flex-row lg:pl-20">
+        <div className="flex flex-col justify-between gap-20 overflow-hidden rounded-2xl border bg-accent/50 pt-20 sm:pl-16 lg:flex-row lg:pl-20">
           <div className="mx-auto max-w-md px-4 text-center md:px-0 lg:mx-0 lg:pb-20 lg:text-left">
             {byline && <p className="mb-6 font-medium">{byline}</p>}
             <h2 className="mb-6 text-4xl font-bold md:text-5xl">{heading}</h2>
@@ -78,7 +78,6 @@ const Cta15 = (props: Props) => {
             </div>
           </div>
           <div className="relative w-full pl-4 sm:pl-0">
-            <div className="absolute -bottom-8 -left-8 -z-10 h-4/5 w-4/5 rounded-tl-2xl rounded-br-2xl bg-stone-900/20 blur-2xl" />
             <img
               src={image.src}
               alt={image.alt}

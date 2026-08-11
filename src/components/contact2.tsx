@@ -51,7 +51,7 @@ const Contact2 = ({
   return (
     <section className={cn("py-24 md:py-32", className)} id="contacto">
       <div className="container">
-        <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <h2 className="mb-4 font-heading text-4xl font-bold text-navy md:text-5xl">
               {title.split(" ").slice(0, -1).join(" ")}{" "}

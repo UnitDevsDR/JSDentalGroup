@@ -32,7 +32,7 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
           <h2 className="font-heading text-4xl font-bold text-navy md:text-5xl">{heading}</h2>
           <p className="text-xl text-muted-foreground">{description}</p>
         </div>
-        <div className="mx-auto mt-16 grid max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+        <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-stagger>
           {first && (
             <a
               href={`/${first.slug}`}

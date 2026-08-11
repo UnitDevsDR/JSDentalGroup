@@ -38,7 +38,7 @@ const Service5 = ({
 }: Service5Props) => {
   return (
     <section className={cn("py-16 md:py-24", className)}>
-      <div className="container max-w-5xl">
+      <div className="container">
         <div className="grid gap-12 lg:grid-cols-3">
           {/* Contenido principal */}
           <div className="lg:col-span-2" data-animate="up">
