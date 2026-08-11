@@ -56,7 +56,7 @@ const Cta15 = ({ byline, heading, description, highlights = [], image, buttons, 
                   aria-hidden="true"
                 >
                   <path
-                    d="M 6 4.4 C 50 17.6, 150 17.6, 194 4.4 C 194.5 4, 195.5 4.2, 195 4.9 C 184 20.3, 120 23.8, 100 23.8 C 80 23.8, 16 20.3, 5 4.9 C 4.5 4.2, 5.5 4, 6 4.4 Z"
+                    d="M 4 5.1 C 55.5 16.6, 144.5 16.6, 196 5.1 C 146.8 22.4, 53.2 22.4, 4 5.1 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
