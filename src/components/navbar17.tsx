@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Clock, Menu, MessageCircle, Phone, X } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -51,36 +51,6 @@ const isActive = (item: NavItem, currentPath?: string) => {
 
 const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17Props) => {
   const activeItem = items.find((i) => isActive(i, currentPath))?.name;
-  const [hoverItem, setHoverItem] = useState<string | undefined>(undefined);
-  const indicatorTarget = hoverItem ?? activeItem;
-
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLUListElement>(null);
-
-  useEffect(() => {
-    const updateIndicator = () => {
-      const indicator = indicatorRef.current;
-      const menu = menuRef.current;
-      if (!indicator || !menu) return;
-
-      const activeEl = indicatorTarget
-        ? (menu.querySelector(`[data-nav-item="${indicatorTarget}"]`) as HTMLElement | null)
-        : null;
-
-      if (activeEl) {
-        const menuRect = menu.getBoundingClientRect();
-        const itemRect = activeEl.getBoundingClientRect();
-        indicator.style.opacity = "1";
-        indicator.style.width = `${itemRect.width}px`;
-        indicator.style.left = `${itemRect.left - menuRect.left}px`;
-      } else {
-        indicator.style.opacity = "0";
-      }
-    };
-    updateIndicator();
-    window.addEventListener("resize", updateIndicator);
-    return () => window.removeEventListener("resize", updateIndicator);
-  }, [indicatorTarget]);
 
   return (
     <section className={cn("bg-background/90 shadow-sm shadow-navy/5 backdrop-blur-md", className)}>
@@ -90,20 +60,14 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
         </a>
 
         <NavigationMenu className="hidden lg:block">
-          <NavigationMenuList
-            ref={menuRef}
-            className="relative flex items-center gap-1"
-            onMouseLeave={() => setHoverItem(undefined)}
-          >
+          <NavigationMenuList className="relative flex items-center gap-1">
             {items.map((item) =>
               item.hasSubmenu ? (
                 <NavigationMenuItem key={item.name}>
                   <NavigationMenuTrigger
-                    data-nav-item={item.name}
-                    onMouseEnter={() => setHoverItem(item.name)}
                     className={cn(
                       "h-10 bg-transparent px-3.5 text-base font-medium hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
-                      activeItem === item.name ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                      activeItem === item.name ? "font-semibold text-teal" : "text-muted-foreground hover:text-foreground",
                     )}
                   >
                     {item.name}
@@ -155,12 +119,10 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                 <NavigationMenuItem key={item.name}>
                   <NavigationMenuLink
                     href={item.link}
-                    data-nav-item={item.name}
-                    onMouseEnter={() => setHoverItem(item.name)}
                     aria-current={activeItem === item.name ? "page" : undefined}
                     className={cn(
                       "relative flex h-10 cursor-pointer items-center rounded-md px-3.5 text-base font-medium transition-colors hover:bg-transparent",
-                      activeItem === item.name ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                      activeItem === item.name ? "font-semibold text-teal" : "text-muted-foreground hover:text-foreground",
                     )}
                   >
                     {item.name}
@@ -169,15 +131,6 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
               ),
             )}
 
-            {/* Indicador deslizante */}
-            <div
-              ref={indicatorRef}
-              className="pointer-events-none absolute -bottom-[15px] flex h-0.5 items-center justify-center px-3.5 transition-all duration-300"
-              style={{ opacity: 0 }}
-              aria-hidden="true"
-            >
-              <div className="h-0.5 w-full bg-teal" />
-            </div>
           </NavigationMenuList>
         </NavigationMenu>
 
