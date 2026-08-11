@@ -56,9 +56,7 @@ const Service5 = ({
                 src={photo.src}
                 alt={photo.alt}
                 loading="lazy"
-                width={880}
-                height={495}
-                className="mb-8 aspect-video w-full rounded-2xl border object-cover"
+                className="mb-8 h-auto w-full rounded-2xl border"
               />
             )}
 

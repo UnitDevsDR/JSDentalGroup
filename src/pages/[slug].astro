@@ -21,10 +21,8 @@ const [specialistImg, specialistThumb] = await Promise.all([
   getImage({ src: TEAM_IMAGES[service.specialist.image], width: 128 }),
 ]);
 
-// Foto real del tratamiento (descargada del sitio de la clínica)
-const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/img/services/*-foto.jpg');
-const photoEntry = Object.entries(photos).find(([path]) => path.includes(`${service.slug}-foto`));
-const photoOpt = photoEntry ? await getImage({ src: (await photoEntry[1]()).default, width: 900 }) : null;
+// Foto real del tratamiento: pre-optimizada en public/ con nombre descriptivo (SEO)
+const photoSrc = `/img/servicios/${service.slug}-clinica-dental-santiago.webp`;
 
 // El titular enfatiza la última palabra (subrayado teal del bloque hero86)
 const words = service.h1.split(' ');
@@ -90,7 +88,7 @@ const procedureSchema = {
     <Service5
       heading="¿En qué consiste este tratamiento?"
       intro={service.copy}
-      photo={photoOpt ? { src: photoOpt.src, alt: `${service.name} en JS Dental Group` } : undefined}
+      photo={{ src: photoSrc, alt: `${service.name} en JS Dental Group, clínica dental en Santiago` }}
       specialist={{
         name: service.specialist.name,
         role: service.specialist.role,
