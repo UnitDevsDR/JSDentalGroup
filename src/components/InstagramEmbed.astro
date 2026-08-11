@@ -11,7 +11,7 @@ const { username, heading, description, frameTitle } = Astro.props;
 const embedUrl = `https://www.instagram.com/${username}/embed`;
 ---
 
-<section class="py-24 md:py-32" aria-label={frameTitle}>
+<section id="instagram" class="py-24 md:py-32" aria-label={frameTitle}>
   <div class="container">
     <div class="mb-10 flex flex-col gap-4 text-center" data-animate="up">
       <h2 class="font-heading text-4xl font-bold text-navy md:text-5xl">{heading}</h2>
@@ -27,8 +27,10 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
     </div>
 
     <div class="ig-wrap flex w-full justify-center" data-animate="up" data-delay="0.15">
-      <div class="ig-frame w-full overflow-hidden rounded-2xl border shadow-sm">
-        <iframe src={embedUrl} scrolling="no" title={frameTitle} loading="lazy"></iframe>
+      <div class="ig-frame w-full overflow-hidden rounded-2xl border bg-muted/40 shadow-sm" data-ig-frame={embedUrl}>
+        <noscript>
+          <iframe src={embedUrl} scrolling="no" title={frameTitle} loading="lazy"></iframe>
+        </noscript>
       </div>
     </div>
   </div>
@@ -73,3 +75,33 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
     border: none;
   }
 </style>
+
+<script>
+  // El iframe se inserta al acercarse a la sección: así no descarga ~600 KB
+  // en el arranque y la página conserva el bfcache hasta que hace falta.
+  const frame = document.querySelector<HTMLElement>('[data-ig-frame]');
+  if (frame) {
+    const mount = () => {
+      if (frame.querySelector('iframe:not(noscript iframe)')) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = frame.dataset.igFrame!;
+      iframe.scrolling = 'no';
+      iframe.loading = 'lazy';
+      // el CSS de .ig-frame iframe lo posiciona; se fija aquí también por si
+      // el navegador aún no aplicó la hoja al insertarlo
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:calc(100% + 420px);border:none';
+      iframe.title = frame.closest('section')?.getAttribute('aria-label') ?? 'Instagram';
+      frame.appendChild(iframe);
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          mount();
+        }
+      },
+      { rootMargin: '600px 0px' },
+    );
+    io.observe(frame);
+  }
+</script>

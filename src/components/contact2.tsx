@@ -99,10 +99,8 @@ const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Pro
                   aria-hidden="true"
                 >
                   <path
-                    d="M6 6 C 60 28, 140 28, 194 6"
-                    stroke="oklch(0.71 0.09 187)"
-                    strokeWidth="5"
-                    strokeLinecap="round"
+                    d="M 4 3 C 26 26, 174 26, 196 3 C 178 20, 140 24, 100 24 C 60 24, 22 20, 4 3 Z"
+                    fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
               </span>
@@ -176,12 +174,12 @@ const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Pro
                 </Field>
                 <Button
                   type="submit"
-                  className="w-full rounded-full bg-teal py-6 text-base font-semibold text-white shadow-lg shadow-teal/25 hover:bg-teal/90"
+                  className="w-full rounded-full bg-teal-strong py-6 text-base font-semibold text-white shadow-lg shadow-teal/25 hover:bg-teal-strong/90"
                 >
                   {copy.submit}
                 </Button>
                 {sent && (
-                  <p className="flex items-center justify-center gap-2 text-sm font-medium text-teal" role="status">
+                  <p className="flex items-center justify-center gap-2 text-sm font-medium text-teal-text" role="status">
                     <CheckCircle2 className="size-4" aria-hidden="true" />
                     {copy.sent}
                   </p>

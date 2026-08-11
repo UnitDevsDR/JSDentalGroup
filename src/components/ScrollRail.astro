@@ -1,0 +1,159 @@
+---
+/**
+ * Regleta de secciones a la derecha + botón de volver arriba.
+ *
+ * Cada sección es una marca clicable con su nombre al pasar el cursor; las
+ * marcas intermedias se van llenando según el avance del scroll, así la
+ * regleta indica posición y sirve para navegar. Todo en vanilla: no hidrata
+ * ningún framework y funciona sin JS (las marcas son enlaces a #id).
+ */
+import { ArrowUp } from 'lucide-react';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Section {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  lang: Lang;
+  sections: Section[];
+}
+
+const { lang, sections } = Astro.props;
+const t = useTranslations(lang);
+
+// 3 marcas decorativas entre cada sección: dan la densidad de regleta
+const SUBTICKS = 3;
+const total = sections.length * (SUBTICKS + 1);
+---
+
+<nav
+  id="scroll-rail"
+  aria-label={t.rail.sections}
+  class="pointer-events-none fixed top-1/2 right-0 z-40 hidden -translate-y-1/2 pr-3 lg:block"
+>
+  <ul class="flex flex-col items-end gap-[6px]">
+    {
+      sections.map((section, si) =>
+        [
+          <li class="pointer-events-auto group relative flex h-4 items-center justify-end">
+            <a
+              href={`#${section.id}`}
+              data-rail-link={section.id}
+              data-rail-index={si * (SUBTICKS + 1)}
+              aria-label={section.label}
+              class="flex h-4 items-center justify-end pl-6"
+            >
+              <span
+                data-rail-tick={si * (SUBTICKS + 1)}
+                class="block h-[2px] w-4 rounded-full bg-navy/20 transition-all duration-300 group-hover:w-8 group-hover:bg-teal"
+              ></span>
+            </a>
+            <span
+              class="pointer-events-none absolute right-10 rounded-md bg-navy px-2.5 py-1 text-xs font-medium whitespace-nowrap text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+              aria-hidden="true"
+            >
+              {section.label}
+            </span>
+          </li>,
+          ...Array.from({ length: SUBTICKS }, (_, k) => (
+            <li aria-hidden="true" class="flex h-[6px] items-center justify-end">
+              <span
+                data-rail-tick={si * (SUBTICKS + 1) + k + 1}
+                class="block h-[1px] w-2.5 rounded-full bg-navy/15 transition-colors duration-300"
+              />
+            </li>
+          )),
+        ],
+      )
+    }
+  </ul>
+</nav>
+
+<button
+  id="to-top"
+  type="button"
+  aria-label={t.rail.toTop}
+  title={t.rail.toTop}
+  tabindex="-1"
+  class="invisible fixed right-5 bottom-[76px] z-50 flex size-11 translate-y-2 items-center justify-center rounded-full bg-navy text-white opacity-0 shadow-lg shadow-navy/20 transition-all duration-300 hover:bg-navy/90"
+>
+  <ArrowUp className="size-5" aria-hidden="true" />
+</button>
+
+<script define:vars={{ total }}>
+  const rail = document.getElementById('scroll-rail');
+  const toTop = document.getElementById('to-top');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const ticks = rail ? [...rail.querySelectorAll('[data-rail-tick]')] : [];
+  const links = rail ? [...rail.querySelectorAll('[data-rail-link]')] : [];
+  const targets = links
+    .map((a) => ({
+      index: Number(a.dataset.railIndex),
+      tick: a.querySelector('[data-rail-tick]'),
+      el: document.getElementById(a.dataset.railLink),
+    }))
+    .filter((s) => s.el);
+
+  const FILLED = ['bg-teal', 'bg-teal/70'];
+
+  const paint = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? window.scrollY / max : 0;
+
+    // la regleta se llena con el avance
+    ticks.forEach((tick) => {
+      const ratio = Number(tick.dataset.railTick) / Math.max(1, total - 1);
+      const on = ratio <= progress + 0.001;
+      const isMain = Number(tick.dataset.railTick) % 4 === 0;
+      tick.classList.toggle(isMain ? 'bg-teal' : 'bg-teal/70', on);
+      tick.classList.toggle(isMain ? 'bg-navy/20' : 'bg-navy/15', !on);
+    });
+
+    // sección activa: la última cuyo inicio ya pasó el 35% del viewport
+    const limit = window.innerHeight * 0.35;
+    let active = targets[0];
+    targets.forEach((s) => {
+      if (s.el.getBoundingClientRect().top <= limit) active = s;
+    });
+    targets.forEach((s) => {
+      const on = s === active;
+      s.tick.classList.toggle('w-8', on);
+      s.tick.classList.toggle('w-4', !on);
+      if (on) s.tick.classList.add('bg-teal');
+      s.el.setAttribute('data-rail-active', on ? 'true' : 'false');
+      const link = links.find((a) => a.dataset.railLink === s.el.id);
+      if (link) link.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+
+    // botón de subir: aparece pasada la primera pantalla
+    if (toTop) {
+      const show = window.scrollY > window.innerHeight * 0.8;
+      toTop.classList.toggle('invisible', !show);
+      toTop.classList.toggle('opacity-0', !show);
+      toTop.classList.toggle('translate-y-2', !show);
+      toTop.tabIndex = show ? 0 : -1;
+    }
+  };
+
+  let ticking = false;
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        paint();
+      });
+    }
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  paint();
+
+  toTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  });
+</script>

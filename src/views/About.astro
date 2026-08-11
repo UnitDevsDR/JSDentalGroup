@@ -3,12 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import ScrollRail from '../components/ScrollRail.astro';
 import { About13 } from '../components/about13';
 import { TeamProfiles } from '../components/user-profile10';
 import { Contact2 } from '../components/contact2';
-import { SITE, TEAM } from '../data/site';
+import { SITE, TEAM, TEAM_SERVICE } from '../data/site';
 import { IMAGES, teamPhoto } from '../lib/images';
-import { ROUTES, pagePaths, useTranslations, type Lang } from '../i18n';
+import { ROUTES, pagePaths, servicePath, useTranslations, type Lang } from '../i18n';
 import { contactProps } from '../lib/view-helpers';
 
 interface Props {
@@ -26,6 +27,8 @@ const doctors = TEAM.map((m) => ({
   role: t.roles[m.key as keyof typeof t.roles],
   imageSrc: teamPhoto(m.key, 'md'),
   verified: m.title !== null,
+  // su tarjeta lleva a la página de su especialidad
+  href: TEAM_SERVICE[m.key] ? servicePath(TEAM_SERVICE[m.key]!, lang) : undefined,
 }));
 
 const founder = TEAM[0];
@@ -69,7 +72,13 @@ const breadcrumbSchema = {
       whatsapp={SITE.whatsapp}
       heading={t.team.heading}
       description={t.team.description}
-      t={{ specialist: t.team.specialist, staff: t.team.staff, book: t.team.book, certified: t.team.certified }}
+      t={{
+        specialist: t.team.specialist,
+        staff: t.team.staff,
+        book: t.team.book,
+        certified: t.team.certified,
+        viewSpecialty: t.team.viewSpecialty,
+      }}
     />
 
     <div data-animate="up">
@@ -78,5 +87,10 @@ const breadcrumbSchema = {
   </main>
 
   <FooterSection lang={lang} />
+  <ScrollRail lang={lang} sections={[
+        { id: 'contenido', label: t.about.heading },
+        { id: 'equipo', label: t.team.heading },
+        { id: 'contacto', label: t.nav.contact },
+      ]} />
   <WhatsAppFloat lang={lang} />
 </Layout>

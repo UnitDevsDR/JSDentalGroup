@@ -54,7 +54,7 @@ const Hero86 = ({
       <div className="bg-accent/60 pt-10 lg:pt-16">
         <div className="container mx-auto flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-12">
           <div className="relative flex flex-col items-center gap-6 pb-10 text-center lg:w-1/2 lg:items-start lg:pb-24 lg:text-left">
-            <p data-animate="up" className="text-sm font-semibold tracking-widest text-teal uppercase">
+            <p data-animate="up" className="text-sm font-semibold tracking-widest text-teal-text uppercase">
               {tagline}
             </p>
             <h1
@@ -73,7 +73,7 @@ const Hero86 = ({
                 <Button
                   asChild
                   size="lg"
-                  className="w-full rounded-full bg-teal px-8 py-6 text-base font-semibold text-white shadow-lg shadow-teal/25 hover:bg-teal/90 sm:w-auto"
+                  className="w-full rounded-full bg-teal-strong px-8 py-6 text-base font-semibold text-white shadow-lg shadow-teal/25 hover:bg-teal-strong/90 sm:w-auto"
                 >
                   <a href={buttons.primary.url} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="size-5" aria-hidden="true" />
@@ -119,7 +119,7 @@ const Hero86 = ({
                   href={card.ctaHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-flex w-full items-center gap-1.5 border-t py-3 text-sm font-semibold text-teal hover:underline"
+                  className="mt-3 inline-flex w-full items-center gap-1.5 border-t py-3 text-sm font-semibold text-teal-text hover:underline"
                 >
                   {card.cta}
                   <span aria-hidden="true">→</span>

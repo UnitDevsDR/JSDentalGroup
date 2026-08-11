@@ -66,11 +66,11 @@ const Feature101 = ({ className, heading, description, services, cta }: Feature1
             >
               <Icon3d src={first.iconSrc} big />
               <div>
-                <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{first.tagline}</p>
+                <p className="mb-3 text-sm font-semibold tracking-widest text-teal-text uppercase">{first.tagline}</p>
                 <h3 className="mb-4 font-heading text-3xl font-semibold text-navy md:text-4xl">{first.name}</h3>
                 {first.copy && <p className="max-w-md text-lg leading-relaxed text-muted-foreground">{first.copy}</p>}
               </div>
-              <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal">
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal-text">
                 {cta}
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
               </span>
@@ -87,7 +87,7 @@ const Feature101 = ({ className, heading, description, services, cta }: Feature1
               <div>
                 <h3 className="mb-2 font-heading text-2xl font-medium text-navy">{s.name}</h3>
                 <p className="text-muted-foreground">{s.tagline}</p>
-                <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal">
+                <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal-text">
                   {cta}
                   <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                 </span>

@@ -33,6 +33,13 @@
   --navy: oklch(0.28 0.08 262);
   --teal: oklch(0.71 0.09 187);
   --terracotta: oklch(0.67 0.07 32);
+  /* Variante de teal para TEXTO: el teal de marca sobre blanco queda en
+     3.1:1 y WCAG AA pide 4.5:1 en tamaños pequeños. Los fondos y bordes
+     siguen usando --teal. */
+  --teal-text: oklch(0.52 0.09 187);
+  /* Fondo de botones con texto blanco: el teal de marca solo llega a 2.46:1
+     con blanco encima; esta variante cumple AA sin cambiar el tono. */
+  --teal-strong: oklch(0.52 0.09 187);
 }
 
 @theme inline {
@@ -86,6 +93,8 @@
   --color-navy: oklch(0.28 0.08 262);
   --color-teal: oklch(0.71 0.09 187);
   --color-terracotta: oklch(0.67 0.07 32);
+  --color-teal-text: oklch(0.52 0.09 187);
+  --color-teal-strong: oklch(0.52 0.09 187);
 }
 
 @layer base {
@@ -122,6 +131,11 @@
     font-family: var(--font-heading);
   }
 
+  /* las anclas no quedan bajo el header fijo */
+  :is(section, div, main)[id] {
+    scroll-margin-top: 6rem;
+  }
+
   ::selection {
     background-color: var(--color-primary);
     color: white;
@@ -144,7 +158,8 @@
 }
 
 @layer utilities {
-  /* Palabra destacada del titular: teal plano (sin degradados) */
+  /* Palabra destacada del titular: teal plano (sin degradados). Al ser
+     texto grande (>=24px) el teal de marca ya cumple contraste. */
   .text-highlight {
     color: var(--teal);
   }
@@ -161,10 +176,18 @@
     }
   }
 
-  /* Firma visual: arco de sonrisa (dental arch) */
-  .smile-arc path {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
+  /* Firma visual: arco de sonrisa. El trazo va relleno (grosor variable y
+     extremos afilados, como una sonrisa) y se revela con clip-path, que sí
+     funciona sobre un path con fill. */
+  .smile-arc {
+    clip-path: inset(0 100% 0 0);
+  }
+  .smile-arc.is-drawn {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .smile-arc { clip-path: none; }
   }
 
   /* Textura sutil de puntos, tono clínico */
@@ -181,6 +204,27 @@
 }
 .faq-float {
   animation: faq-float 5s ease-in-out infinite;
+}
+
+/* Entrada del hero en CSS puro: lo que está sobre el pliegue no puede
+   esperar a que descargue GSAP (retrasaría el LCP). */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-in-scale {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+[data-hero-in] {
+  animation: hero-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--hero-delay, 0s);
+}
+[data-hero-in='scale'] {
+  animation-name: hero-in-scale;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-hero-in] { animation: none; }
 }
 
 /* Estado inicial de elementos animados por GSAP (evita FOUC de animación) */

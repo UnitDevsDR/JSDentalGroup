@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import ScrollRail from '../components/ScrollRail.astro';
 import InstagramEmbed from '../components/InstagramEmbed.astro';
 import LocationMap from '../components/LocationMap.astro';
 import { Hero127 } from '../components/hero127';
@@ -12,7 +13,7 @@ import { TeamProfiles } from '../components/user-profile10';
 import { Faq11 } from '../components/faq11';
 import { Cta15 } from '../components/cta15';
 import { Contact2 } from '../components/contact2';
-import { SITE, TEAM, SERVICE_KEYS, hours } from '../data/site';
+import { SITE, TEAM, SERVICE_KEYS, TEAM_SERVICE, hours } from '../data/site';
 import { IMAGES, serviceIcon, teamPhoto } from '../lib/images';
 import { ROUTES, pagePaths, servicePath, useTranslations, type Lang } from '../i18n';
 import { contactProps } from '../lib/view-helpers';
@@ -34,6 +35,8 @@ const doctors = TEAM.map((m) => ({
   role: t.roles[m.key as keyof typeof t.roles],
   imageSrc: teamPhoto(m.key, 'md'),
   verified: m.title !== null,
+  // su tarjeta lleva a la página de su especialidad
+  href: TEAM_SERVICE[m.key] ? servicePath(TEAM_SERVICE[m.key]!, lang) : undefined,
 }));
 
 // Avatares del hero: doctores visualmente distintos (prueba social)
@@ -57,7 +60,7 @@ const heroSlides = [
     const m = TEAM.find((x) => x.key === key)!;
     const role = t.roles[m.key as keyof typeof t.roles];
     return {
-      src: teamPhoto(key, 'lg'),
+      src: teamPhoto(key, 'md'),
       name: doctorName(m),
       role,
       alt: `${doctorName(m)} — ${role}`,
@@ -93,6 +96,7 @@ const faqSchema = {
   description={t.home.description}
   extraSchema={[faqSchema]}
   preconnect={['https://www.instagram.com', 'https://www.google.com']}
+  preloadImage={IMAGES.heroEspecialistas}
 >
   <SiteHeader lang={lang} paths={paths} />
 
@@ -160,7 +164,13 @@ const faqSchema = {
       whatsapp={SITE.whatsapp}
       heading={t.team.heading}
       description={t.team.description}
-      t={{ specialist: t.team.specialist, staff: t.team.staff, book: t.team.book, certified: t.team.certified }}
+      t={{
+        specialist: t.team.specialist,
+        staff: t.team.staff,
+        book: t.team.book,
+        certified: t.team.certified,
+        viewSpecialty: t.team.viewSpecialty,
+      }}
     />
 
     <InstagramEmbed
@@ -192,5 +202,13 @@ const faqSchema = {
   </main>
 
   <FooterSection lang={lang} />
+  <ScrollRail lang={lang} sections={[
+        { id: 'inicio', label: t.nav.home },
+        { id: 'servicios', label: t.nav.services },
+        { id: 'equipo', label: t.team.heading },
+        { id: 'instagram', label: 'Instagram' },
+        { id: 'faq', label: t.home.faqHeading },
+        { id: 'contacto', label: t.nav.contact },
+      ]} />
   <WhatsAppFloat lang={lang} />
 </Layout>

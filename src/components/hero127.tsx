@@ -125,7 +125,7 @@ const Hero127 = ({
                 asChild
                 variant="ghost"
                 className="flex h-auto w-fit gap-2 rounded-full border bg-card/70 p-1 pr-1 backdrop-blur hover:bg-transparent sm:gap-3 sm:pr-3"
-                data-animate="up"
+                data-hero-in
               >
                 <a href={badge.url ?? "#contacto"}>
                   <Badge className="flex items-center gap-[0.375rem] rounded-full bg-teal/10 px-3 py-1 text-navy hover:bg-teal/10">
@@ -155,15 +155,15 @@ const Hero127 = ({
               <span className="hero-word text-highlight inline-block">{highlightWord}</span>
             </h1>
 
-            <p data-animate="up" data-delay="0.45" className="max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            <p data-hero-in style={{ "--hero-delay": "0.45s" } as React.CSSProperties} className="max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
               {description}
             </p>
 
-            <div data-animate="up" data-delay="0.6" className="flex w-full flex-col items-center gap-4 md:flex-row md:justify-center lg:justify-start">
+            <div data-hero-in style={{ "--hero-delay": "0.6s" } as React.CSSProperties} className="flex w-full flex-col items-center gap-4 md:flex-row md:justify-center lg:justify-start">
               {buttons?.primary && (
                 <Button
                   asChild
-                  className="flex h-fit w-full items-center justify-center gap-3 rounded-full bg-teal px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-transform duration-300 hover:-translate-y-0.5 hover:bg-teal/90 md:w-fit"
+                  className="flex h-fit w-full items-center justify-center gap-3 rounded-full bg-teal-strong px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-transform duration-300 hover:-translate-y-0.5 hover:bg-teal-strong/90 md:w-fit"
                 >
                   <a href={buttons.primary.url} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-5 w-5" aria-hidden="true" />
@@ -186,8 +186,8 @@ const Hero127 = ({
             </div>
 
             <div
-              data-animate="up"
-              data-delay="0.75"
+              data-hero-in
+              style={{ "--hero-delay": "0.75s" } as React.CSSProperties}
               className="flex flex-col items-center gap-8 md:flex-row md:flex-wrap md:justify-center md:gap-x-12 md:gap-y-6 lg:justify-start"
             >
               <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 lg:justify-start">
@@ -211,7 +211,7 @@ const Hero127 = ({
           </div>
 
           {slides.length > 0 && (
-            <div className="order-first flex justify-center lg:order-none" data-animate="scale" data-delay="0.3">
+            <div className="order-first flex justify-center lg:order-none" data-hero-in="scale" style={{ "--hero-delay": "0.15s" } as React.CSSProperties}>
               <div className="relative w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[440px]">
                 <div
                   className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-accent shadow-2xl shadow-navy/15"
@@ -225,9 +225,10 @@ const Hero127 = ({
                       src={i === 0 ? slide.src : undefined}
                       data-src={i === 0 ? undefined : slide.src}
                       alt={slide.alt}
-                      width={800}
-                      height={1000}
+                      width={560}
+                      height={700}
                       fetchPriority={i === 0 ? "high" : undefined}
+                      decoding={i === 0 ? "sync" : "async"}
                       data-hero-slide={i}
                       data-name={slide.name}
                       data-role={slide.role}
@@ -242,17 +243,17 @@ const Hero127 = ({
                   ))}
                 </div>
                 <svg
-                  className="smile-arc pointer-events-none absolute -bottom-10 left-1/2 w-[120%] -translate-x-1/2"
-                  viewBox="0 0 400 120"
+                  className="smile-arc pointer-events-none absolute -bottom-10 left-1/2 w-[116%] -translate-x-1/2"
+                  viewBox="0 0 400 110"
                   fill="none"
                   aria-hidden="true"
                 >
+                  {/* Silueta de sonrisa: borde inferior profundo y superior
+                      más plano, así el trazo engorda al centro y se afila en
+                      los extremos (no un stroke de grosor constante). */}
                   <path
-                    d="M20 20 C 110 130, 290 130, 380 20"
-                    stroke="oklch(0.71 0.09 187)"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    pathLength={1}
+                    d="M 8 8 C 46 104, 354 104, 392 8 C 360 82, 300 92, 200 92 C 100 92, 40 82, 8 8 Z"
+                    fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
                 <div

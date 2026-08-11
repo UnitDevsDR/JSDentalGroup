@@ -19,6 +19,8 @@ interface Props {
   noindex?: boolean;
   /** orígenes de terceros que esta página usa (embeds): abre la conexión antes */
   preconnect?: string[];
+  /** imagen LCP: se descarga en paralelo al HTML, sin esperar al CSS */
+  preloadImage?: string;
 }
 
 const {
@@ -30,6 +32,7 @@ const {
   extraSchema = [],
   noindex = false,
   preconnect = [],
+  preloadImage,
 } = Astro.props;
 const t = useTranslations(lang);
 
@@ -207,6 +210,7 @@ const graph = {
     }
 
     {preconnect.map((origin) => <link rel="preconnect" href={origin} crossorigin />)}
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
 
     <meta name="theme-color" content="#002554" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -402,18 +406,20 @@ const graph = {
         window.addEventListener('scroll', onScrollCounts, { passive: true });
         checkCounts();
 
-        // Firma: arco de sonrisa que se dibuja con el scroll
-        document.querySelectorAll<SVGPathElement>('.smile-arc path').forEach((path) => {
-          gsap.fromTo(
-            path,
-            { strokeDashoffset: 1 },
-            {
-              strokeDashoffset: 0,
-              ease: 'none',
-              scrollTrigger: { trigger: path.closest('section'), start: 'top 80%', end: 'bottom 60%', scrub: 0.6 },
-            },
-          );
-        });
+        // Firma: el arco de sonrisa se dibuja al entrar en pantalla
+        const arcs = new Set<HTMLElement>(document.querySelectorAll<HTMLElement>('.smile-arc'));
+        const paintArcs = () => {
+          arcs.forEach((arc) => {
+            if (arc.getBoundingClientRect().top < window.innerHeight * 0.9) {
+              arcs.delete(arc);
+              arc.classList.add('is-drawn');
+            }
+          });
+          if (arcs.size === 0) window.removeEventListener('scroll', onArcs);
+        };
+        const onArcs = () => requestAnimationFrame(paintArcs);
+        window.addEventListener('scroll', onArcs, { passive: true });
+        paintArcs();
       }
     </script>
   </body>

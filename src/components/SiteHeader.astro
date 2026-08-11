@@ -56,14 +56,14 @@ const currentPath = Astro.url.pathname;
 
 <a
   href="#contenido"
-  class="sr-only z-[60] rounded-md bg-teal px-4 py-2 font-semibold text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+  class="sr-only z-[60] rounded-md bg-teal-strong px-4 py-2 font-semibold text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
 >
   {t.nav.skipToContent}
 </a>
 
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out">
   <Navbar17
-    client:load
+    client:idle
     logoSrc={IMAGES.logo}
     whatsapp={SITE.whatsapp}
     phone={SITE.phone}

@@ -82,7 +82,7 @@ const Service5 = ({
                 href={whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-teal px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-transform duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-teal-strong px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-transform duration-300 hover:-translate-y-0.5"
               >
                 <MessageCircle className="size-5" aria-hidden="true" />
                 {copy.bookEvaluation}
@@ -119,7 +119,7 @@ const Service5 = ({
                 href={whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 flex items-center gap-2 rounded-md bg-background p-3 text-sm font-medium text-teal transition-colors hover:bg-teal hover:text-white"
+                className="mt-5 flex items-center gap-2 rounded-md bg-background p-3 text-sm font-medium text-teal-text transition-colors hover:bg-teal-strong hover:text-white"
               >
                 <CalendarCheck className="h-4 w-4" aria-hidden="true" />
                 {copy.bookWithSpecialist}
@@ -147,7 +147,7 @@ const Service5 = ({
                       href={service.link}
                       className="block space-y-1 rounded-md p-3 transition-colors hover:bg-background"
                     >
-                      <div className="text-sm font-medium group-hover:text-teal">{service.title}</div>
+                      <div className="text-sm font-medium group-hover:text-teal-text">{service.title}</div>
                       <div className="text-xs text-muted-foreground">{service.description}</div>
                     </a>
                   </div>

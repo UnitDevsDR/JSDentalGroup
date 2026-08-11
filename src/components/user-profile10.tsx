@@ -1,4 +1,4 @@
-import { BadgeCheck, MessageCircle } from "lucide-react";
+import { ArrowRight, BadgeCheck, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,6 +10,8 @@ interface Doctor {
   imageSrc: string;
   /** los perfiles clínicos llevan insignia; el personal administrativo no */
   verified?: boolean;
+  /** página de su especialidad, si tiene una */
+  href?: string;
 }
 
 interface Copy {
@@ -17,6 +19,8 @@ interface Copy {
   staff: string;
   book: string;
   certified: string;
+  /** enlace a la especialidad del doctor */
+  viewSpecialty: string;
 }
 
 const UserProfile10 = ({
@@ -29,8 +33,8 @@ const UserProfile10 = ({
   whatsapp: string;
   t: Copy;
   className?: string;
-}) => (
-  <Card className={cn("w-full gap-0 overflow-hidden py-0 shadow-lg shadow-navy/5", className)}>
+}) => {
+  const portrait = (
     <div className="relative aspect-[4/5] w-full overflow-hidden bg-accent">
       <img
         src={doctor.imageSrc}
@@ -38,35 +42,75 @@ const UserProfile10 = ({
         loading="lazy"
         width={480}
         height={600}
-        className="size-full object-cover object-top"
+        className="size-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
       />
     </div>
+  );
 
-    <CardContent className="space-y-4 p-5">
-      <div>
-        <div className="flex items-center gap-1.5">
-          <h3 className="font-heading text-lg leading-snug font-semibold text-navy">{doctor.name}</h3>
-          {doctor.verified && (
-            <BadgeCheck className="size-5 shrink-0 fill-teal text-card" aria-label={t.certified} />
+  const heading = (
+    <div>
+      <div className="flex items-center gap-1.5">
+        <h3
+          className={cn(
+            "font-heading text-lg leading-snug font-semibold text-navy",
+            doctor.href && "transition-colors group-hover:text-teal",
           )}
-        </div>
-        <p className="mt-1 text-sm text-muted-foreground">{doctor.role}</p>
+        >
+          {doctor.name}
+        </h3>
+        {doctor.verified && (
+          <BadgeCheck className="size-5 shrink-0 fill-teal text-card" aria-label={t.certified} />
+        )}
       </div>
+      <p className="mt-1 text-sm text-muted-foreground">{doctor.role}</p>
+    </div>
+  );
 
-      <div className="flex items-center justify-between border-t pt-4">
-        <span className="text-xs font-semibold tracking-widest text-teal uppercase">
-          {doctor.verified ? t.specialist : t.staff}
-        </span>
-        <Button asChild className="h-10 gap-1.5 bg-teal px-4 text-white hover:bg-teal/90">
-          <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-            {t.book}
-            <MessageCircle className="size-4" aria-hidden="true" />
+  return (
+    <Card className={cn("group w-full gap-0 overflow-hidden py-0 shadow-lg shadow-navy/5", className)}>
+      {doctor.href ? (
+        <a href={doctor.href} aria-label={`${doctor.name} — ${doctor.role}`} className="block">
+          {portrait}
+        </a>
+      ) : (
+        portrait
+      )}
+
+      <CardContent className="space-y-4 p-5">
+        {doctor.href ? (
+          <a href={doctor.href} className="block">
+            {heading}
           </a>
-        </Button>
-      </div>
-    </CardContent>
-  </Card>
-);
+        ) : (
+          heading
+        )}
+
+        <div className="flex items-center justify-between gap-2 border-t pt-4">
+          {doctor.href ? (
+            <a
+              href={doctor.href}
+              className="inline-flex items-center gap-1.5 py-2 text-xs font-semibold tracking-widest text-teal-text uppercase hover:underline"
+            >
+              {t.viewSpecialty}
+              <ArrowRight
+                className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </a>
+          ) : (
+            <span className="text-xs font-semibold tracking-widest text-teal-text uppercase">{t.staff}</span>
+          )}
+          <Button asChild className="h-10 shrink-0 gap-1.5 bg-teal-strong px-4 text-white hover:bg-teal-strong/90">
+            <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+              {t.book}
+              <MessageCircle className="size-4" aria-hidden="true" />
+            </a>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 /** Sección de equipo: una tarjeta de perfil (user-profile10) por doctor. */
 const TeamProfiles = ({

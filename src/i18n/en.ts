@@ -13,6 +13,11 @@ export const en: Dictionary = {
 
   titles: { dra: 'Dr.', dr: 'Dr.' },
 
+  rail: {
+    sections: 'Page sections',
+    toTop: 'Back to top',
+  },
+
   nav: {
     home: 'Home',
     services: 'Services',
@@ -80,6 +85,7 @@ export const en: Dictionary = {
     staff: 'Team',
     book: 'Book',
     certified: 'Certified specialist',
+    viewSpecialty: 'View specialty',
   },
 
   servicesPage: {

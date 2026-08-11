@@ -14,6 +14,11 @@ export const es = {
 
   titles: { dra: 'Dra.', dr: 'Dr.' },
 
+  rail: {
+    sections: 'Secciones de la página',
+    toTop: 'Volver arriba',
+  },
+
   nav: {
     home: 'Inicio',
     services: 'Servicios',
@@ -82,6 +87,7 @@ export const es = {
     staff: 'Equipo',
     book: 'Agendar',
     certified: 'Especialista certificado',
+    viewSpecialty: 'Ver especialidad',
   },
 
   servicesPage: {

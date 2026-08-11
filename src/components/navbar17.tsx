@@ -91,19 +91,19 @@ const Navbar17 = ({
 
   return (
     <section className={cn("bg-background/90 backdrop-blur-md", className)}>
-      <nav className="container flex h-16 items-center justify-between gap-4">
+      <nav className="container flex h-16 items-center justify-between gap-6">
         <a href={items[0]?.link ?? "/"} className="flex items-center gap-2" aria-label={t.homeAria}>
           <img src={logoSrc} className="h-9 w-auto" alt="JS Dental Group" width={144} height={36} />
         </a>
 
         <NavigationMenu className="hidden lg:block">
-          <NavigationMenuList className="relative flex items-center gap-1">
+          <NavigationMenuList className="relative flex items-center gap-2 xl:gap-4">
             {items.map((item) =>
               item.hasSubmenu ? (
                 <NavigationMenuItem key={item.name}>
                   <NavigationMenuTrigger
                     className={cn(
-                      "h-10 bg-transparent px-3.5 text-base font-medium hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
+                      "h-10 rounded-md bg-transparent px-4 text-base font-medium hover:bg-accent focus:bg-accent data-[state=open]:bg-accent",
                       activeItem === item.name
                         ? "font-semibold text-teal"
                         : "text-muted-foreground hover:text-foreground",
@@ -142,7 +142,7 @@ const Navbar17 = ({
                       <li className="md:col-span-2">
                         <a
                           href={item.link}
-                          className="group/all flex items-center justify-between rounded-lg border border-dashed border-teal/40 p-3 text-sm font-medium text-teal transition-colors hover:bg-teal hover:text-white"
+                          className="group/all flex items-center justify-between rounded-lg border border-dashed border-teal/40 p-3 text-sm font-medium text-teal-text transition-colors hover:bg-teal-strong hover:text-white"
                         >
                           {t.allServices}
                           <ArrowRight
@@ -160,7 +160,7 @@ const Navbar17 = ({
                     href={item.link}
                     aria-current={activeItem === item.name ? "page" : undefined}
                     className={cn(
-                      "relative flex h-10 cursor-pointer items-center rounded-md px-3.5 text-base font-medium transition-colors hover:bg-transparent",
+                      "relative flex h-10 cursor-pointer items-center rounded-md px-4 text-base font-medium transition-colors hover:bg-accent focus-visible:bg-accent",
                       activeItem === item.name
                         ? "font-semibold text-teal"
                         : "text-muted-foreground hover:text-foreground",
@@ -187,7 +187,7 @@ const Navbar17 = ({
           </a>
           <Button
             asChild
-            className="hidden h-10 rounded-md bg-teal px-5 text-base font-medium text-white hover:bg-teal/90 lg:inline-flex"
+            className="hidden h-10 rounded-md bg-teal-strong px-5 text-base font-medium text-white hover:bg-teal-strong/90 lg:inline-flex"
           >
             <a href={whatsapp} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="size-4" aria-hidden="true" />
@@ -339,7 +339,7 @@ const MobileNav = ({
               <div className="flex flex-col gap-2">
                 <Button
                   asChild
-                  className="w-full rounded-md bg-teal py-5 text-sm font-semibold text-white hover:bg-teal/90"
+                  className="w-full rounded-md bg-teal-strong py-5 text-sm font-semibold text-white hover:bg-teal-strong/90"
                 >
                   <a href={whatsapp} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="size-4" aria-hidden="true" />

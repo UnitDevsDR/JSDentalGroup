@@ -52,10 +52,10 @@ export const Footer14 = ({
   legalName,
 }: Footer14Props) => {
   return (
-    <footer className="bg-navy py-12 text-white sm:py-16 md:py-24">
+    <footer className="bg-navy py-12 text-white sm:py-14 md:py-16">
       <div className="container mx-auto px-5 md:px-6">
         {/* Franja de contacto (réplica de la del sitio original) */}
-        <div className="mb-12 grid gap-8 border-b border-white/15 pb-12 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-8 grid gap-6 border-b border-white/15 pb-8 sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex items-center gap-4">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white">
               <Mail className="size-5 text-navy" aria-hidden="true" />
@@ -89,7 +89,7 @@ export const Footer14 = ({
           </div>
         </div>
 
-        <div className="mb-10 flex flex-col items-start justify-between gap-10 border-b border-white/15 pb-10 sm:mb-16 sm:pb-12 lg:flex-row">
+        <div className="mb-8 flex flex-col items-start justify-between gap-8 border-b border-white/15 pb-8 lg:flex-row">
           <div className="w-full max-w-full sm:max-w-sm">
             <a href={homeHref} aria-label={copy.homeAria}>
               <img
@@ -163,12 +163,12 @@ export const Footer14 = ({
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          <div className="order-1 mb-6 flex w-full items-center justify-center gap-6 sm:justify-start md:order-2 md:mb-0 md:w-auto">
+        <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
+          <div className="order-1 flex w-full items-center justify-center gap-6 sm:justify-start md:order-2 md:w-auto">
             <a
               href={info.instagram}
               aria-label={copy.instagramAria}
-              className="rounded-full p-3 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+              className="rounded-full p-2 text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
               rel="noopener noreferrer"
               target="_blank"
             >

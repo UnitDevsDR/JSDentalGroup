@@ -65,5 +65,24 @@ export const SERVICE_SPECIALIST: Record<ServiceKey, string> = {
   odontopediatria: 'rosanny-minaya',
 };
 
+/**
+ * Especialidad de cada miembro del equipo, para enlazar su tarjeta a la
+ * página del servicio. `null` = no tiene página propia (personal
+ * administrativo). Melissa comparte Endodoncia con Rosangel, que es la
+ * especialista a cargo de esa página.
+ */
+export const TEAM_SERVICE: Record<string, ServiceKey | null> = {
+  'julissa-saint-hilaire': 'rehabilitacion-bucal',
+  'rosangel-tatis': 'endodoncia',
+  'melissa-lantigua': 'endodoncia',
+  'mairenys-estevez': 'odontologia-general',
+  'denisse-dominguez': 'periodoncia',
+  'siddy-dominguez': 'ortodoncia',
+  'laura-bueno': 'cirugia-maxilofacial',
+  'simon-dominguez': 'implantologia',
+  'rosanny-minaya': 'odontopediatria',
+  'arianny-pena': null,
+};
+
 export { SERVICE_KEYS };
 export type { ServiceKey };

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import ScrollRail from '../components/ScrollRail.astro';
 import { Hero86 } from '../components/hero86';
 import { Service5 } from '../components/service5';
 import { Contact2 } from '../components/contact2';
@@ -64,6 +65,7 @@ const procedureSchema = {
   title={s.title}
   description={s.metaDescription}
   extraSchema={[breadcrumbSchema, procedureSchema]}
+  preloadImage={teamPhoto(member.key, 'lg')}
 >
   <SiteHeader lang={lang} paths={paths} />
 
@@ -119,5 +121,9 @@ const procedureSchema = {
   </main>
 
   <FooterSection lang={lang} />
+  <ScrollRail lang={lang} sections={[
+        { id: 'contenido', label: s.name },
+        { id: 'contacto', label: t.nav.contact },
+      ]} />
   <WhatsAppFloat lang={lang} />
 </Layout>

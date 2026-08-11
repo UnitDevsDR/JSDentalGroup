@@ -37,7 +37,7 @@ const Cta15 = ({ byline, heading, description, highlights = [], image, buttons, 
         <div className="grid overflow-hidden rounded-3xl bg-accent/50 lg:grid-cols-2">
           {/* Contenido */}
           <div className="flex flex-col justify-center gap-6 p-8 md:p-12 lg:gap-7 lg:p-16">
-            <p className="text-sm font-semibold tracking-[0.2em] text-teal uppercase" data-animate="up">
+            <p className="text-sm font-semibold tracking-[0.2em] text-teal-text uppercase" data-animate="up">
               {byline}
             </p>
             <h2
@@ -56,10 +56,8 @@ const Cta15 = ({ byline, heading, description, highlights = [], image, buttons, 
                   aria-hidden="true"
                 >
                   <path
-                    d="M6 6 C 60 28, 140 28, 194 6"
-                    stroke="oklch(0.71 0.09 187)"
-                    strokeWidth="5"
-                    strokeLinecap="round"
+                    d="M 4 3 C 26 26, 174 26, 196 3 C 178 20, 140 24, 100 24 C 60 24, 22 20, 4 3 Z"
+                    fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
               </span>
@@ -83,7 +81,7 @@ const Cta15 = ({ byline, heading, description, highlights = [], image, buttons, 
               {buttons?.primary && (
                 <Button
                   asChild
-                  className="h-auto rounded-full bg-teal px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-transform duration-300 hover:-translate-y-0.5 hover:bg-teal/90"
+                  className="h-auto rounded-full bg-teal-strong px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal/25 transition-transform duration-300 hover:-translate-y-0.5 hover:bg-teal-strong/90"
                 >
                   <a href={buttons.primary.url} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="size-5" aria-hidden="true" />
