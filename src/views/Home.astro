@@ -113,7 +113,8 @@ const faqSchema = {
       }}
       stats={[
         { count: 1000, suffix: '+', label: t.home.statPatients },
-        { count: 9, label: t.home.statSpecialists },
+        // se cuenta del equipo real: no queda desfasado si entra o sale alguien
+        { count: doctors.filter((d) => d.verified).length, label: t.home.statSpecialists },
         { value: String(SITE.founded), label: t.home.statSince },
       ]}
       avatars={heroAvatars}
