@@ -252,7 +252,7 @@ const Hero127 = ({
                       más plano, así el trazo engorda al centro y se afila en
                       los extremos (no un stroke de grosor constante). */}
                   <path
-                    d="M 8 8 C 46 104, 354 104, 392 8 C 360 82, 300 92, 200 92 C 100 92, 40 82, 8 8 Z"
+                    d="M 6 2 C 84 36, 316 36, 394 2 C 358 102, 42 102, 6 2 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>

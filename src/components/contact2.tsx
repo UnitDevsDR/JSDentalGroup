@@ -99,7 +99,7 @@ const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Pro
                   aria-hidden="true"
                 >
                   <path
-                    d="M 4 3 C 26 26, 174 26, 196 3 C 178 20, 140 24, 100 24 C 60 24, 22 20, 4 3 Z"
+                    d="M 3 1 C 42 9, 158 9, 197 1 C 179 25, 21 25, 3 1 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
