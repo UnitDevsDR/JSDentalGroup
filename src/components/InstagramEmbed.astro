@@ -17,7 +17,7 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
 
 <section class="py-24 md:py-32" aria-label="Instagram de la clínica">
   <div class="container">
-    <div class="mx-auto mb-10 flex max-w-2xl flex-col gap-4 text-center" data-animate="up">
+    <div class="mb-10 flex flex-col gap-4 text-center" data-animate="up">
       <h2 class="font-heading text-4xl font-bold text-navy md:text-5xl">{heading}</h2>
       <p class="text-lg text-muted-foreground">
         {description}
@@ -30,7 +30,7 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
       </p>
     </div>
 
-    <div class="mx-auto flex w-full max-w-5xl justify-center" data-animate="up" data-delay="0.15">
+    <div class="flex w-full justify-center" data-animate="up" data-delay="0.15">
       <div class="w-full overflow-hidden rounded-2xl border shadow-sm">
         <iframe
           src={embedUrl}
