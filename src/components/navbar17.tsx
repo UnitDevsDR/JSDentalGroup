@@ -84,9 +84,9 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
 
   return (
     <section className={cn("border-b border-border/80 bg-background/85 backdrop-blur-md", className)}>
-      <nav className="container flex h-14 items-center justify-between gap-4">
+      <nav className="container flex h-16 items-center justify-between gap-4">
         <a href="/" className="flex items-center gap-2" aria-label="JS Dental Group — Inicio">
-          <img src={logoSrc} className="h-8 w-auto" alt="JS Dental Group" width={128} height={32} />
+          <img src={logoSrc} className="h-9 w-auto" alt="JS Dental Group" width={144} height={36} />
         </a>
 
         <NavigationMenu className="hidden lg:block">
@@ -102,7 +102,7 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                     data-nav-item={item.name}
                     onMouseEnter={() => setHoverItem(item.name)}
                     className={cn(
-                      "h-9 bg-transparent px-3 text-sm font-medium hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
+                      "h-10 bg-transparent px-3.5 text-base font-medium hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
                       activeItem === item.name ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                     )}
                   >
@@ -159,7 +159,7 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                     onMouseEnter={() => setHoverItem(item.name)}
                     aria-current={activeItem === item.name ? "page" : undefined}
                     className={cn(
-                      "relative flex h-9 cursor-pointer items-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-transparent",
+                      "relative flex h-10 cursor-pointer items-center rounded-md px-3.5 text-base font-medium transition-colors hover:bg-transparent",
                       activeItem === item.name ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                     )}
                   >
@@ -172,7 +172,7 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
             {/* Indicador deslizante */}
             <div
               ref={indicatorRef}
-              className="pointer-events-none absolute -bottom-[13px] flex h-0.5 items-center justify-center px-3 transition-all duration-300"
+              className="pointer-events-none absolute -bottom-[15px] flex h-0.5 items-center justify-center px-3.5 transition-all duration-300"
               style={{ opacity: 0 }}
               aria-hidden="true"
             >
@@ -186,14 +186,14 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
             href={`tel:${SITE.phone}`}
             aria-label={`Llamar al ${SITE.phoneDisplay}`}
             title={SITE.phoneDisplay}
-            className="hidden size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:flex"
+            className="hidden size-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:flex"
           >
             <Phone className="size-4" aria-hidden="true" />
           </a>
           <Button
             asChild
             size="sm"
-            className="hidden h-9 rounded-md bg-teal px-4 text-sm font-medium text-white hover:bg-teal/90 lg:inline-flex"
+            className="hidden h-10 rounded-md bg-teal px-5 text-base font-medium text-white hover:bg-teal/90 lg:inline-flex"
           >
             <a href={whatsapp} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="size-4" aria-hidden="true" />
