@@ -248,12 +248,11 @@ const Hero127 = ({
                   fill="none"
                   aria-hidden="true"
                 >
-                  {/* Silueta de sonrisa orgánica: centro más plano, subida
-                      vertical en las esquinas, comisuras con remate hacia
-                      adentro y asimetría leve (la punta derecha queda unos
-                      píxeles más alta), como el gesto real de sonreír. */}
+                  {/* Sonrisa tipo trazo de pincel: barrido poco profundo con
+                      la punta izquierda baja y el extremo derecho subiendo con
+                      fuerza (la sonrisa de Amazon, sin la flecha). */}
                   <path
-                    d="M 10 16 C 92 64, 308 62, 388 8 C 393 5, 396 7, 393 13 C 378 48, 348 76, 268 87 C 224 92, 176 92, 132 87 C 60 78, 28 50, 7 21 C 5 16, 7 13, 10 16 Z"
+                    d="M 12 30 C 100 74, 260 86, 386 12 C 390 10, 393 13, 390 18 C 320 78, 150 100, 40 62 C 22 55, 8 40, 12 30 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
