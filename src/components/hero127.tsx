@@ -15,6 +15,8 @@ interface Buttons {
 interface BadgeProps {
   text: string;
   announcement?: string;
+  /** versión corta del anuncio para pantallas pequeñas (evita el corte) */
+  announcementShort?: string;
   url?: string;
 }
 interface AvatarItem {
@@ -30,6 +32,14 @@ interface Stat {
   label: string;
 }
 
+interface Slide {
+  src: string;
+  /** etiqueta que aparece en el chip flotante mientras se muestra */
+  name: string;
+  role: string;
+  alt: string;
+}
+
 interface Hero127Props {
   badge?: BadgeProps;
   /** palabras del titular; highlightWord se pinta en teal (.text-highlight) */
@@ -40,8 +50,8 @@ interface Hero127Props {
   avatars?: AvatarItem[];
   avatarsUrl?: string;
   stats?: Stat[];
-  /** foto principal (arco firma) */
-  image?: { src: string; alt: string };
+  /** carrusel del arco: equipo + especialistas (rota solo, sin framework) */
+  slides?: Slide[];
   className?: string;
 }
 
@@ -82,7 +92,7 @@ const Hero127 = ({
   avatars = [],
   avatarsUrl,
   stats = [],
-  image,
+  slides = [],
   className,
 }: Hero127Props) => {
   return (
@@ -106,7 +116,7 @@ const Hero127 = ({
               <Button
                 asChild
                 variant="ghost"
-                className="flex w-fit gap-3 rounded-full border bg-card/70 p-1 pr-3 backdrop-blur hover:bg-transparent"
+                className="flex h-auto w-fit gap-2 rounded-full border bg-card/70 p-1 pr-1 backdrop-blur hover:bg-transparent sm:gap-3 sm:pr-3"
                 data-animate="up"
               >
                 <a href={badge.url ?? "#contacto"}>
@@ -115,9 +125,10 @@ const Hero127 = ({
                     <span className="text-sm leading-normal font-medium">{badge.text}</span>
                   </Badge>
                   {badge.announcement && (
-                    <span className="hidden items-center gap-2 text-sm leading-normal font-medium text-muted-foreground sm:flex">
-                      {badge.announcement}
-                      <ChevronRight className="h-4 w-4 stroke-muted-foreground" aria-hidden="true" />
+                    <span className="flex items-center gap-1.5 pr-1 text-xs leading-normal font-medium text-muted-foreground sm:gap-2 sm:pr-0 sm:text-sm">
+                      <span className="sm:hidden">{badge.announcementShort ?? badge.announcement}</span>
+                      <span className="hidden sm:inline">{badge.announcement}</span>
+                      <ChevronRight className="h-4 w-4 shrink-0 stroke-muted-foreground" aria-hidden="true" />
                     </span>
                   )}
                 </a>
@@ -191,18 +202,33 @@ const Hero127 = ({
             </div>
           </div>
 
-          {image && (
+          {slides.length > 0 && (
             <div className="order-first flex justify-center lg:order-none" data-animate="scale" data-delay="0.3">
               <div className="relative w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[440px]">
-                <div className="overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-accent shadow-2xl shadow-navy/15">
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    width={772}
-                    height={877}
-                    fetchPriority="high"
-                    className="aspect-[4/5] h-auto w-full object-contain object-bottom pt-10"
-                  />
+                <div
+                  className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-accent shadow-2xl shadow-navy/15"
+                  data-hero-carousel
+                >
+                  {slides.map((slide, i) => (
+                    <img
+                      key={slide.src}
+                      // solo la primera carga de inmediato (LCP); el resto las
+                      // pide el script tras cargar la página
+                      src={i === 0 ? slide.src : undefined}
+                      data-src={i === 0 ? undefined : slide.src}
+                      alt={slide.alt}
+                      width={800}
+                      height={1000}
+                      fetchPriority={i === 0 ? "high" : undefined}
+                      data-hero-slide={i}
+                      data-name={slide.name}
+                      data-role={slide.role}
+                      className={cn(
+                        "absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 ease-out",
+                        i === 0 ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  ))}
                 </div>
                 <svg
                   className="smile-arc pointer-events-none absolute -bottom-10 left-1/2 w-[120%] -translate-x-1/2"
@@ -219,11 +245,15 @@ const Hero127 = ({
                   />
                 </svg>
                 <div
-                  className="absolute -left-6 top-10 hidden rounded-2xl bg-white/90 px-5 py-3 shadow-lg backdrop-blur sm:block"
+                  className="absolute -left-6 top-10 hidden min-w-[190px] rounded-2xl bg-white/90 px-5 py-3 shadow-lg backdrop-blur sm:block"
                   data-parallax="-0.08"
                 >
-                  <p className="text-sm font-semibold text-navy">Sonríe con confianza</p>
-                  <p className="text-xs text-muted-foreground">Atención para toda la familia</p>
+                  <p className="text-sm font-semibold text-navy" data-hero-name>
+                    {slides[0].name}
+                  </p>
+                  <p className="text-xs text-muted-foreground" data-hero-role>
+                    {slides[0].role}
+                  </p>
                 </div>
               </div>
             </div>

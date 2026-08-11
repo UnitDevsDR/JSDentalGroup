@@ -1,5 +1,4 @@
 ---
-import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
@@ -8,25 +7,16 @@ import { Contact2 } from '../components/contact2';
 import { About13 } from '../components/about13';
 import { TeamProfiles } from '../components/user-profile10';
 import { SITE, TEAM } from '../data/site';
+import { IMAGES, teamPhoto } from '../lib/images';
 
-import { TEAM_IMAGES } from '../lib/team-images';
 
-import banner2 from '../assets/img/home/banner-2.jpg';
 
-// Historia: retrato HD de la fundadora (Dra. Julissa Saint-Hilaire)
-const [historia, mision] = await Promise.all([
-  getImage({ src: TEAM_IMAGES['julissa-saint-hilaire'], width: 900 }),
-  getImage({ src: banner2, width: 900 }),
-]);
-
-const doctors = await Promise.all(
-  TEAM.map(async (m) => ({
-    name: m.name,
-    role: m.role,
-    imageSrc: (await getImage({ src: TEAM_IMAGES[m.image], width: 480 })).src,
-    verified: m.name.startsWith('Dr'),
-  })),
-);
+const doctors = TEAM.map((m) => ({
+  name: m.name,
+  role: m.role,
+  imageSrc: teamPhoto(m.image, 'md'),
+  verified: m.name.startsWith('Dr'),
+}));
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -50,10 +40,10 @@ const breadcrumbSchema = {
       title="Historia de la clínica"
       sideLabel="Nuestra historia"
       intro="En el año 2020 nace J Saint Hilaire Dental Expert Group, un sueño hecho realidad que surge del deseo de ofrecer una atención odontológica integral, moderna y basada en el trabajo en equipo."
-      founder={{ name: 'Dra. Julissa Saint-Hilaire Espinal', role: 'Fundadora y Gerente General', imageSrc: historia.src }}
+      founder={{ name: 'Dra. Julissa Saint-Hilaire Espinal', role: 'Fundadora y Gerente General', imageSrc: teamPhoto('julissa-saint-hilaire', 'lg') }}
       statement="Más que una clínica, somos un grupo de expertos comprometidos con brindar soluciones funcionales y estéticas, trabajando de forma multidisciplinaria para abordar cada caso con la máxima excelencia."
       support="Cada especialista aporta su granito de arena, garantizando tratamientos más completos, personalizados y exitosos. Nuestro objetivo no es solo cuidar sonrisas, sino construir relaciones de confianza con cada paciente, guiados siempre por la ética, el respeto y el amor por lo que hacemos."
-      image={{ src: mision.src, alt: 'JS Dental Group, clínica dental en Santiago de los Caballeros' }}
+      image={{ src: IMAGES.clinica, alt: 'JS Dental Group, clínica dental en Santiago de los Caballeros' }}
     />
     <TeamProfiles doctors={doctors} whatsapp={SITE.whatsapp} />
     <div data-animate="up">

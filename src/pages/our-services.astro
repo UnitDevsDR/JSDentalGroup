@@ -7,18 +7,15 @@ import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { Contact2 } from '../components/contact2';
 import { Feature101 } from '../components/feature101';
 import { SITE, SERVICES } from '../data/site';
-import { getImage } from 'astro:assets';
-import { SERVICE_ICONS } from '../lib/service-icons';
+import { serviceIcon } from '../lib/images';
 
-const services = await Promise.all(
-  SERVICES.map(async (s) => ({
-    slug: s.slug,
-    name: s.name,
-    tagline: s.tagline,
-    copy: s.copy,
-    iconSrc: SERVICE_ICONS[s.slug] ? (await getImage({ src: SERVICE_ICONS[s.slug], width: 224 })).src : undefined,
-  })),
-);
+const services = SERVICES.map((s) => ({
+  slug: s.slug,
+  name: s.name,
+  tagline: s.tagline,
+  copy: s.copy,
+  iconSrc: serviceIcon(s.slug),
+}));
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',

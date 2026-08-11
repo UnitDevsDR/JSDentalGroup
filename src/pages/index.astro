@@ -1,5 +1,4 @@
 ---
-import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
@@ -13,49 +12,56 @@ import { Faq11 } from '../components/faq11';
 import { Cta15 } from '../components/cta15';
 import { Contact2 } from '../components/contact2';
 import { SITE, SERVICES, TEAM, FAQS } from '../data/site';
-import { TEAM_IMAGES } from '../lib/team-images';
-import { SERVICE_ICONS } from '../lib/service-icons';
+import { IMAGES, serviceIcon, teamPhoto } from '../lib/images';
 
-import heroImg from '../assets/img/home/clinica-1.png';
-import ctaImg from '../assets/img/home/diente-3d.png';
-import agenda3d from '../assets/img/home/agenda-3d.webp';
 
-const opt = (src: ImageMetadata, width: number) => getImage({ src, width });
-
-// Anchos limitados a la resolución nativa de cada fuente (sin upscaling)
-const [heroOpt, ctaOpt, agenda3dOpt] = await Promise.all([
-  opt(heroImg, 772),
-  opt(ctaImg, 900),
-  opt(agenda3d, 560),
-]);
-
-const doctors = await Promise.all(
-  TEAM.map(async (m) => ({
-    name: m.name,
-    role: m.role,
-    imageSrc: (await opt(TEAM_IMAGES[m.image], 480)).src,
-    verified: m.name.startsWith('Dr'),
-  })),
-);
+const doctors = TEAM.map((m) => ({
+  name: m.name,
+  role: m.role,
+  imageSrc: teamPhoto(m.image, 'md'),
+  verified: m.name.startsWith('Dr'),
+}));
 
 // Avatares del hero: doctores reales visualmente distintos (social proof)
 const HERO_DOCTOR_KEYS = ['julissa-saint-hilaire', 'simon-dominguez', 'rosanny-minaya', 'laura-bueno'];
-const heroAvatars = await Promise.all(
-  HERO_DOCTOR_KEYS.map(async (key) => {
-    const member = TEAM.find((m) => m.image === key)!;
-    return { src: (await opt(TEAM_IMAGES[key], 160)).src, alt: member.name };
-  }),
-);
+const heroAvatars = HERO_DOCTOR_KEYS.map((key) => ({
+  src: teamPhoto(key, 'sm'),
+  alt: TEAM.find((m) => m.image === key)!.name,
+}));
 
-const services = await Promise.all(
-  SERVICES.map(async (s) => ({
-    slug: s.slug,
-    name: s.name,
-    tagline: s.tagline,
-    copy: s.copy,
-    iconSrc: SERVICE_ICONS[s.slug] ? (await opt(SERVICE_ICONS[s.slug], 224)).src : undefined,
-  })),
-);
+// Carrusel del hero: foto de equipo + especialistas destacados
+const HERO_SLIDE_KEYS = [
+  'julissa-saint-hilaire',
+  'simon-dominguez',
+  'rosanny-minaya',
+  'laura-bueno',
+  'siddy-dominguez',
+];
+const heroSlides = [
+  {
+    src: IMAGES.heroEspecialistas,
+    name: 'Sonríe con confianza',
+    role: 'Atención para toda la familia',
+    alt: 'Especialistas de JS Dental Group, clínica dental en Santiago',
+  },
+  ...HERO_SLIDE_KEYS.map((key) => {
+    const m = TEAM.find((t) => t.image === key)!;
+    return {
+      src: teamPhoto(key, 'lg'),
+      name: m.name,
+      role: m.role,
+      alt: `${m.name}, ${m.role} en JS Dental Group`,
+    };
+  }),
+];
+
+const services = SERVICES.map((s) => ({
+  slug: s.slug,
+  name: s.name,
+  tagline: s.tagline,
+  copy: s.copy,
+  iconSrc: serviceIcon(s.slug),
+}));
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -77,7 +83,12 @@ const faqSchema = {
 
   <main id="contenido">
     <Hero127
-      badge={{ text: 'Santiago, R.D.', announcement: 'Atención para toda la familia', url: '#contacto' }}
+      badge={{
+        text: 'Santiago, R.D.',
+        announcement: 'Atención para toda la familia',
+        announcementShort: 'Toda la familia',
+        url: '#contacto',
+      }}
       headingWords={['Es', 'el', 'turno', 'de', 'tu']}
       highlightWord="sonrisa"
       description="Inspirados en la más avanzada tecnología y un trato humano, en JS Dental Group te ofrecemos una experiencia única para que sonrías sin límites."
@@ -92,7 +103,7 @@ const faqSchema = {
       ]}
       avatars={heroAvatars}
       avatarsUrl="/about-us"
-      image={{ src: heroOpt.src, alt: 'Especialistas de JS Dental Group, clínica dental en Santiago' }}
+      slides={heroSlides}
     />
 
     <div data-animate="up">
@@ -117,7 +128,7 @@ const faqSchema = {
       byline="Cuidamos tu sonrisa"
       heading="Con la ciencia de hoy y la pasión de siempre"
       description="Un grupo de expertos que trabaja de forma multidisciplinaria para abordar cada caso con la máxima excelencia: tratamientos más completos, personalizados y exitosos."
-      image={{ src: ctaOpt.src, alt: 'Ilustración 3D: dentistas cuidando un diente gigante' }}
+      image={{ src: IMAGES.dienteCuidado3d, alt: 'Ilustración 3D: dentistas cuidando un diente gigante' }}
       highlights={[
         'Tecnología de vanguardia',
         'Equipo multidisciplinario certificado',
@@ -139,7 +150,7 @@ const faqSchema = {
         heading="Preguntas frecuentes"
         note="Estas son algunas de las preguntas comunes sobre la clínica. Si no encuentras lo que buscas,"
         items={FAQS.map((f) => ({ question: f.q, answer: f.a }))}
-        imageSrc={agenda3dOpt.src}
+        imageSrc={IMAGES.agendaCita3d}
       />
     </div>
 

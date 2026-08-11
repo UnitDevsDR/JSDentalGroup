@@ -1,10 +1,7 @@
 ---
-import { getImage } from 'astro:assets';
 import { Navbar17 } from './navbar17';
 import { SITE, SERVICES } from '../data/site';
-import logoImg from '../assets/img/brand/logo.png';
-
-const logo = await getImage({ src: logoImg, height: 72 });
+import { IMAGES } from '../lib/images';
 
 const items = [
   { name: 'Inicio', link: '/' },
@@ -36,7 +33,7 @@ const currentPath = Astro.url.pathname;
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out">
   <Navbar17
     client:load
-    logoSrc={logo.src}
+    logoSrc={IMAGES.logo}
     whatsapp={SITE.whatsapp}
     items={items}
     currentPath={currentPath}

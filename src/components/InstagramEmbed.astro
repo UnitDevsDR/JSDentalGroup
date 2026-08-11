@@ -31,10 +31,10 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
     </div>
 
     <div class="flex w-full justify-center" data-animate="up" data-delay="0.15">
-      <div class="w-full overflow-hidden rounded-2xl border shadow-sm">
+      <div class="ig-frame w-full overflow-hidden rounded-2xl border shadow-sm">
         <iframe
           src={embedUrl}
-          class="block h-[900px] w-full border-none md:h-[1000px]"
+          class="absolute inset-0 h-full w-full border-none"
           scrolling="no"
           title={`Instagram de @${username}`}
           loading="lazy"></iframe>
@@ -42,3 +42,15 @@ const embedUrl = `https://www.instagram.com/${username}/embed`;
     </div>
   </div>
 </section>
+
+<style>
+  /* El embed muestra cabecera de perfil + 2 filas de 3 miniaturas cuadradas:
+     su alto real, medido a 364/589/1126/1510px de ancho, es 0.676*ancho + 147.
+     El padding-bottom en % se calcula sobre el ancho, así el marco se ajusta
+     al contenido en cualquier pantalla: ni hueco blanco ni recorte. */
+  .ig-frame {
+    position: relative;
+    height: 0;
+    padding-bottom: calc(66.7% + 158px);
+  }
+</style>

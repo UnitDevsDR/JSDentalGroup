@@ -3,7 +3,7 @@ import '@fontsource-variable/bricolage-grotesque';
 import '@fontsource-variable/instrument-sans';
 import '../styles/global.css';
 import { SITE, TEAM } from '../data/site';
-import ogDefault from '../assets/img/brand/logo-og.png';
+import { IMAGES } from '../lib/images';
 
 interface Props {
   title: string;
@@ -15,7 +15,7 @@ interface Props {
 
 const { title, description, ogImage, extraSchema = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
-const ogImageUrl = ogImage ?? new URL(ogDefault.src, SITE.url).href;
+const ogImageUrl = ogImage ?? new URL(IMAGES.og, SITE.url).href;
 
 // Analítica y verificación: se activan poniendo los IDs en .env / variables
 // de entorno del build (PUBLIC_GTM_ID=GTM-XXXXXXX, PUBLIC_GSC_VERIFICATION=token)
@@ -136,6 +136,42 @@ const schemas = [clinicSchema, ...extraSchema];
       )
     }
     <slot />
+
+    <script>
+      // Carrusel del hero: rota entre el equipo y los especialistas.
+      // Vanilla para no hidratar React; pausa al pasar el cursor y respeta
+      // prefers-reduced-motion.
+      const carousel = document.querySelector<HTMLElement>('[data-hero-carousel]');
+      if (carousel) {
+        const slides = [...carousel.querySelectorAll<HTMLImageElement>('[data-hero-slide]')];
+        const nameEl = document.querySelector<HTMLElement>('[data-hero-name]');
+        const roleEl = document.querySelector<HTMLElement>('[data-hero-role]');
+        if (slides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          // las imágenes diferidas se piden cuando la página ya cargó
+          const preload = () => slides.forEach((el) => {
+            const lazy = el.getAttribute('data-src');
+            if (lazy) { el.src = lazy; el.removeAttribute('data-src'); }
+          });
+          if (document.readyState === 'complete') preload();
+          else window.addEventListener('load', preload, { once: true });
+
+          let index = 0;
+          let paused = false;
+          carousel.addEventListener('mouseenter', () => { paused = true; });
+          carousel.addEventListener('mouseleave', () => { paused = false; });
+
+          setInterval(() => {
+            if (paused || document.hidden) return;
+            slides[index].classList.replace('opacity-100', 'opacity-0');
+            index = (index + 1) % slides.length;
+            slides[index].classList.replace('opacity-0', 'opacity-100');
+            const meta = slides[index].dataset;
+            if (nameEl && meta.name) nameEl.textContent = meta.name;
+            if (roleEl && meta.role) roleEl.textContent = meta.role;
+          }, 4500);
+        }
+      }
+    </script>
 
     <script>
       import gsap from 'gsap';

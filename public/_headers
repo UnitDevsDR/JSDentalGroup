@@ -10,3 +10,8 @@
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Imágenes con nombre SEO (sin hash): caché de 7 días + revalidación,
+# así una imagen reemplazada se propaga sin quedar clavada un año
+/img/*
+  Cache-Control: public, max-age=604800, must-revalidate

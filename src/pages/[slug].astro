@@ -1,5 +1,4 @@
 ---
-import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
@@ -8,7 +7,7 @@ import { Hero86 } from '../components/hero86';
 import { Service5 } from '../components/service5';
 import { Contact2 } from '../components/contact2';
 import { SITE, SERVICES } from '../data/site';
-import { TEAM_IMAGES } from '../lib/team-images';
+import { servicePhoto, teamPhoto } from '../lib/images';
 
 export function getStaticPaths() {
   return SERVICES.map((service) => ({ params: { slug: service.slug }, props: { service } }));
@@ -16,13 +15,7 @@ export function getStaticPaths() {
 
 const { service } = Astro.props;
 
-const [specialistImg, specialistThumb] = await Promise.all([
-  getImage({ src: TEAM_IMAGES[service.specialist.image], width: 800 }),
-  getImage({ src: TEAM_IMAGES[service.specialist.image], width: 128 }),
-]);
 
-// Foto real del tratamiento: pre-optimizada en public/ con nombre descriptivo (SEO)
-const photoSrc = `/img/servicios/${service.slug}-clinica-dental-santiago.webp`;
 
 // El titular enfatiza la última palabra (subrayado teal del bloque hero86)
 const words = service.h1.split(' ');
@@ -81,18 +74,18 @@ const procedureSchema = {
       specialist={{
         name: service.specialist.name,
         role: service.specialist.role,
-        imageSrc: specialistImg.src,
+        imageSrc: teamPhoto(service.specialist.image, 'lg'),
       }}
     />
 
     <Service5
       heading="¿En qué consiste este tratamiento?"
       intro={service.copy}
-      photo={{ src: photoSrc, alt: `${service.name} en JS Dental Group, clínica dental en Santiago` }}
+      photo={{ src: servicePhoto(service.slug), alt: `${service.name} en JS Dental Group, clínica dental en Santiago` }}
       specialist={{
         name: service.specialist.name,
         role: service.specialist.role,
-        imageSrc: specialistThumb.src,
+        imageSrc: teamPhoto(service.specialist.image, 'sm'),
       }}
       relatedServices={relatedServices}
     />
