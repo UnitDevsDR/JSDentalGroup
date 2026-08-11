@@ -2,6 +2,7 @@ import { MessageCircle, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SITE } from "@/data/site";
 
 interface ButtonProps {
   text: string;
@@ -89,19 +90,33 @@ const Hero86 = ({
             </div>
           </div>
 
-          <div className="relative flex w-full justify-center lg:w-1/2">
-            <div className="relative z-10 -mb-10 h-auto w-4/5 max-w-sm lg:mb-0 lg:w-full lg:max-w-md" data-animate="scale">
+          <div className="relative flex w-full justify-center pb-14 lg:w-1/2 lg:pb-10">
+            <div className="relative z-10 h-auto w-4/5 max-w-sm lg:w-full lg:max-w-md" data-animate="scale">
               <img
                 src={specialist.imageSrc}
                 alt={`${specialist.name} — ${specialist.role} en JS Dental Group`}
                 width={800}
                 height={1000}
                 fetchPriority="high"
-                className="aspect-3/4 w-full rounded-t-3xl object-cover object-top drop-shadow-xl"
+                className="aspect-3/4 w-full rounded-3xl border-4 border-white object-cover object-top shadow-2xl shadow-navy/20"
               />
-              <div className="absolute inset-x-6 -bottom-6 z-20 rounded-2xl border bg-white/95 px-5 py-3.5 text-center shadow-lg backdrop-blur lg:-bottom-2">
-                <p className="font-heading text-lg font-semibold text-navy">{specialist.name}</p>
-                <p className="text-sm text-muted-foreground">{specialist.role}</p>
+              <div className="absolute inset-x-5 -bottom-12 z-20 rounded-2xl border bg-white px-6 py-4 shadow-xl shadow-navy/10 lg:-bottom-8">
+                <p className="text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+                  Especialista a cargo
+                </p>
+                <p className="mt-1.5 font-heading text-xl leading-tight font-semibold text-navy">
+                  {specialist.name}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{specialist.role}</p>
+                <a
+                  href={SITE.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex w-full items-center gap-1.5 border-t py-3 text-sm font-semibold text-teal hover:underline"
+                >
+                  Agendar cita
+                  <span aria-hidden="true">→</span>
+                </a>
               </div>
             </div>
             <div className="absolute bottom-0 w-full overflow-hidden" aria-hidden="true">

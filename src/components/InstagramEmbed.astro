@@ -1,0 +1,44 @@
+---
+// Feed real de Instagram embebido (patrón de la rama lpascual)
+interface Props {
+  username: string;
+  heading?: string;
+  description?: string;
+}
+
+const {
+  username,
+  heading = 'Nuestra sonrisa también está en Instagram',
+  description = 'Momentos reales de nuestros pacientes y nuestro equipo.',
+} = Astro.props;
+
+const embedUrl = `https://www.instagram.com/${username}/embed`;
+---
+
+<section class="py-24 md:py-32" aria-label="Instagram de la clínica">
+  <div class="container">
+    <div class="mx-auto mb-10 flex max-w-2xl flex-col gap-4 text-center" data-animate="up">
+      <h2 class="font-heading text-4xl font-bold text-navy md:text-5xl">{heading}</h2>
+      <p class="text-lg text-muted-foreground">
+        {description}
+        <a
+          href={`https://www.instagram.com/${username}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-teal hover:underline">@{username}</a
+        >
+      </p>
+    </div>
+
+    <div class="mx-auto flex w-full max-w-3xl justify-center" data-animate="up" data-delay="0.15">
+      <div class="w-full overflow-hidden rounded-2xl border shadow-sm">
+        <iframe
+          src={embedUrl}
+          class="block h-[900px] w-full border-none md:h-[1000px]"
+          scrolling="no"
+          title={`Instagram de @${username}`}
+          loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</section>

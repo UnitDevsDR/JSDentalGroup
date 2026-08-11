@@ -37,9 +37,9 @@ export const Footer14 = ({ logoSrc }: Footer14Props) => {
               <img
                 src={logoSrc}
                 alt="JS Dental Group"
-                className="mb-6 h-12 w-auto"
-                width={180}
-                height={48}
+                className="mb-6 h-16 w-auto"
+                width={130}
+                height={64}
                 loading="lazy"
               />
             </a>

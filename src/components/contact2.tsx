@@ -53,7 +53,27 @@ const Contact2 = ({
       <div className="container">
         <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="mb-4 font-heading text-4xl font-bold text-navy md:text-5xl">{title}</h2>
+            <h2 className="mb-4 font-heading text-4xl font-bold text-navy md:text-5xl">
+              {title.split(" ").slice(0, -1).join(" ")}{" "}
+              <span className="relative inline-block">
+                {title.split(" ").at(-1)}
+                {/* arco de sonrisa bajo la última palabra (firma visual) */}
+                <svg
+                  className="absolute -bottom-2 left-0 w-full"
+                  viewBox="0 0 200 26"
+                  fill="none"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 6 C 60 28, 140 28, 194 6"
+                    stroke="oklch(0.71 0.09 187)"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+            </h2>
             <p className="mb-8 text-lg text-muted-foreground">{description}</p>
 
             <ul className="space-y-5">
@@ -63,14 +83,14 @@ const Contact2 = ({
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-navy">Teléfono</p>
-                  <a href={`tel:${SITE.phone}`} className="text-lg hover:text-teal">
+                  <a href={`tel:${SITE.phone}`} className="inline-block py-1.5 text-lg hover:text-teal">
                     {SITE.phoneDisplay}
                   </a>
                   <p className="text-sm text-muted-foreground">
                     Emergencias:{" "}
                     <a
                       href={`tel:${SITE.emergencyPhone}`}
-                      className="inline-block py-2 font-medium text-terracotta hover:underline"
+                      className="inline-block py-2.5 font-medium text-terracotta hover:underline"
                     >
                       {SITE.emergencyPhoneDisplay}
                     </a>
@@ -83,7 +103,7 @@ const Contact2 = ({
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-navy">Correo</p>
-                  <a href={`mailto:${SITE.email}`} className="text-lg break-all hover:text-teal">
+                  <a href={`mailto:${SITE.email}`} className="inline-block py-1.5 text-lg break-all hover:text-teal">
                     {SITE.email}
                   </a>
                 </div>
@@ -122,7 +142,7 @@ const Contact2 = ({
                     href={SITE.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-lg hover:text-teal"
+                    className="inline-block py-1.5 text-lg hover:text-teal"
                   >
                     @jsdentalgrouprd
                   </a>

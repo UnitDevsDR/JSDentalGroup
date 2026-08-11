@@ -1,22 +1,6 @@
 "use client";
 
-import {
-  Activity,
-  AlignHorizontalDistributeCenter,
-  Anchor,
-  ArrowRight,
-  Baby,
-  Clock,
-  Menu,
-  MessageCircle,
-  Phone,
-  Scissors,
-  ShieldCheck,
-  Sparkles,
-  Stethoscope,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, Clock, Menu, MessageCircle, Phone, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -35,17 +19,6 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/data/site";
-
-const ICONS: Record<string, LucideIcon> = {
-  Sparkles,
-  Anchor,
-  Activity,
-  AlignHorizontalDistributeCenter,
-  ShieldCheck,
-  Scissors,
-  Stethoscope,
-  Baby,
-};
 
 interface NavSubItem {
   title: string;
@@ -138,7 +111,6 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                   <NavigationMenuContent className="rounded-xl">
                     <ul className="grid w-[340px] gap-1 p-2 md:w-[540px] md:grid-cols-2">
                       {item.submenu?.map((sub) => {
-                        const Icon = ICONS[sub.icon ?? ""] ?? Sparkles;
                         const subActive = currentPath === sub.href || currentPath === `${sub.href}/`;
                         return (
                           <li key={sub.title}>
@@ -151,13 +123,7 @@ const Navbar17 = ({ className, logoSrc, whatsapp, items, currentPath }: Navbar17
                                   subActive && "bg-accent",
                                 )}
                               >
-                                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent transition-colors group-hover/item:bg-teal group-hover/item:text-white">
-                                  <Icon
-                                    className="size-4 text-teal transition-colors group-hover/item:text-white"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                                <span className="flex flex-col gap-1">
+                                <span className="flex flex-col gap-1.5">
                                   <span className={cn("text-sm leading-none font-medium", subActive && "text-teal")}>
                                     {sub.title}
                                   </span>
@@ -298,7 +264,6 @@ const MobileNav = ({
                     </p>
                     <ul className="grid grid-cols-2 gap-1">
                       {navItem.submenu?.map((sub) => {
-                        const Icon = ICONS[sub.icon ?? ""] ?? Sparkles;
                         const subActive = currentPath === sub.href || currentPath === `${sub.href}/`;
                         return (
                           <li key={sub.title}>
@@ -310,7 +275,6 @@ const MobileNav = ({
                                 subActive && "bg-accent text-teal",
                               )}
                             >
-                              <Icon className="size-4 shrink-0 text-teal" aria-hidden="true" />
                               {sub.title}
                             </a>
                           </li>

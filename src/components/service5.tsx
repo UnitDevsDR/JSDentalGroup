@@ -1,32 +1,7 @@
-import {
-  Activity,
-  AlignHorizontalDistributeCenter,
-  Anchor,
-  Baby,
-  CalendarCheck,
-  Clock,
-  MessageCircle,
-  Phone,
-  Scissors,
-  ShieldCheck,
-  Sparkles,
-  Stethoscope,
-  type LucideIcon,
-} from "lucide-react";
+import { CalendarCheck, Clock, MessageCircle, Phone } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { SITE } from "@/data/site";
-
-const ICONS: Record<string, LucideIcon> = {
-  Sparkles,
-  Anchor,
-  Activity,
-  AlignHorizontalDistributeCenter,
-  ShieldCheck,
-  Scissors,
-  Stethoscope,
-  Baby,
-};
 
 interface Specialist {
   name: string;
@@ -42,26 +17,25 @@ interface RelatedService {
 }
 
 interface Service5Props {
-  icon: string;
   heading: string;
   intro: string;
   body?: string;
+  /** foto real del tratamiento (del sitio de la clínica) */
+  photo?: { src: string; alt: string };
   specialist: Specialist;
   relatedServices: RelatedService[];
   className?: string;
 }
 
 const Service5 = ({
-  icon,
   heading,
   intro,
   body,
+  photo,
   specialist,
   relatedServices,
   className,
 }: Service5Props) => {
-  const HeadIcon = ICONS[icon] ?? Sparkles;
-
   return (
     <section className={cn("py-16 md:py-24", className)}>
       <div className="container max-w-5xl">
@@ -69,12 +43,6 @@ const Service5 = ({
           {/* Contenido principal */}
           <div className="lg:col-span-2" data-animate="up">
             <div className="mb-10 space-y-8">
-              <div className="flex justify-center lg:justify-start">
-                <div className="rounded-lg bg-accent p-4">
-                  <HeadIcon className="h-10 w-10 text-teal" strokeWidth={1.5} aria-hidden="true" />
-                </div>
-              </div>
-
               <div className="space-y-6">
                 <h2 className="font-heading text-3xl font-semibold tracking-tight text-navy md:text-4xl">
                   {heading}
@@ -82,6 +50,17 @@ const Service5 = ({
                 <p className="text-xl leading-relaxed text-muted-foreground">{intro}</p>
               </div>
             </div>
+
+            {photo && (
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                width={880}
+                height={495}
+                className="mb-8 aspect-video w-full rounded-2xl border object-cover"
+              />
+            )}
 
             <div className="max-w-none space-y-5 text-base leading-relaxed text-muted-foreground">
               {body && <p>{body}</p>}
@@ -160,17 +139,13 @@ const Service5 = ({
               <h3 className="mb-6 text-lg font-semibold text-navy">Servicios relacionados</h3>
               <div className="space-y-4">
                 {relatedServices.map((service, index) => {
-                  const Icon = ICONS[service.icon] ?? Sparkles;
                   return (
                     <div key={index} className="group">
                       <a
                         href={service.link}
                         className="block space-y-1 rounded-md p-3 transition-colors hover:bg-background"
                       >
-                        <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-muted-foreground group-hover:text-teal" aria-hidden="true" />
-                          <div className="text-sm font-medium group-hover:text-teal">{service.title}</div>
-                        </div>
+                        <div className="text-sm font-medium group-hover:text-teal">{service.title}</div>
                         <div className="text-xs text-muted-foreground">{service.description}</div>
                       </a>
                     </div>

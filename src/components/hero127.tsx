@@ -51,7 +51,7 @@ function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
       {avatars.map((item, i) => (
         <span
           key={`avatar-hero-${i}`}
-          className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-full border bg-accent before:absolute before:top-1/2 before:left-1/2 before:z-10 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-[''] sm:h-14 sm:w-14"
+          className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-white bg-accent shadow-sm sm:h-14 sm:w-14"
         >
           <img
             src={item.src}
@@ -63,8 +63,8 @@ function Avatars({ avatars, url }: { avatars: AvatarItem[]; url?: string }) {
           />
         </span>
       ))}
-      <div className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-full bg-navy before:absolute before:top-1/2 before:left-1/2 before:block before:h-[85%] before:w-[85%] before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-2 before:border-white before:bg-transparent before:content-[''] sm:h-14 sm:w-14">
-        <Plus className="m-auto h-4 w-4 stroke-white" aria-hidden="true" />
+      <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-navy text-sm font-semibold text-white shadow-sm sm:h-14 sm:w-14">
+        +5
       </div>
       <span className="max-w-[130px] text-left text-sm leading-snug font-medium text-muted-foreground transition-colors group-hover/avatars:text-navy">
         Conoce a nuestros doctores

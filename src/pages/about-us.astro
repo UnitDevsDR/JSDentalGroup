@@ -5,8 +5,8 @@ import SiteHeader from '../components/SiteHeader.astro';
 import FooterSection from '../components/FooterSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { Contact2 } from '../components/contact2';
-import { About1 } from '../components/about1';
-import { Team13 } from '../components/team13';
+import { About13 } from '../components/about13';
+import { TeamProfiles } from '../components/user-profile10';
 import { SITE, TEAM } from '../data/site';
 
 import { TEAM_IMAGES } from '../lib/team-images';
@@ -19,11 +19,12 @@ const [historia, mision] = await Promise.all([
   getImage({ src: banner2, width: 900 }),
 ]);
 
-const members = await Promise.all(
+const doctors = await Promise.all(
   TEAM.map(async (m) => ({
     name: m.name,
     role: m.role,
     imageSrc: (await getImage({ src: TEAM_IMAGES[m.image], width: 480 })).src,
+    verified: m.name.startsWith('Dr'),
   })),
 );
 
@@ -45,8 +46,16 @@ const breadcrumbSchema = {
   <SiteHeader />
 
   <main id="contenido" class="pt-20">
-    <About1 historyImageSrc={historia.src} missionImageSrc={mision.src} />
-    <Team13 client:visible members={members} whatsapp={SITE.whatsapp} />
+    <About13
+      title="Historia de la clínica"
+      sideLabel="Nuestra historia"
+      intro="En el año 2020 nace J Saint Hilaire Dental Expert Group, un sueño hecho realidad que surge del deseo de ofrecer una atención odontológica integral, moderna y basada en el trabajo en equipo."
+      founder={{ name: 'Dra. Julissa Saint-Hilaire Espinal', role: 'Fundadora y Gerente General', imageSrc: historia.src }}
+      statement="Más que una clínica, somos un grupo de expertos comprometidos con brindar soluciones funcionales y estéticas, trabajando de forma multidisciplinaria para abordar cada caso con la máxima excelencia."
+      support="Cada especialista aporta su granito de arena, garantizando tratamientos más completos, personalizados y exitosos. Nuestro objetivo no es solo cuidar sonrisas, sino construir relaciones de confianza con cada paciente, guiados siempre por la ética, el respeto y el amor por lo que hacemos."
+      image={{ src: mision.src, alt: 'JS Dental Group, clínica dental en Santiago de los Caballeros' }}
+    />
+    <TeamProfiles doctors={doctors} whatsapp={SITE.whatsapp} />
     <div data-animate="up">
       <Contact2 client:visible />
     </div>

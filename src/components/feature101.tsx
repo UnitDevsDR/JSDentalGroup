@@ -1,34 +1,11 @@
-import {
-  Activity,
-  AlignHorizontalDistributeCenter,
-  Anchor,
-  ArrowRight,
-  Baby,
-  Scissors,
-  ShieldCheck,
-  Sparkles,
-  Stethoscope,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
-const ICONS: Record<string, LucideIcon> = {
-  Sparkles,
-  Anchor,
-  Activity,
-  AlignHorizontalDistributeCenter,
-  ShieldCheck,
-  Scissors,
-  Stethoscope,
-  Baby,
-};
 
 interface ServiceTile {
   slug: string;
   name: string;
   tagline: string;
-  icon: string;
   /** descripción corta: los tiles grandes del bento la muestran */
   copy?: string;
 }
@@ -41,15 +18,10 @@ interface Feature101Props {
 }
 
 /**
- * Bento de servicios: el primer y el último servicio ocupan tiles grandes con foto;
- * el resto son tiles de icono. Todos enlazan a su página /:slug.
+ * Bento de servicios tipográfico: el primer y el último servicio ocupan
+ * tiles grandes con descripción; todos enlazan a su página /:slug.
  */
 const Feature101 = ({ className, heading, description, services }: Feature101Props) => {
-  const renderIcon = (name: string) => {
-    const Icon = ICONS[name] ?? Sparkles;
-    return <Icon className="mb-6 h-auto w-11 text-teal" strokeWidth={1.5} aria-hidden="true" />;
-  };
-
   const [first, ...rest] = services;
   const last = rest.pop();
 
@@ -67,10 +39,9 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
               className="group flex flex-col justify-between gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:col-span-2 lg:row-span-2"
             >
               <div>
-                {renderIcon(first.icon)}
-                <h3 className="mb-1 font-heading text-2xl font-medium text-navy">{first.name}</h3>
-                <p className="text-muted-foreground">{first.tagline}</p>
-                {first.copy && <p className="mt-4 max-w-md leading-relaxed text-muted-foreground">{first.copy}</p>}
+                <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{first.tagline}</p>
+                <h3 className="mb-4 font-heading text-3xl font-semibold text-navy md:text-4xl">{first.name}</h3>
+                {first.copy && <p className="max-w-md text-lg leading-relaxed text-muted-foreground">{first.copy}</p>}
               </div>
               <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal">
                 Ver tratamiento
@@ -85,15 +56,14 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
               href={`/${s.slug}`}
               className="group flex flex-col gap-6 rounded-2xl bg-muted/70 p-8 transition-colors hover:bg-accent md:h-72 md:justify-between md:gap-4"
             >
-              {renderIcon(s.icon)}
               <div>
-                <h3 className="mb-1 font-heading text-2xl font-medium text-navy">{s.name}</h3>
+                <h3 className="mb-2 font-heading text-2xl font-medium text-navy">{s.name}</h3>
                 <p className="text-muted-foreground">{s.tagline}</p>
-                <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal">
-                  Ver tratamiento
-                  <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
-                </span>
               </div>
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal">
+                Ver tratamiento
+                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+              </span>
             </a>
           ))}
 
@@ -104,17 +74,14 @@ const Feature101 = ({ className, heading, description, services }: Feature101Pro
             >
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                 <div className="flex-1">
-                  {renderIcon(last.icon)}
-                  <h3 className="mb-1 font-heading text-2xl font-medium">{last.name}</h3>
-                  <p className="text-white/70">{last.tagline}</p>
-                  <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal">
+                  <p className="mb-3 text-sm font-semibold tracking-widest text-teal uppercase">{last.tagline}</p>
+                  <h3 className="mb-2 font-heading text-3xl font-semibold">{last.name}</h3>
+                  <span className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-teal">
                     Ver tratamiento
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                 </div>
-                {last.copy && (
-                  <p className="max-w-sm leading-relaxed text-white/75 sm:w-1/2">{last.copy}</p>
-                )}
+                {last.copy && <p className="max-w-sm leading-relaxed text-white/75 sm:w-1/2">{last.copy}</p>}
               </div>
             </a>
           )}

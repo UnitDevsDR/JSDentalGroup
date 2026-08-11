@@ -90,6 +90,8 @@
 
 @layer base {
   html {
+    /* Escala global compacta: la UI completa al ~80% (todo es rem) */
+    font-size: 80%;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -141,7 +143,13 @@
   .container {
     margin-inline: auto;
     padding-inline: 1rem;
-    max-width: 80rem;
+    width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .container {
+      /* la web ocupa el 80% del ancho del viewport en desktop */
+      max-width: 80vw;
+    }
   }
 
   /* Firma visual: arco de sonrisa (dental arch) */
@@ -155,6 +163,15 @@
     background-image: radial-gradient(circle, oklch(0.71 0.09 187 / 0.35) 1px, transparent 1px);
     background-size: 32px 32px;
   }
+}
+
+/* Flotado suave para ilustraciones (CSS puro: funciona dentro de islas React) */
+@keyframes faq-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.faq-float {
+  animation: faq-float 5s ease-in-out infinite;
 }
 
 /* Estado inicial de elementos animados por GSAP (evita FOUC de animación) */
