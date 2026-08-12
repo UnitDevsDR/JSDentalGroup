@@ -243,7 +243,7 @@ const Hero127 = ({
                   ))}
                 </div>
                 <svg
-                  className="smile-arc pointer-events-none absolute -bottom-10 left-1/2 w-[116%] -translate-x-1/2"
+                  className="smile-arc pointer-events-none absolute -bottom-10 left-1/2 w-[126%] -translate-x-1/2"
                   viewBox="0 0 500 180"
                   fill="none"
                   aria-hidden="true"
@@ -251,7 +251,7 @@ const Hero127 = ({
                   {/* Sonrisa firma (path aprobado por el cliente) con las
                       puntas rematadas en arco redondeado, no en vértice. */}
                   <path
-                    d="M 49 30 C 159 110, 341 110, 451 30 A 6.5 6.5 0 0 1 460 39 C 352 157, 148 157, 40 39 A 6.5 6.5 0 0 1 49 30 Z"
+                    d="M 29 14 C 149 106, 351 106, 471 14 A 7 7 0 0 1 480 23 C 362 146, 138 146, 20 23 A 7 7 0 0 1 29 14 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
