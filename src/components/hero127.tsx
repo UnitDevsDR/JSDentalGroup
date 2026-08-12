@@ -248,10 +248,10 @@ const Hero127 = ({
                   fill="none"
                   aria-hidden="true"
                 >
-                  {/* Sonrisa firma (path aprobado por el cliente): simétrica,
-                      vientre caligráfico y puntas finas ascendentes. */}
+                  {/* Sonrisa firma (path aprobado por el cliente) con las
+                      puntas rematadas en arco redondeado, no en vértice. */}
                   <path
-                    d="M 45 35 C 155 115, 345 115, 455 35 C 350 155, 150 155, 45 35 Z"
+                    d="M 49 30 C 159 110, 341 110, 451 30 A 6.5 6.5 0 0 1 460 39 C 352 157, 148 157, 40 39 A 6.5 6.5 0 0 1 49 30 Z"
                     fill="oklch(0.71 0.09 187)"
                   />
                 </svg>
