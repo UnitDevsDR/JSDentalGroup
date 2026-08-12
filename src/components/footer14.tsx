@@ -52,7 +52,7 @@ export const Footer14 = ({
   legalName,
 }: Footer14Props) => {
   return (
-    <footer className="bg-navy py-12 text-white sm:py-14 md:py-16">
+    <footer className="bg-navy pt-12 pb-6 text-white sm:pt-14 md:pt-16 md:pb-7">
       <div className="container mx-auto px-5 md:px-6">
         {/* Franja de contacto (réplica de la del sitio original) */}
         <div className="mb-8 grid gap-6 border-b border-white/15 pb-8 sm:grid-cols-2 lg:grid-cols-3">

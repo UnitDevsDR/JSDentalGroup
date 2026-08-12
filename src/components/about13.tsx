@@ -8,6 +8,9 @@ interface Founder {
 
 interface About13Props {
   title: string;
+  /** titular y texto del panel inferior (antes horneados en la imagen) */
+  imageHeading: string;
+  imageBody: string;
   sideLabel: string;
   intro: string;
   founder: Founder;
@@ -19,6 +22,8 @@ interface About13Props {
 
 const About13 = ({
   title,
+  imageHeading,
+  imageBody,
   sideLabel,
   intro,
   founder,
@@ -64,13 +69,19 @@ const About13 = ({
             <p className="mt-6 text-base text-muted-foreground lg:mt-16 lg:text-lg">{support}</p>
           </div>
         </div>
-        <div data-animate="up">
-          <img
-            src={image.src}
-            alt={image.alt}
-            loading="lazy"
-            className="mt-4 max-h-[480px] w-full rounded-2xl object-cover"
-          />
+        <div data-animate="up" className="grid overflow-hidden rounded-2xl bg-accent/60 lg:grid-cols-2">
+          <div className="flex items-end justify-center px-8 pt-8">
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              className="h-auto max-h-[440px] w-auto"
+            />
+          </div>
+          <div className="flex flex-col justify-center gap-2 p-8 text-center lg:p-14 lg:text-left">
+            <p className="font-heading text-3xl font-bold text-teal-text lg:text-4xl">{imageHeading}</p>
+            <p className="text-2xl leading-snug text-teal-text/90 lg:text-3xl">{imageBody}</p>
+          </div>
         </div>
       </div>
     </section>
