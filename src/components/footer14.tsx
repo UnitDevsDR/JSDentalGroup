@@ -183,7 +183,7 @@ export const Footer14 = ({
               <a
                 href="http://thinkpixelrd.com/"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="font-medium text-white/80 underline underline-offset-4 transition-colors hover:text-white"
               >
                 Think Pixel

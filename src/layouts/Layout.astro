@@ -149,6 +149,11 @@ const graph = {
   '@context': 'https://schema.org',
   '@graph': [clinicSchema, ...physicians, websiteSchema, webPageSchema, ...extraSchema],
 };
+// set:html vuelca el JSON literal dentro de <script>: si algún valor
+// contuviera "</script>" rompería fuera del bloque JSON-LD e inyectaría
+// HTML. Se escapa '<' a su secuencia Unicode (JSON válido, inofensivo
+// para parsers JSON-LD) como defensa en profundidad.
+const graphJson = JSON.stringify(graph).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -218,7 +223,7 @@ const graph = {
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Datos estructurados -->
-    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    <script type="application/ld+json" set:html={graphJson} />
 
     <script is:inline>
       document.documentElement.classList.add('js');
