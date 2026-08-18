@@ -16,4 +16,9 @@ FROM nginx:alpine
 COPY --from=build /app/nginx.generated.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost/ >/dev/null || exit 1
+# 127.0.0.1 explícito, no "localhost": nginx solo escucha en IPv4
+# (0.0.0.0:80) y el resolver de musl/BusyBox prueba ::1 (IPv6) primero,
+# así que "localhost" da "Connection refused" aunque el sitio funcione
+# bien — eso disparaba un ciclo de caída-reinicio en Docker Swarm aunque
+# el tráfico real (siempre IPv4 vía Docker/Traefik) nunca tuvo problema
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
