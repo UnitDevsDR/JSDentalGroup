@@ -155,11 +155,11 @@ const Hero127 = ({
               <span className="hero-word text-highlight inline-block">{highlightWord}</span>
             </h1>
 
-            <p data-hero-in style={{ "--hero-delay": "0.45s" } as React.CSSProperties} className="max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            <p data-hero-in className="hero-delay-45 max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
               {description}
             </p>
 
-            <div data-hero-in style={{ "--hero-delay": "0.6s" } as React.CSSProperties} className="flex w-full flex-col items-center gap-4 md:flex-row md:justify-center lg:justify-start">
+            <div data-hero-in className="hero-delay-60 flex w-full flex-col items-center gap-4 md:flex-row md:justify-center lg:justify-start">
               {buttons?.primary && (
                 <Button
                   asChild
@@ -187,8 +187,7 @@ const Hero127 = ({
 
             <div
               data-hero-in
-              style={{ "--hero-delay": "0.75s" } as React.CSSProperties}
-              className="flex flex-col items-center gap-8 md:flex-row md:flex-wrap md:justify-center md:gap-x-12 md:gap-y-6 lg:justify-start"
+              className="hero-delay-75 flex flex-col items-center gap-8 md:flex-row md:flex-wrap md:justify-center md:gap-x-12 md:gap-y-6 lg:justify-start"
             >
               <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 lg:justify-start">
                 {stats.map((stat) => (
@@ -211,7 +210,7 @@ const Hero127 = ({
           </div>
 
           {slides.length > 0 && (
-            <div className="order-first flex justify-center lg:order-none" data-hero-in="scale" style={{ "--hero-delay": "0.15s" } as React.CSSProperties}>
+            <div className="hero-delay-15 order-first flex justify-center lg:order-none" data-hero-in="scale">
               <div className="relative w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[440px]">
                 <div
                   className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-[2.5rem] border-8 border-white bg-accent shadow-2xl shadow-navy/15"

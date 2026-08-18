@@ -218,11 +218,19 @@
 }
 [data-hero-in] {
   animation: hero-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: var(--hero-delay, 0s);
+  animation-delay: 0s;
 }
 [data-hero-in='scale'] {
   animation-name: hero-in-scale;
 }
+/* Retardos fijos como clases (en vez de --hero-delay por style inline):
+   así script-src/style-src pueden vivir sin 'unsafe-inline' */
+.hero-delay-15 { animation-delay: 0.15s; }
+.hero-delay-45 { animation-delay: 0.45s; }
+.hero-delay-60 { animation-delay: 0.6s; }
+.hero-delay-75 { animation-delay: 0.75s; }
+/* Marco oculto del <noscript> de GTM: reemplaza style="display:none;visibility:hidden" */
+.gtm-hidden-frame { display: none; visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   [data-hero-in] { animation: none; }
 }
