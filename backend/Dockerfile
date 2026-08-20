@@ -18,5 +18,10 @@ COPY public ./public
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s CMD wget -qO- http://127.0.0.1:3001/api/health >/dev/null || exit 1
 # migra el esquema y arranca — seguro de correr en cada deploy: Prisma
-# Migrate no reaplica lo que ya está aplicado
-CMD npx prisma migrate deploy && node dist/server.js
+# Migrate no reaplica lo que ya está aplicado. Si ADMIN_EMAIL/ADMIN_PASSWORD
+# están definidas, crea (o actualiza la contraseña de) ese admin antes de
+# arrancar — así el primer acceso al panel no depende de una terminal
+# manual; luego de usarlo una vez, esas dos variables se pueden borrar.
+CMD npx prisma migrate deploy && \
+    (if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then node dist/scripts/seed.js; fi) && \
+    node dist/server.js
