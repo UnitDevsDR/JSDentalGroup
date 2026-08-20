@@ -74,20 +74,21 @@ const Contact2 = ({ title, description, copy, info, wa, apiUrl, successPath, cla
     // Guarda el lead en el backend (si está configurado). No bloquea nada:
     // si el backend está caído o tarda, el visitante igual llega a WhatsApp
     // y a la página de confirmación — nunca se pierde el contacto por eso.
+    // keepalive:true es imprescindible aquí: justo abajo se navega a
+    // successPath, y sin esa opción el navegador cancela cualquier fetch en
+    // curso al abandonar la página — el lead se perdía en silencio incluso
+    // con el backend funcionando perfecto (confirmado: un POST idéntico sin
+    // navegar después sí llegaba, el mismo POST seguido de la navegación no).
     if (apiUrl) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
       fetch(`${apiUrl}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: nombre, phone: telefono, email: correo, subject: asunto, message: mensaje }),
-        signal: controller.signal,
-      })
-        .catch(() => {
-          // silencioso a propósito: el usuario no debe ver un error de red
-          // ajeno a su envío real (WhatsApp + página de confirmación)
-        })
-        .finally(() => clearTimeout(timeout));
+        keepalive: true,
+      }).catch(() => {
+        // silencioso a propósito: el usuario no debe ver un error de red
+        // ajeno a su envío real (WhatsApp + página de confirmación)
+      });
     }
 
     const texto = [
