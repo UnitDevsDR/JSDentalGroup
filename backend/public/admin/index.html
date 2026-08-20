@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leads — JS Dental Group</title>
+<link rel="stylesheet" href="/admin/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a href="/admin/index.html">JS Dental Group — Panel</a>
+    <nav>
+      <a href="/admin/index.html">Leads</a>
+      <a href="/admin/settings.html">Ajustes</a>
+      <button class="ghost small" id="logout">Salir</button>
+    </nav>
+  </header>
+  <main>
+    <div class="toolbar" id="filters">
+      <button data-status="" aria-pressed="true">Todos</button>
+      <button data-status="NEW">Nuevos</button>
+      <button data-status="CONTACTED">Contactados</button>
+      <button data-status="ARCHIVED">Archivados</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Fecha</th><th>Nombre</th><th>Contacto</th><th>Mensaje</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <button class="ghost small" id="prev">Anterior</button>
+      <span id="page-label"></span>
+      <button class="ghost small" id="next">Siguiente</button>
+    </div>
+  </main>
+  <script src="/admin/app.js"></script>
+  <script src="/admin/index.js"></script>
+</body>
+</html>

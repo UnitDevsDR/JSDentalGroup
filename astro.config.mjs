@@ -28,6 +28,10 @@ export default defineConfig({
         defaultLocale: 'es',
         locales: { es: 'es-DO', en: 'en-US' },
       },
+      // páginas noindex fuera del sitemap: la de gracias solo se llega por
+      // el redirect del formulario o el link de una campaña, nunca debe
+      // ofrecerse como resultado de búsqueda
+      filter: (page) => !page.includes('/your-ticket-has-been-submitted'),
     }),
     // GTM corre en un web worker para no bloquear el hilo principal
     // https://docs.astro.build/en/guides/integrations-guide/partytown/

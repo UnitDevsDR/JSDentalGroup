@@ -5,6 +5,15 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+# Se pasan como --build-arg (no vía .env: ese archivo está en .dockerignore
+# a propósito). Vite los toma de ENV para el build, y generate-csp.mjs
+# necesita PUBLIC_API_URL para permitir ese origen en connect-src.
+ARG PUBLIC_API_URL
+ARG PUBLIC_GTM_ID
+ARG PUBLIC_GSC_VERIFICATION
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+ENV PUBLIC_GTM_ID=$PUBLIC_GTM_ID
+ENV PUBLIC_GSC_VERIFICATION=$PUBLIC_GSC_VERIFICATION
 RUN npm run build
 # CSP sin 'unsafe-inline': calcula los hashes sha256 reales de los
 # <script>/<style> inline del HTML ya construido y genera

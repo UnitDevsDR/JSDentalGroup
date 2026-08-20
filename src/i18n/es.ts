@@ -145,6 +145,7 @@ export const es = {
     formNote: 'Al enviar se abre WhatsApp con tu mensaje listo para nuestro equipo.',
     fieldName: 'Nombre completo',
     fieldPhone: 'Número de teléfono',
+    fieldEmail: 'Correo electrónico',
     fieldSubject: 'Asunto',
     fieldMessage: 'Tu pregunta',
     submit: 'Enviar por WhatsApp',
@@ -162,6 +163,18 @@ export const es = {
     waGreeting: (name: string) => `Hola, soy ${name}.`,
     waPhone: (phone: string) => `Mi teléfono: ${phone}.`,
     waSubject: (subject: string) => `Asunto: ${subject}.`,
+  },
+
+  // Página de confirmación tras enviar el formulario (reemplaza la ruta
+  // /your-ticket-has-been-submitted del sitio Odoo original: ahí es donde
+  // sus campañas de Google Ads miden la conversión, así que la URL y el
+  // contenido se mantienen igual)
+  ticketSubmitted: {
+    title: 'Solicitud Recibida | JS Dental Group',
+    description: 'Hemos recibido tu solicitud. Nuestro equipo te contactará a la brevedad.',
+    heading: 'Gracias',
+    body: 'Hemos recibido tu mensaje. Nuestro equipo te contactará a la brevedad.',
+    backHome: 'Volver a la página principal',
   },
 
   footer: {

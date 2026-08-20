@@ -41,7 +41,11 @@ const ogImageUrl = ogImage ?? new URL(IMAGES.og, SITE.url).href;
 
 // Analítica y verificación: se activan con variables de entorno del build
 // (PUBLIC_GTM_ID=GTM-XXXXXXX, PUBLIC_GSC_VERIFICATION=token)
-const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
+// El contenedor real de la clínica (confirmado en jsdentalgroup.com el día
+// del corte) ya trae configurados GA4 y el conversion tracking de Google
+// Ads — no hay que replicar esas cuentas a mano, solo cargar este mismo
+// contenedor para que sus campañas sigan midiendo.
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-WJRMD9M3';
 const GSC_VERIFICATION = import.meta.env.PUBLIC_GSC_VERIFICATION;
 
 // hreflang: un enlace por idioma + x-default al idioma por defecto

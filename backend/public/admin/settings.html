@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ajustes — JS Dental Group</title>
+<link rel="stylesheet" href="/admin/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a href="/admin/index.html">JS Dental Group — Panel</a>
+    <nav>
+      <a href="/admin/index.html">Leads</a>
+      <a href="/admin/settings.html">Ajustes</a>
+      <button class="ghost small" id="logout">Salir</button>
+    </nav>
+  </header>
+  <main>
+    <div class="card">
+      <h2 style="margin-top:0;">SEO y analítica</h2>
+      <p style="color:var(--muted);font-size:0.9rem;">
+        Estos valores los lee el sitio directamente en el navegador de cada
+        visitante — cambian aquí y se aplican de inmediato, sin rehacer el
+        build ni redesplegar el sitio.
+      </p>
+      <form id="settings-form">
+        <label for="gtmId">Google Tag Manager ID</label>
+        <input type="text" id="gtmId" placeholder="GTM-XXXXXXX" />
+        <label for="gscVerification">Verificación de Google Search Console</label>
+        <input type="text" id="gscVerification" placeholder="token del meta tag" />
+        <button type="submit" class="primary" style="margin-top:1.25rem;">Guardar</button>
+        <span id="saved" style="color:var(--teal-text);margin-left:0.75rem;" hidden>Guardado.</span>
+      </form>
+    </div>
+  </main>
+  <script src="/admin/app.js"></script>
+  <script src="/admin/settings.js"></script>
+</body>
+</html>

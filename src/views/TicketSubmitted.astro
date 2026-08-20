@@ -1,0 +1,60 @@
+---
+// Reemplaza /your-ticket-has-been-submitted del sitio Odoo original: misma
+// URL exacta (así las campañas de Google Ads que apuntan a esta página como
+// evento de conversión siguen funcionando sin tocar nada del lado de Ads),
+// mismo contenido ("Gracias" + volver al inicio) y el mismo disparo de
+// conversión que tenía la página real.
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FooterSection from '../components/FooterSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { ROUTES, pagePaths, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const paths = pagePaths('home');
+---
+
+<Layout lang={lang} paths={paths} title={t.ticketSubmitted.title} description={t.ticketSubmitted.description} noindex>
+  <SiteHeader lang={lang} paths={paths} />
+
+  <main id="contenido" class="flex min-h-[70vh] items-center pt-24">
+    <div class="container text-center">
+      <h1 class="font-heading text-4xl font-bold text-navy md:text-5xl">{t.ticketSubmitted.heading}</h1>
+      <p class="mx-auto mt-4 max-w-md text-lg text-muted-foreground">{t.ticketSubmitted.body}</p>
+      <div class="mt-8">
+        <a
+          href={ROUTES.home[lang]}
+          class="inline-flex items-center justify-center rounded-full bg-teal-strong px-8 py-3.5 font-semibold text-white"
+        >
+          {t.ticketSubmitted.backHome}
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <FooterSection lang={lang} />
+  <WhatsAppFloat lang={lang} />
+
+  <!-- Evento de conversión de Google Ads: idéntico al que disparaba esta
+       misma URL en el sitio anterior (mismo ID de cuenta y misma etiqueta
+       de conversión). Solo aquí, no en el resto del sitio. El stub de gtag
+       empuja a window.dataLayer — el contenedor GTM ya cargado en el
+       Layout es quien procesa el evento hacia la cuenta de Ads real. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(...args: unknown[]) {
+      window.dataLayer.push(args);
+    }
+    gtag('event', 'conversion', {
+      send_to: 'AW-17601055993/Ho0ECJ3U27QbEPmZ68hB',
+      value: 1.0,
+      currency: 'USD',
+      transaction_id: '',
+    });
+  </script>
+</Layout>

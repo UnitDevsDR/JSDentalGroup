@@ -62,12 +62,21 @@ if (scriptHashes.size === 0) {
 
 const scriptList = [...scriptHashes].map((h) => `'sha256-${h}'`).join(' ');
 
+// Origen del backend de leads (mismo PUBLIC_API_URL que lee el sitio en
+// tiempo de build): si está definido, connect-src debe permitirlo para que
+// el fetch del formulario no lo bloquee la propia CSP. Vacío = el sitio no
+// tiene backend configurado todavía, no se agrega nada.
+const apiUrl = (process.env.PUBLIC_API_URL || '').trim();
+const apiOrigin = apiUrl ? `${new URL(apiUrl).origin} ` : '';
+
 console.log(`generate-csp: ${scriptHashes.size} scripts inline únicos en ${files.length} páginas`);
+console.log(`generate-csp: origen de API en CSP: ${apiOrigin || '(ninguno — PUBLIC_API_URL no está definido)'}`);
 
 async function patch(srcPath, destPath = srcPath) {
   let content = await readFile(srcPath, 'utf8');
   const before = content;
   content = content.replace('__CSP_SCRIPT_HASHES__', scriptList);
+  content = content.replace('__CSP_API_ORIGIN__', apiOrigin);
   if (content === before) {
     throw new Error(`generate-csp: ${srcPath} no tenía el placeholder esperado — revisa que no se haya editado a mano`);
   }

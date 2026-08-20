@@ -4,5 +4,6 @@ Allow: /
 # Páginas técnicas sin valor para búsqueda
 Disallow: /404
 Disallow: /en/404
+Disallow: /your-ticket-has-been-submitted
 
 Sitemap: https://jsdentalgroup.com/sitemap-index.xml

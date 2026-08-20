@@ -18,6 +18,7 @@ export const contactProps = (lang: Lang, title?: string) => {
       formNote: t.contact.formNote,
       fieldName: t.contact.fieldName,
       fieldPhone: t.contact.fieldPhone,
+      fieldEmail: t.contact.fieldEmail,
       fieldSubject: t.contact.fieldSubject,
       fieldMessage: t.contact.fieldMessage,
       submit: t.contact.submit,
@@ -48,6 +49,13 @@ export const contactProps = (lang: Lang, title?: string) => {
       phone: t.contact.waPhone('{phone}'),
       subject: t.contact.waSubject('{subject}'),
     },
+    // vacío hasta que el backend de leads esté desplegado: el formulario
+    // sigue funcionando igual (WhatsApp + confirmación), solo deja de
+    // guardar el lead en base de datos mientras tanto
+    apiUrl: import.meta.env.PUBLIC_API_URL ?? '',
+    // misma URL que usaba el sitio anterior para medir conversión en Google
+    // Ads: no lleva prefijo de idioma, la campaña apunta a esta ruta exacta
+    successPath: '/your-ticket-has-been-submitted',
   };
 };
 

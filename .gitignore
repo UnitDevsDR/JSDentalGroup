@@ -23,3 +23,8 @@ playwright-report/
 .DS_Store
 
 nginx.generated.conf
+
+# Prisma: cliente generado (binarios de motor incluidos) — se regenera
+# fresco en cada build vía `prisma generate`, nunca se commitea
+backend/src/generated/
+backend/dist/

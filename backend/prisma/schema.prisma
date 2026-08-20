@@ -1,0 +1,61 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  // "native" para desarrollo local (glibc); linux-musl explícito porque el
+  // runtime de producción es node:22-alpine (musl) y no siempre coincide
+  // con la plataforma donde se corrió el último `prisma generate`
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Mensaje recibido desde el formulario de contacto del sitio. Refleja los
+/// mismos campos que capturaba el sitio anterior (Odoo: partner_name,
+/// partner_phone, partner_email, description) para no perder nada al migrar.
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  phone     String?
+  email     String
+  subject   String
+  message   String
+  /// página desde la que se envió (útil si en el futuro hay más de un form)
+  source    String     @default("contactus")
+  /// idioma de la página al momento del envío
+  locale    String     @default("es")
+  userAgent String?
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  ARCHIVED
+}
+
+/// Usuario del panel de administración (no hay registro público: se crea
+/// por seed/CLI, nunca por un endpoint expuesto).
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  lastLoginAt  DateTime?
+}
+
+/// Configuración editable desde el panel sin rehacer el build del sitio
+/// estático (GTM ID, verificación de Search Console, etc.) — el sitio la
+/// lee vía GET /api/settings/public en el navegador.
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

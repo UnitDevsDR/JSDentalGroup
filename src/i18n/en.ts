@@ -143,6 +143,7 @@ export const en: Dictionary = {
     formNote: 'On submit, WhatsApp opens with your message ready for our team.',
     fieldName: 'Full name',
     fieldPhone: 'Phone number',
+    fieldEmail: 'Email address',
     fieldSubject: 'Subject',
     fieldMessage: 'Your question',
     submit: 'Send on WhatsApp',
@@ -159,6 +160,14 @@ export const en: Dictionary = {
     waGreeting: (name: string) => `Hello, my name is ${name}.`,
     waPhone: (phone: string) => `My phone: ${phone}.`,
     waSubject: (subject: string) => `Subject: ${subject}.`,
+  },
+
+  ticketSubmitted: {
+    title: 'Request Received | JS Dental Group',
+    description: 'We have received your request. Our team will contact you shortly.',
+    heading: 'Thank you',
+    body: 'We have received your message. Our team will contact you shortly.',
+    backHome: 'Back to homepage',
   },
 
   footer: {

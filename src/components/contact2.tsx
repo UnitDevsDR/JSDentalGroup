@@ -1,7 +1,6 @@
 "use client";
 
-import { CheckCircle2, Clock, MailIcon, MapPin, PhoneIcon } from "lucide-react";
-import { useState } from "react";
+import { Clock, MailIcon, MapPin, PhoneIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -19,6 +18,7 @@ interface Contact2Props {
     formNote: string;
     fieldName: string;
     fieldPhone: string;
+    fieldEmail: string;
     fieldSubject: string;
     fieldMessage: string;
     submit: string;
@@ -30,6 +30,10 @@ interface Contact2Props {
     labelHours: string;
     labelInstagram: string;
   };
+  /** URL base del backend de leads (vacía = el envío solo abre WhatsApp, sin guardar nada) */
+  apiUrl?: string;
+  /** a dónde navegar tras enviar (misma URL que medía conversión en el sitio anterior) */
+  successPath: string;
   info: {
     phone: string;
     phoneDisplay: string;
@@ -49,23 +53,55 @@ interface Contact2Props {
   className?: string;
 }
 
-const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Props) => {
-  const [sent, setSent] = useState(false);
-
+const Contact2 = ({ title, description, copy, info, wa, apiUrl, successPath, className }: Contact2Props) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    // Honeypot: campo real pero oculto por CSS, ningún visitante humano lo
+    // ve ni lo llena. Los bots de envío masivo suelen rellenar todo lo que
+    // encuentran en el DOM — si esto viene con contenido, se descarta en
+    // silencio (nunca se le dice al bot que falló, para no darle pistas).
+    if (data.get("empresa")) return;
+
+    const nombre = String(data.get("nombre") ?? "");
+    const telefono = String(data.get("telefono") ?? "");
+    const correo = String(data.get("correo") ?? "");
+    const asunto = String(data.get("asunto") ?? "");
+    const mensaje = String(data.get("mensaje") ?? "");
+
+    // Guarda el lead en el backend (si está configurado). No bloquea nada:
+    // si el backend está caído o tarda, el visitante igual llega a WhatsApp
+    // y a la página de confirmación — nunca se pierde el contacto por eso.
+    if (apiUrl) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      fetch(`${apiUrl}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nombre, phone: telefono, email: correo, subject: asunto, message: mensaje }),
+        signal: controller.signal,
+      })
+        .catch(() => {
+          // silencioso a propósito: el usuario no debe ver un error de red
+          // ajeno a su envío real (WhatsApp + página de confirmación)
+        })
+        .finally(() => clearTimeout(timeout));
+    }
+
     const texto = [
-      wa.greeting.replace("{name}", String(data.get("nombre") ?? "")),
-      data.get("telefono") ? wa.phone.replace("{phone}", String(data.get("telefono"))) : "",
-      wa.subject.replace("{subject}", String(data.get("asunto") ?? "")),
-      String(data.get("mensaje") ?? ""),
+      wa.greeting.replace("{name}", nombre),
+      telefono ? wa.phone.replace("{phone}", telefono) : "",
+      wa.subject.replace("{subject}", asunto),
+      mensaje,
     ]
       .filter(Boolean)
       .join("\n");
     window.open(`https://wa.me/${info.waNumber}?text=${encodeURIComponent(texto)}`, "_blank", "noopener");
-    setSent(true);
-    setTimeout(() => setSent(false), 5000);
+    // misma URL de conversión que usaba el sitio anterior: sus campañas de
+    // Google Ads siguen midiendo sin que nadie tenga que tocar la cuenta
+    window.location.assign(successPath);
   };
 
   const words = title.split(" ");
@@ -156,6 +192,16 @@ const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Pro
 
             <form onSubmit={handleSubmit}>
               <FieldGroup className="gap-5">
+                {/* Honeypot: invisible para personas (fuera de pantalla, sin
+                    tabindex, sin autocomplete), visible en el DOM para bots */}
+                <input
+                  type="text"
+                  name="empresa"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                />
                 <Field>
                   <FieldLabel htmlFor="cf-nombre">{copy.fieldName} *</FieldLabel>
                   <Input id="cf-nombre" name="nombre" required autoComplete="name" />
@@ -163,6 +209,10 @@ const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Pro
                 <Field>
                   <FieldLabel htmlFor="cf-telefono">{copy.fieldPhone}</FieldLabel>
                   <Input id="cf-telefono" name="telefono" type="tel" autoComplete="tel" />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="cf-correo">{copy.fieldEmail} *</FieldLabel>
+                  <Input id="cf-correo" name="correo" type="email" required autoComplete="email" />
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="cf-asunto">{copy.fieldSubject} *</FieldLabel>
@@ -178,12 +228,6 @@ const Contact2 = ({ title, description, copy, info, wa, className }: Contact2Pro
                 >
                   {copy.submit}
                 </Button>
-                {sent && (
-                  <p className="flex items-center justify-center gap-2 text-sm font-medium text-teal-text" role="status">
-                    <CheckCircle2 className="size-4" aria-hidden="true" />
-                    {copy.sent}
-                  </p>
-                )}
               </FieldGroup>
             </form>
           </div>
