@@ -9,7 +9,7 @@ async function api(path, options = {}) {
 
   const res = await fetch(`/api${path}`, { ...options, method, headers, credentials: "same-origin" });
   if (res.status === 401) {
-    window.location.href = "/admin/login.html";
+    window.location.href = "/admin/login";
     throw new Error("No autenticado");
   }
   if (!res.ok) {
@@ -25,7 +25,7 @@ async function requireSession() {
   try {
     return await api("/auth/me");
   } catch {
-    window.location.href = "/admin/login.html";
+    window.location.href = "/admin/login";
     return null;
   }
 }

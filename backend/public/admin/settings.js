@@ -22,7 +22,7 @@ document.getElementById("settings-form").addEventListener("submit", async (e) =>
 
 document.getElementById("logout").addEventListener("click", async () => {
   await api("/auth/logout", { method: "POST" });
-  window.location.href = "/admin/login.html";
+  window.location.href = "/admin/login";
 });
 
 requireSession().then((ok) => ok && load());

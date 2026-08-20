@@ -13,7 +13,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       }),
     });
     if (!res.ok) throw new Error();
-    window.location.href = "/admin/index.html";
+    window.location.href = "/admin";
   } catch {
     errorEl.textContent = "Correo o contraseña incorrectos.";
     errorEl.hidden = false;

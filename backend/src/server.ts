@@ -66,8 +66,15 @@ app.use(
       baseUri: ["'self'"],
     },
   }),
-  express.static(path.join(__dirname, "../public/admin")),
+  express.static(path.join(__dirname, "../public/admin"), { extensions: ["html"] }),
 );
+
+// URLs limpias: /admin/login en vez de /admin/login.html (el .html no era
+// un problema de seguridad en sí — la seguridad real está en la sesión
+// JWT/CSRF/rate-limit de abajo — pero no hay razón para exponerlo)
+app.get("/admin/login", (_req, res) => res.sendFile(path.join(__dirname, "../public/admin/login.html")));
+app.get("/admin", (_req, res) => res.sendFile(path.join(__dirname, "../public/admin/index.html")));
+app.get("/admin/settings", (_req, res) => res.sendFile(path.join(__dirname, "../public/admin/settings.html")));
 
 app.use((req, res) => res.status(404).json({ error: "No encontrado" }));
 
