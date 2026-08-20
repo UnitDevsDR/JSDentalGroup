@@ -25,9 +25,16 @@ app.use(
   }),
 );
 
-// CORS: solo el sitio público y el propio panel pueden llamar la API.
-// credentials:true porque el panel admin usa cookie de sesión.
+app.use(cookieParser());
+app.use(express.json({ limit: "100kb" })); // un mensaje de contacto nunca necesita más
+
+// CORS solo bajo /api: es ahí donde existe un origen ajeno real (el sitio
+// público llamando a este backend). El panel /admin se sirve desde este
+// mismo servidor — sus propios assets (Vite los marca crossorigin) NO
+// deben pasar por esta política o el navegador los bloquea con 500/CORS
+// aunque sean same-origin.
 app.use(
+  "/api",
   cors({
     origin(origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
@@ -36,9 +43,6 @@ app.use(
     credentials: true,
   }),
 );
-
-app.use(cookieParser());
-app.use(express.json({ limit: "100kb" })); // un mensaje de contacto nunca necesita más
 
 // límite general de peticiones por IP, capa adicional además de los
 // límites específicos de /api/leads y /api/auth/login
@@ -49,32 +53,35 @@ app.use("/api/leads", leadsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/settings", settingsRouter);
 
-// Panel de administración: HTML/CSS/JS plano, servido por este mismo
-// proceso (sin build aparte, sin otro servicio que mantener). CSP propia,
+// Panel de administración: SPA de React (shadcn/ui + bloques de
+// shadcnblocks), compilada con Vite en backend/admin-src y servida por
+// este mismo proceso — sin otro servicio aparte que mantener. CSP propia,
 // estricta, solo para estas páginas.
+// style-src necesita 'unsafe-inline': el sidebar de shadcn/ui y los
+// popovers de Radix fijan variables CSS (--sidebar-width, posición de
+// tooltips) por JS en cada render — igual que GSAP en el sitio público,
+// ningún hash lo cubre. Nada de contenido de usuario llega a esa ruta.
+const ADMIN_DIR = path.join(__dirname, "../public/admin");
 app.use(
   "/admin",
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'"],
-      imgSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      fontSrc: ["'self'"],
       connectSrc: ["'self'"],
       objectSrc: ["'none'"],
       frameAncestors: ["'self'"],
       baseUri: ["'self'"],
     },
   }),
-  express.static(path.join(__dirname, "../public/admin"), { extensions: ["html"] }),
+  express.static(ADMIN_DIR),
 );
-
-// URLs limpias: /admin/login en vez de /admin/login.html (el .html no era
-// un problema de seguridad en sí — la seguridad real está en la sesión
-// JWT/CSRF/rate-limit de abajo — pero no hay razón para exponerlo)
-app.get("/admin/login", (_req, res) => res.sendFile(path.join(__dirname, "../public/admin/login.html")));
-app.get("/admin", (_req, res) => res.sendFile(path.join(__dirname, "../public/admin/index.html")));
-app.get("/admin/settings", (_req, res) => res.sendFile(path.join(__dirname, "../public/admin/settings.html")));
+// React Router lleva el ruteo del lado del cliente: cualquier /admin/* que
+// no sea un archivo real cae al mismo index.html
+app.get(/^\/admin(\/.*)?$/, (_req, res) => res.sendFile(path.join(ADMIN_DIR, "index.html")));
 
 app.use((req, res) => res.status(404).json({ error: "No encontrado" }));
 

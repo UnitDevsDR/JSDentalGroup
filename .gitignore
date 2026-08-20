@@ -28,3 +28,7 @@ nginx.generated.conf
 # fresco en cada build vía `prisma generate`, nunca se commitea
 backend/src/generated/
 backend/dist/
+
+# Panel admin: build artefacto generado por backend/admin-src (vite build)
+backend/public/admin/
+backend/admin-src/node_modules/

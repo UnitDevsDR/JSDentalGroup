@@ -5,6 +5,11 @@ RUN npm ci
 COPY . .
 RUN npx prisma generate
 RUN npm run build
+# Panel admin: SPA de React (shadcn/ui + shadcnblocks) — su build cae
+# directo en public/admin (ver admin-src/vite.config.ts), no necesita el
+# API key de shadcnblocks aquí: los bloques ya están en el código, no se
+# vuelven a descargar del registro en cada build
+RUN npm --prefix admin-src ci && npm --prefix admin-src run build
 
 FROM node:22-alpine AS runtime
 WORKDIR /app
@@ -14,7 +19,7 @@ RUN npm ci --omit=dev
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=build /app/prisma ./prisma
-COPY public ./public
+COPY --from=build /app/public ./public
 # node:22-alpine ya trae el usuario "node" (uid 1000) — sin este USER el
 # proceso corría como root dentro del contenedor
 RUN chown -R node:node /app
