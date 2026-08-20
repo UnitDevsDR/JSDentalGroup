@@ -1,3 +1,4 @@
+import { Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -64,23 +65,33 @@ export default function LeadsPage() {
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="font-heading text-2xl font-semibold text-navy">Leads</h1>
-        <Select
-          value={status}
-          onValueChange={(v) => {
-            setStatus(v);
-            setPage(1);
-          }}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="NEW">Nuevos</SelectItem>
-            <SelectItem value="CONTACTED">Contactados</SelectItem>
-            <SelectItem value="ARCHIVED">Archivados</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            {/* GET con cookie de sesión, sin necesidad de fetch/blob — el
+                navegador descarga el archivo directo. Respeta el filtro
+                de estado activo. */}
+            <a href={`/api/leads/export${status === "all" ? "" : `?status=${status}`}`} download>
+              <Download className="size-4" /> Exportar CSV
+            </a>
+          </Button>
+          <Select
+            value={status}
+            onValueChange={(v) => {
+              setStatus(v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="NEW">Nuevos</SelectItem>
+              <SelectItem value="CONTACTED">Contactados</SelectItem>
+              <SelectItem value="ARCHIVED">Archivados</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="rounded-md border bg-card">

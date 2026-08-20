@@ -1,9 +1,12 @@
+import { ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/api";
+
+const SITE_URL = "https://jsdentalgroup.com";
 
 export default function SettingsPage() {
   const [gtmId, setGtmId] = useState("");
@@ -56,6 +59,42 @@ export default function SettingsPage() {
               {saved && <span className="text-sm text-teal-text">Guardado.</span>}
             </div>
           </form>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6 max-w-lg">
+        <CardHeader>
+          <CardTitle className="font-heading text-navy">Sitio</CardTitle>
+          <CardDescription>
+            El sitio es estático: el sitemap se genera solo en cada build (nunca hace falta regenerarlo a mano, como en
+            Odoo) — aquí están los enlaces para revisarlo o darlo de alta en Search Console.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          <a
+            href={`${SITE_URL}/sitemap-index.xml`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-teal-text hover:underline"
+          >
+            Ver sitemap-index.xml <ExternalLink className="size-3.5" />
+          </a>
+          <a
+            href={`${SITE_URL}/robots.txt`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-teal-text hover:underline"
+          >
+            Ver robots.txt <ExternalLink className="size-3.5" />
+          </a>
+          <a
+            href="https://search.google.com/search-console"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-teal-text hover:underline"
+          >
+            Abrir Google Search Console <ExternalLink className="size-3.5" />
+          </a>
         </CardContent>
       </Card>
     </div>

@@ -87,6 +87,53 @@ leadsRouter.get("/", requireAuth, async (req, res) => {
   res.json({ items, total, page, pageSize });
 });
 
+/** Escapa una celda para CSV: comillas dobles si contiene coma/comilla/salto
+ * de línea, y un ' inicial si el valor empieza con =,+,-,@ (Excel/Sheets lo
+ * tratan como texto forzado en vez de ejecutarlo como fórmula — mitigación
+ * estándar de CSV injection para datos de un formulario público). */
+function csvCell(value: string): string {
+  let v = value.replace(/\r?\n/g, " ");
+  if (/^[=+\-@]/.test(v)) v = `'${v}`;
+  if (/[",]/.test(v)) v = `"${v.replace(/"/g, '""')}"`;
+  return v;
+}
+
+const STATUS_LABEL_ES: Record<string, string> = { NEW: "Nuevo", CONTACTED: "Contactado", ARCHIVED: "Archivado" };
+
+/** Panel: exporta a CSV (respeta el filtro de estado activo). */
+leadsRouter.get("/export", requireAuth, async (req, res) => {
+  const status = typeof req.query.status === "string" ? req.query.status : undefined;
+  const where = status && ["NEW", "CONTACTED", "ARCHIVED"].includes(status) ? { status: status as never } : {};
+
+  const leads = await prisma.lead.findMany({ where, orderBy: { createdAt: "desc" } });
+
+  const header = ["Fecha", "Nombre", "Teléfono", "Correo", "Asunto", "Mensaje", "Estado", "Origen", "Idioma"];
+  const rows = leads.map((l) =>
+    [
+      l.createdAt.toISOString(),
+      l.name,
+      l.phone ?? "",
+      l.email,
+      l.subject,
+      l.message,
+      STATUS_LABEL_ES[l.status] ?? l.status,
+      l.source,
+      l.locale,
+    ]
+      .map((v) => csvCell(String(v)))
+      .join(","),
+  );
+  const csv = [header.join(","), ...rows].join("\r\n");
+
+  const filename = `leads-jsdentalgroup-${new Date().toISOString().slice(0, 10)}.csv`;
+  res.set({
+    "Content-Type": "text/csv; charset=utf-8",
+    "Content-Disposition": `attachment; filename="${filename}"`,
+  });
+  // BOM: sin esto Excel en Windows muestra mal los acentos del español
+  res.send("﻿" + csv);
+});
+
 const updateLeadSchema = z.object({ status: z.enum(["NEW", "CONTACTED", "ARCHIVED"]) });
 
 /** Panel: marcar un lead como contactado/archivado. */
