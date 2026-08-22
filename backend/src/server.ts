@@ -106,6 +106,11 @@ app.get(/^\/admin(\/.*)?$/, (_req, res) =>
   res.sendFile(path.join(ADMIN_DIR, "index.html"), { headers: { "Cache-Control": "no-cache" } }),
 );
 
+// La raíz no sirve nada por sí misma: el único sitio al que puede querer ir
+// alguien que entra al dominio del API es el panel. /admin ya manda al login
+// si no hay sesión, y a los leads si la hay.
+app.get("/", (_req, res) => res.redirect(302, "/admin"));
+
 app.use((req, res) => res.status(404).json({ error: "No encontrado" }));
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
