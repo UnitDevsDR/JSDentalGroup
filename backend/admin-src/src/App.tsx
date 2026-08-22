@@ -13,7 +13,12 @@ function Protected({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar user={user} />
-      <SidebarInset>
+      {/* min-w-0: SidebarInset es un hijo flex y, sin esto, su ancho mínimo
+          automático es el de su contenido — se quedaba en el ancho completo
+          de la ventana y empujaba la página 256px (lo que mide la barra
+          lateral), así que al angostar el navegador la tabla no se encogía:
+          scrolleaba la página entera en horizontal. */}
+      <SidebarInset className="min-w-0">
         <header className="flex h-12 items-center border-b px-4">
           <SidebarTrigger />
         </header>

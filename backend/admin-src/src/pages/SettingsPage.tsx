@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useApiError } from "@/lib/auth";
 
 const SITE_URL = "https://jsdentalgroup.com";
 
@@ -12,52 +14,79 @@ export default function SettingsPage() {
   const [gtmId, setGtmId] = useState("");
   const [gscVerification, setGscVerification] = useState("");
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const onApiError = useApiError();
 
   useEffect(() => {
-    api<{ key: string; value: string }[]>("/settings").then((rows) => {
-      for (const row of rows) {
-        if (row.key === "gtmId") setGtmId(row.value);
-        if (row.key === "gscVerification") setGscVerification(row.value);
-      }
-    });
+    api<{ key: string; value: string }[]>("/settings")
+      .then((rows) => {
+        for (const row of rows) {
+          if (row.key === "gtmId") setGtmId(row.value);
+          if (row.key === "gscVerification") setGscVerification(row.value);
+        }
+      })
+      .catch((e) => setError(onApiError(e, "No se pudieron cargar los ajustes.")))
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    await Promise.all([
-      api("/settings/gtmId", { method: "PUT", body: JSON.stringify({ value: gtmId }) }),
-      api("/settings/gscVerification", { method: "PUT", body: JSON.stringify({ value: gscVerification }) }),
-    ]);
+    setError(null);
+    try {
+      await Promise.all([
+        api("/settings/gtmId", { method: "PUT", body: JSON.stringify({ value: gtmId }) }),
+        api("/settings/gscVerification", { method: "PUT", body: JSON.stringify({ value: gscVerification }) }),
+      ]);
+    } catch (err) {
+      // sin esto un guardado fallido se veía igual que uno exitoso, solo que
+      // sin el "Guardado."
+      return setError(onApiError(err, "No se pudieron guardar los ajustes."));
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       <Card className="max-w-lg">
         <CardHeader>
           <CardTitle className="font-heading text-navy">SEO y analítica</CardTitle>
           <CardDescription>
-            Estos valores los lee el sitio en el navegador de cada visitante — cambian aquí y se aplican de inmediato,
-            sin rehacer el build ni redesplegar el sitio.
+            Guardar aquí deja el valor registrado en el servidor, pero el sitio todavía lo lee de la configuración de su
+            despliegue: no cambia hasta el próximo despliegue del sitio.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={save} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="gtmId">Google Tag Manager ID</Label>
-              <Input id="gtmId" placeholder="GTM-XXXXXXX" value={gtmId} onChange={(e) => setGtmId(e.target.value)} />
+              {loading ? (
+                <Skeleton className="h-9 w-full" />
+              ) : (
+                <Input id="gtmId" placeholder="GTM-XXXXXXX" value={gtmId} onChange={(e) => setGtmId(e.target.value)} />
+              )}
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="gsc">Verificación de Google Search Console</Label>
-              <Input id="gsc" placeholder="token del meta tag" value={gscVerification} onChange={(e) => setGscVerification(e.target.value)} />
+              {loading ? (
+                <Skeleton className="h-9 w-full" />
+              ) : (
+                <Input id="gsc" placeholder="token del meta tag" value={gscVerification} onChange={(e) => setGscVerification(e.target.value)} />
+              )}
             </div>
             <div className="flex items-center gap-3">
-              <Button type="submit" className="bg-teal-strong hover:bg-teal-strong/90">
+              <Button type="submit" disabled={loading} className="bg-teal-strong hover:bg-teal-strong/90">
                 Guardar
               </Button>
               {saved && <span className="text-sm text-teal-text">Guardado.</span>}
             </div>
+            {error && (
+              <p role="alert" className="text-sm text-destructive">
+                {error}
+              </p>
+            )}
           </form>
         </CardContent>
       </Card>

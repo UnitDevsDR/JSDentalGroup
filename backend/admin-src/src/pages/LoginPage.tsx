@@ -30,13 +30,13 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="h-screen bg-muted">
-      <div className="flex h-full items-center justify-center">
-        <div className="flex flex-col items-center gap-6">
+    <section className="min-h-dvh bg-muted px-4 py-10">
+      <div className="flex min-h-[calc(100dvh-5rem)] items-center justify-center">
+        <div className="flex w-full max-w-sm flex-col items-center gap-6">
           <img src="/admin/logo.webp" alt="JS Dental Group" className="h-10" />
           <form
             onSubmit={handleSubmit}
-            className="flex w-full max-w-sm min-w-sm flex-col items-stretch gap-y-4 rounded-md border bg-background px-6 py-8 shadow-md"
+            className="flex w-full flex-col items-stretch gap-y-4 rounded-md border bg-background px-6 py-8 shadow-md"
           >
             <h1 className="text-center font-heading text-xl font-semibold text-navy">Panel de leads</h1>
             <div className="space-y-1.5">
