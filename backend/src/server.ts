@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
+import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -24,6 +25,11 @@ app.use(
     crossOriginResourcePolicy: { policy: "same-site" },
   }),
 );
+
+// gzip para todo lo que sale: el bundle del panel pesa ~450 KB en crudo y
+// ~130 KB comprimido. El sitio público lo resuelve Nginx (gzip on), pero
+// este servicio sirve /admin él mismo, sin ese Nginx delante.
+app.use(compression());
 
 app.use(cookieParser());
 app.use(express.json({ limit: "100kb" })); // un mensaje de contacto nunca necesita más
@@ -77,11 +83,28 @@ app.use(
       baseUri: ["'self'"],
     },
   }),
-  express.static(ADMIN_DIR),
+  express.static(ADMIN_DIR, {
+    setHeaders: (res, filePath) => {
+      if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+        // Vite les pone hash en el nombre: un archivo con este nombre nunca
+        // cambia de contenido, así que el navegador puede guardárselo sin
+        // revalidar nunca
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      } else if (filePath.endsWith(".html")) {
+        // el HTML sí cambia (apunta al bundle nuevo de cada build)
+        res.setHeader("Cache-Control", "no-cache");
+      } else {
+        // logo y favicon: sin hash en el nombre, un día es suficiente
+        res.setHeader("Cache-Control", "public, max-age=86400");
+      }
+    },
+  }),
 );
 // React Router lleva el ruteo del lado del cliente: cualquier /admin/* que
 // no sea un archivo real cae al mismo index.html
-app.get(/^\/admin(\/.*)?$/, (_req, res) => res.sendFile(path.join(ADMIN_DIR, "index.html")));
+app.get(/^\/admin(\/.*)?$/, (_req, res) =>
+  res.sendFile(path.join(ADMIN_DIR, "index.html"), { headers: { "Cache-Control": "no-cache" } }),
+);
 
 app.use((req, res) => res.status(404).json({ error: "No encontrado" }));
 
