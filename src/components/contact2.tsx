@@ -7,6 +7,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
+import { getAttribution } from "@/lib/attribution";
 import { cn } from "@/lib/utils";
 
 /** Datos de contacto y textos ya traducidos (serializable para la isla). */
@@ -32,6 +33,8 @@ interface Contact2Props {
   };
   /** URL base del backend de leads (vacía = el envío solo abre WhatsApp, sin guardar nada) */
   apiUrl?: string;
+  /** idioma de la página: se guarda con el lead para responderle en el suyo */
+  locale: "es" | "en";
   /** a dónde navegar tras enviar (misma URL que medía conversión en el sitio anterior) */
   successPath: string;
   info: {
@@ -53,7 +56,7 @@ interface Contact2Props {
   className?: string;
 }
 
-const Contact2 = ({ title, description, copy, info, wa, apiUrl, successPath, className }: Contact2Props) => {
+const Contact2 = ({ title, description, copy, info, wa, apiUrl, locale, successPath, className }: Contact2Props) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -83,7 +86,19 @@ const Contact2 = ({ title, description, copy, info, wa, apiUrl, successPath, cla
       fetch(`${apiUrl}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: nombre, phone: telefono, email: correo, subject: asunto, message: mensaje }),
+        body: JSON.stringify({
+          name: nombre,
+          phone: telefono,
+          email: correo,
+          subject: asunto,
+          message: mensaje,
+          // el formulario está en varias páginas (inicio, servicios, cada
+          // especialidad): la ruta dice desde cuál escribió
+          source: window.location.pathname,
+          locale,
+          // de dónde venía el visitante, capturado al entrar al sitio
+          ...getAttribution(),
+        }),
         keepalive: true,
       }).catch(() => {
         // silencioso a propósito: el usuario no debe ver un error de red

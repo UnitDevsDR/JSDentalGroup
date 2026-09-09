@@ -53,6 +53,9 @@ export const contactProps = (lang: Lang, title?: string) => {
     // sigue funcionando igual (WhatsApp + confirmación), solo deja de
     // guardar el lead en base de datos mientras tanto
     apiUrl: import.meta.env.PUBLIC_API_URL ?? '',
+    // idioma de la página: el lead se guarda con él para saber en cuál
+    // responderle (el backend asumía 'es' para todo el mundo)
+    locale: lang,
     // misma URL que usaba el sitio anterior para medir conversión en Google
     // Ads: no lleva prefijo de idioma, la campaña apunta a esta ruta exacta
     successPath: '/your-ticket-has-been-submitted',

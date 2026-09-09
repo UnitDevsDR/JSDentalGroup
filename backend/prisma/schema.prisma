@@ -22,17 +22,38 @@ model Lead {
   email     String
   subject   String
   message   String
-  /// página desde la que se envió (útil si en el futuro hay más de un form)
+  /// ruta de la página desde la que se envió el formulario (está en varias)
   source    String     @default("contactus")
   /// idioma de la página al momento del envío
   locale    String     @default("es")
   userAgent String?
   status    LeadStatus @default(NEW)
+
+  // Origen de la visita, capturado en el navegador al entrar al sitio (ver
+  // src/lib/attribution.ts en el sitio). Sirve para saber qué pauta y qué
+  // páginas traen pacientes: sin esto no hay forma de atribuir un lead a una
+  // campaña, y es un dato que no se puede reconstruir después.
+  /// primera página de la sesión (la del anuncio, si llegó por uno)
+  landingPath String?
+  /// de dónde venía: dominio + ruta, sin query
+  referrer    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmTerm     String?
+  utmContent  String?
+  /// click id de Google Ads: lo que permite cruzar el lead con la campaña
+  gclid       String?
+  /// click id de Meta (Facebook/Instagram Ads)
+  fbclid      String?
+
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   @@index([createdAt])
   @@index([status])
+  /// los reportes de la Fase 3 agrupan por campaña
+  @@index([utmSource, utmCampaign])
 }
 
 enum LeadStatus {

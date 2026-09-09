@@ -232,6 +232,14 @@ const graphJson = JSON.stringify(graph).replace(/</g, '\\u003c');
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>
+
+    <!-- Origen de la visita: se guarda apenas carga la página, antes de que
+         el visitante navegue y los parámetros de la campaña se pierdan -->
+    <script>
+      import { captureAttribution } from '../lib/attribution';
+
+      captureAttribution();
+    </script>
   </head>
   <body class="antialiased">
     {

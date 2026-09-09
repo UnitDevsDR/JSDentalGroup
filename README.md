@@ -102,16 +102,38 @@ Este repo es **privado**; el código de los bloques puede vivir aquí.
 
 ## Recorrido de un lead
 
-1. El visitante envía el formulario de `/contactus`.
-2. Si hay `PUBLIC_API_URL`, el cliente hace `POST /api/leads` con
+1. Al cargar cualquier página, `src/lib/attribution.ts` guarda en
+   `sessionStorage` de dónde vino la visita: página de entrada, referente
+   externo y parámetros de campaña (`utm_*`, `gclid`, `fbclid`).
+2. El visitante envía el formulario (está en el inicio, servicios, cada
+   especialidad, «nosotros» y contacto).
+3. Si hay `PUBLIC_API_URL`, el cliente hace `POST /api/leads` con
    `keepalive: true` — imprescindible, porque justo después se navega a la
-   página de gracias y sin esa opción el navegador cancela el fetch.
-3. Se abre WhatsApp con el mensaje ya compuesto y se redirige a
+   página de gracias y sin esa opción el navegador cancela el fetch. Al
+   payload se le suman la ruta de la página (`source`), el idioma y lo que
+   se capturó en el paso 1.
+4. Se abre WhatsApp con el mensaje ya compuesto y se redirige a
    `/your-ticket-has-been-submitted` (misma URL que el sitio anterior, para
    que las conversiones de Google Ads sigan midiendo; está fuera del sitemap).
-4. El backend guarda el `Lead` y dispara el correo de aviso sin bloquear la
+5. El backend guarda el `Lead` y dispara el correo de aviso sin bloquear la
    respuesta. El formulario trae un honeypot (`company`): si viene relleno se
    responde `201` igual, pero no se guarda ni se notifica.
+
+### Origen del lead
+
+Gana el primer toque de la sesión, salvo que después llegue un clic con
+parámetros de campaña: ahí manda el anuncio. Es lo que espera quien paga la
+pauta — si alguien entró por búsqueda orgánica, se fue y volvió por el
+anuncio, el lead es del anuncio.
+
+Se usa `sessionStorage` y no `localStorage` a propósito: la atribución
+interesa dentro de la visita y así no queda un identificador persistente en
+el equipo del visitante. Si el navegador lo tiene bloqueado, el lead se
+guarda igual, solo sin origen.
+
+El panel lo muestra en el detalle del lead y el CSV lo exporta en columnas
+al final (`utm_source`, `utm_medium`, `utm_campaign`, `utm_term`,
+`utm_content`, `gclid`, `fbclid`, más página de entrada y referente).
 
 ## API
 
@@ -134,7 +156,10 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 ### Modelos (`backend/prisma/schema.prisma`)
 
 - **`Lead`** — mismos campos que capturaba el Odoo (nombre, teléfono, correo,
-  asunto, mensaje) más `source`, `locale`, `userAgent` y `status`.
+  asunto, mensaje) más `source` (ruta de la página del formulario), `locale`,
+  `userAgent`, `status` y el origen de la visita (`landingPath`, `referrer`,
+  `utmSource`, `utmMedium`, `utmCampaign`, `utmTerm`, `utmContent`, `gclid`,
+  `fbclid`).
 - **`AdminUser`** — no hay endpoint público de registro: el acceso al panel se
   otorga solo desde el servidor, con el seed.
 - **`SiteSetting`** — pares key/value con whitelist (`gtmId`, `gscVerification`).

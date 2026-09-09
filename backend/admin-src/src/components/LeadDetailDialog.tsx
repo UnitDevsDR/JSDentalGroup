@@ -12,7 +12,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { STATUS_LABEL, STATUS_VARIANT, formatDate, type Lead } from "@/lib/leads";
+import { STATUS_LABEL, STATUS_VARIANT, formatDate, originRows, type Lead } from "@/lib/leads";
+
+/** De dónde vino el lead. Va al final y en letra chica: es contexto para
+ *  quien contesta y para saber qué pauta funciona, no lo primero que hay que
+ *  leer. Se oculta entero cuando no hay dato — los leads viejos no lo tienen. */
+function OriginBlock({ lead }: { lead: Lead }) {
+  const rows = originRows(lead);
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="space-y-1 border-t pt-3 text-xs text-muted-foreground">
+      <p className="font-medium text-foreground">Origen</p>
+      {rows.map((row) => (
+        <p key={row.label} className="break-all">
+          <span className="text-foreground/70">{row.label}:</span> {row.value}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 export function LeadDetailDialog({
   lead,
@@ -56,6 +75,8 @@ export function LeadDetailDialog({
                     el visitante, con sus saltos de línea */}
                 <p className="whitespace-pre-line text-muted-foreground">{lead.message}</p>
               </div>
+
+              <OriginBlock lead={lead} />
             </div>
 
             <DialogFooter className="gap-2 sm:justify-start">

@@ -1,8 +1,9 @@
 # De bandeja de mensajes a CRM
 
-**Estado:** propuesta para discutir — nada de esto está construido.
-**Fecha:** 22 de agosto de 2026
-**Decisión que hay que tomar:** si se construye, y hasta dónde.
+**Estado:** propuesta para discutir. Construido hasta hoy: el rastreo de
+origen de la Fase 3. Todo lo demás sigue sin empezar.
+**Fecha:** 22 de agosto de 2026 (rastreo de origen: 9 de septiembre de 2026)
+**Decisión que hay que tomar:** si se sigue, y hasta dónde.
 
 ---
 
@@ -43,8 +44,10 @@ Los estados posibles de un lead son tres: `NEW`, `CONTACTED`, `ARCHIVED`.
 - Saber quién de la clínica está dando seguimiento a cuál lead.
 - Saber por qué se perdió un paciente que no volvió a responder.
 - Saber cuánto se tarda la clínica en responder.
-- Saber de qué página o campaña vino cada lead: el campo `source` existe pero
-  siempre se guarda con el valor `"contactus"`.
+- ~~Saber de qué página o campaña vino cada lead.~~ **Hecho** el 9 de
+  septiembre de 2026: cada lead guarda página de entrada, referente, `utm_*`,
+  `gclid` y `fbclid`, y `source` trae la ruta real de la página del
+  formulario. Ver «Origen del lead» en el README.
 
 ---
 
@@ -135,13 +138,15 @@ de contacto en el panel.
 
 ### Fase 3 — Origen y reportes · tamaño: chico (origen) / mediano (reportes)
 
-| Qué | Por qué |
-| --- | --- |
-| Guardar de verdad el origen: página de servicio, parámetros UTM, referente | Saber si paga la pena la pauta de ortodoncia o la de implantología |
-| Reportes: leads por semana, por servicio, conversión por etapa, tiempo de respuesta | `chart.tsx` ya está instalado en el panel y sin usar |
+| Qué | Estado | Por qué |
+| --- | --- | --- |
+| Guardar de verdad el origen: página de servicio, parámetros UTM, referente | **hecho** | Saber si paga la pena la pauta de ortodoncia o la de implantología |
+| Reportes: leads por semana, por servicio, conversión por etapa, tiempo de respuesta | pendiente | `chart.tsx` ya está instalado en el panel y sin usar |
 
-**El rastreo de origen es lo más barato de esta lista y no se puede recuperar
-después:** cada semana sin ello es una semana de pauta que no se puede atribuir.
+El rastreo de origen se hizo primero porque era lo más barato de la lista y lo
+único que no se puede recuperar después: cada semana sin ello era una semana de
+pauta que no se podía atribuir. Los datos ya se están acumulando; los reportes
+pueden esperar a que haya varias semanas que graficar.
 
 ### Fase 4 — Recordatorios y reactivación · tamaño: grande
 
@@ -183,11 +188,13 @@ ligero. Antes de construir conviene definir:
 
 ## 7. Recomendación
 
-1. **Fase 1 completa** — es el cimiento; sin ella lo demás no se sostiene.
-2. **Rastreo de origen de la Fase 3** — barato ahora, imposible de reconstruir
-   después.
+1. ~~**Rastreo de origen de la Fase 3**~~ — hecho el 9 de septiembre de 2026.
+2. **Fase 1 completa** — es el cimiento; sin ella lo demás no se sostiene.
 3. **Fase 2 después**, cuando el equipo ya viva en el panel.
 4. **Fase 4 al final**, y solo si las tres anteriores se están usando.
+
+Antes de arrancar la Fase 1 hay que cerrar las dos decisiones de la sección 6:
+sin ellas el modelo de datos se diseña a ciegas.
 
 ## 8. Qué no haría todavía
 

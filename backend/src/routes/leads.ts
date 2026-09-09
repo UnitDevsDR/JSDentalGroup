@@ -17,6 +17,16 @@ const createLeadLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/** Campo de origen: opcional, recortado y acotado. Llega de la URL del
+ *  visitante, así que se trata como texto no confiable — se corta en 200 y
+ *  el string vacío se normaliza a undefined para no guardar filas con "". */
+const attributionField = z
+  .string()
+  .trim()
+  .max(200)
+  .optional()
+  .transform((v) => v || undefined);
+
 const createLeadSchema = z.object({
   name: z.string().trim().min(1).max(200),
   phone: z.string().trim().max(40).optional().or(z.literal("")),
@@ -25,6 +35,18 @@ const createLeadSchema = z.object({
   message: z.string().trim().min(1).max(5000),
   source: z.string().trim().max(100).optional(),
   locale: z.enum(["es", "en"]).optional(),
+  // Origen de la visita (ver src/lib/attribution.ts en el sitio). Todo
+  // opcional: un lead sin atribución —entrada directa, o el navegador con
+  // el almacenamiento bloqueado— se guarda igual, solo sin saber de dónde vino.
+  landingPath: attributionField,
+  referrer: attributionField,
+  utmSource: attributionField,
+  utmMedium: attributionField,
+  utmCampaign: attributionField,
+  utmTerm: attributionField,
+  utmContent: attributionField,
+  gclid: attributionField,
+  fbclid: attributionField,
   // honeypot: el formulario real lo manda siempre vacío (un campo oculto
   // por CSS que ninguna persona ve ni llena). Se valida aquí también, no
   // solo en el navegador — un bot que le pegue directo a la API sin pasar
@@ -41,7 +63,7 @@ leadsRouter.post("/", createLeadLimiter, async (req, res) => {
   if (!parsed.success) {
     return res.status(400).json({ error: "Datos inválidos", details: parsed.error.flatten().fieldErrors });
   }
-  const { name, phone, email, subject, message, source, locale, company } = parsed.data;
+  const { name, phone, email, subject, message, source, locale, company, ...attribution } = parsed.data;
 
   // honeypot relleno: se responde éxito (para no delatarle al bot que
   // falló) pero no se guarda nada ni se notifica por correo
@@ -57,11 +79,12 @@ leadsRouter.post("/", createLeadLimiter, async (req, res) => {
       source: source || "contactus",
       locale: locale || "es",
       userAgent: req.header("user-agent")?.slice(0, 300),
+      ...attribution,
     },
   });
 
   // no bloquea la respuesta al visitante por un SMTP lento
-  void notifyNewLead({ name, phone: phone || null, email, subject, message });
+  void notifyNewLead({ name, phone: phone || null, email, subject, message, source: lead.source, ...attribution });
 
   res.status(201).json({ id: lead.id });
 });
@@ -107,7 +130,28 @@ leadsRouter.get("/export", requireAuth, async (req, res) => {
 
   const leads = await prisma.lead.findMany({ where, orderBy: { createdAt: "desc" } });
 
-  const header = ["Fecha", "Nombre", "Teléfono", "Correo", "Asunto", "Mensaje", "Estado", "Origen", "Idioma"];
+  // Las columnas de campaña van al final para no mover de sitio las que ya
+  // usaba quien abría el archivo antes.
+  const header = [
+    "Fecha",
+    "Nombre",
+    "Teléfono",
+    "Correo",
+    "Asunto",
+    "Mensaje",
+    "Estado",
+    "Página del formulario",
+    "Idioma",
+    "Página de entrada",
+    "Referente",
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_term",
+    "utm_content",
+    "gclid",
+    "fbclid",
+  ];
   const rows = leads.map((l) =>
     [
       l.createdAt.toISOString(),
@@ -119,6 +163,15 @@ leadsRouter.get("/export", requireAuth, async (req, res) => {
       STATUS_LABEL_ES[l.status] ?? l.status,
       l.source,
       l.locale,
+      l.landingPath ?? "",
+      l.referrer ?? "",
+      l.utmSource ?? "",
+      l.utmMedium ?? "",
+      l.utmCampaign ?? "",
+      l.utmTerm ?? "",
+      l.utmContent ?? "",
+      l.gclid ?? "",
+      l.fbclid ?? "",
     ]
       .map((v) => csvCell(String(v)))
       .join(","),
