@@ -168,11 +168,41 @@ model AdminUser {
   id           String    @id @default(cuid())
   email        String    @unique
   passwordHash String
+  role         AdminRole @default(STAFF)
   createdAt    DateTime  @default(now())
   lastLoginAt  DateTime?
 
   ownedContacts Contact[]
   interactions  Interaction[]
+  exports       ExportLog[]
+}
+
+/// Quién puede qué. El corte va por la exportación masiva, no por ver:
+/// atender un lead lo hace cualquiera de la clínica, pero bajarse la base
+/// entera en un CSV —que es la forma real de que estos datos salgan por la
+/// puerta— queda para quien administra.
+enum AdminRole {
+  ADMIN
+  STAFF
+}
+
+/// Rastro de cada exportación a CSV: quién, cuándo, con qué filtro y
+/// cuántas filas se llevó. Sin esto la exportación es un agujero sin
+/// registro en datos que son casi historia clínica (sección 6.2 de
+/// docs/crm-propuesta.md).
+model ExportLog {
+  id         String     @id @default(cuid())
+  adminId    String?
+  admin      AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  /// el correo se copia aquí para que el registro siga diciendo quién fue
+  /// aunque después se borre el usuario del panel
+  adminEmail String
+  /// filtro de estado activo al exportar ("todos" si no había)
+  filter     String
+  rowCount   Int
+  createdAt  DateTime   @default(now())
+
+  @@index([createdAt])
 }
 
 /// Configuración editable desde el panel sin rehacer el build del sitio

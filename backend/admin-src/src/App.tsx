@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { useSession } from "@/lib/auth";
+import { SessionContext, useIsAdmin, useSession } from "@/lib/auth";
 import LoginPage from "@/pages/LoginPage";
 import LeadsPage from "@/pages/LeadsPage";
 import SettingsPage from "@/pages/SettingsPage";
@@ -11,6 +11,7 @@ function Protected({ children }: { children: React.ReactNode }) {
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
   return (
+    <SessionContext.Provider value={user}>
     <SidebarProvider>
       <AppSidebar user={user} />
       {/* min-w-0: SidebarInset es un hijo flex y, sin esto, su ancho mínimo
@@ -25,7 +26,23 @@ function Protected({ children }: { children: React.ReactNode }) {
         {children}
       </SidebarInset>
     </SidebarProvider>
+    </SessionContext.Provider>
   );
+}
+
+/** Pantallas de administración. El backend igual las protege; esto evita
+ *  que alguien de recepción llegue a un formulario que solo le va a dar 403. */
+function SoloAdmin({ children }: { children: React.ReactNode }) {
+  if (!useIsAdmin()) {
+    return (
+      <div className="p-6">
+        <p className="text-sm text-muted-foreground">
+          Esta sección es para administradores. Si necesitas entrar, pídeselo a quien administra el panel.
+        </p>
+      </div>
+    );
+  }
+  return <>{children}</>;
 }
 
 export default function App() {
@@ -44,7 +61,9 @@ export default function App() {
         path="/ajustes"
         element={
           <Protected>
-            <SettingsPage />
+            <SoloAdmin>
+              <SettingsPage />
+            </SoloAdmin>
           </Protected>
         }
       />

@@ -2,7 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import { prisma } from "../prisma.js";
-import { requireAuth } from "../auth.js";
+import { requireAuth, requireAdmin } from "../auth.js";
 import { notifyNewLead } from "../mailer.js";
 import { findOrCreateContact } from "../contacts.js";
 
@@ -136,8 +136,13 @@ function csvCell(value: string): string {
 
 const STATUS_LABEL_ES: Record<string, string> = { NEW: "Nuevo", CONTACTED: "Contactado", ARCHIVED: "Archivado" };
 
-/** Panel: exporta a CSV (respeta el filtro de estado activo). */
-leadsRouter.get("/export", requireAuth, async (req, res) => {
+/** Panel: exporta a CSV (respeta el filtro de estado activo).
+ *
+ * Solo administradores, y queda registrado. Ver un lead para atenderlo es
+ * el trabajo de todos los días; llevarse la base entera en un archivo es
+ * otra cosa, y en datos que rozan la historia clínica tiene que dejar
+ * rastro de quién lo hizo. */
+leadsRouter.get("/export", requireAuth, requireAdmin, async (req, res) => {
   const status = typeof req.query.status === "string" ? req.query.status : undefined;
   const where = status && ["NEW", "CONTACTED", "ARCHIVED"].includes(status) ? { status: status as never } : {};
 
@@ -191,6 +196,18 @@ leadsRouter.get("/export", requireAuth, async (req, res) => {
   );
   const csv = [header.join(","), ...rows].join("\r\n");
 
+  // se registra antes de mandar el archivo: si la escritura del rastro
+  // falla, la exportación no ocurre (un CSV sin registro es justo lo que
+  // esto viene a evitar)
+  await prisma.exportLog.create({
+    data: {
+      adminId: req.admin!.id,
+      adminEmail: req.admin!.email,
+      filter: status && STATUS_LABEL_ES[status] ? STATUS_LABEL_ES[status] : "Todos",
+      rowCount: leads.length,
+    },
+  });
+
   const filename = `leads-jsdentalgroup-${new Date().toISOString().slice(0, 10)}.csv`;
   res.set({
     "Content-Type": "text/csv; charset=utf-8",
@@ -198,6 +215,13 @@ leadsRouter.get("/export", requireAuth, async (req, res) => {
   });
   // BOM: sin esto Excel en Windows muestra mal los acentos del español
   res.send("﻿" + csv);
+});
+
+/** Panel: quién se ha llevado datos y cuándo. Un registro que nadie puede
+ * mirar no sirve de nada, así que el panel lo muestra en Ajustes. */
+leadsRouter.get("/exports", requireAuth, requireAdmin, async (_req, res) => {
+  const items = await prisma.exportLog.findMany({ orderBy: { createdAt: "desc" }, take: 50 });
+  res.json({ items });
 });
 
 const updateLeadSchema = z.object({ status: z.enum(["NEW", "CONTACTED", "ARCHIVED"]) });

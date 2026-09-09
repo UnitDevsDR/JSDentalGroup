@@ -7,6 +7,7 @@ import argon2 from "argon2";
 import { SignJWT, jwtVerify } from "jose";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "./env.js";
+import { prisma } from "./prisma.js";
 
 const SECRET = new TextEncoder().encode(env.SESSION_SECRET);
 const COOKIE_NAME = "jsd_session";
@@ -40,6 +41,8 @@ declare global {
   namespace Express {
     interface Request {
       adminId?: string;
+      /** el usuario de la sesión, ya comprobado contra la base */
+      admin?: { id: string; email: string; role: "ADMIN" | "STAFF" };
     }
   }
 }
@@ -56,12 +59,40 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     return res.status(403).json({ error: "Falta encabezado requerido" });
   }
 
+  let adminId: string;
   try {
     const { payload } = await jwtVerify(token, SECRET);
-    req.adminId = String(payload.sub);
-    next();
+    adminId = String(payload.sub);
   } catch {
     clearSession(res);
-    res.status(401).json({ error: "Sesión inválida o expirada" });
+    return res.status(401).json({ error: "Sesión inválida o expirada" });
   }
+
+  // La cuenta se comprueba contra la base en cada request, no solo se
+  // confía en el token: la sesión dura 8 horas, así que si no, a quien se
+  // le quita el acceso hoy le seguiría sirviendo la cookie hasta mañana.
+  // Es una consulta más en un panel que usan tres personas.
+  const admin = await prisma.adminUser.findUnique({
+    where: { id: adminId },
+    select: { id: true, email: true, role: true },
+  });
+
+  if (!admin) {
+    clearSession(res);
+    return res.status(401).json({ error: "Sesión inválida o expirada" });
+  }
+
+  req.adminId = admin.id;
+  req.admin = admin;
+  next();
+}
+
+/** Exige además que sea administrador. Va siempre después de `requireAuth`,
+ * que es quien ya trajo el usuario de la base. */
+export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.admin) return res.status(401).json({ error: "No autenticado" });
+  if (req.admin.role !== "ADMIN") {
+    return res.status(403).json({ error: "Hace falta ser administrador" });
+  }
+  next();
 }

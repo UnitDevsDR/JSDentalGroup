@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../prisma.js";
-import { requireAuth } from "../auth.js";
+import { requireAuth, requireAdmin } from "../auth.js";
 
 export const settingsRouter = Router();
 
@@ -25,8 +25,10 @@ settingsRouter.get("/public", async (_req, res) => {
 
 const updateSchema = z.object({ value: z.string().trim().max(500) });
 
-/** Panel: cambiar un valor. Solo las keys de la whitelist. */
-settingsRouter.put("/:key", requireAuth, async (req, res) => {
+/** Panel: cambiar un valor. Solo las keys de la whitelist, y solo
+ * administradores: el GTM ID y el token de Search Console son configuración
+ * del sitio, no trabajo del día a día con pacientes. */
+settingsRouter.put("/:key", requireAuth, requireAdmin, async (req, res) => {
   const key = String(req.params.key);
   if (!PUBLIC_KEYS.includes(key as PublicKey)) {
     return res.status(404).json({ error: "Ajuste desconocido" });

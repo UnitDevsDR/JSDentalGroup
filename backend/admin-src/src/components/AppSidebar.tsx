@@ -16,12 +16,13 @@ import { api } from "@/lib/api";
 import type { AdminUser } from "@/lib/auth";
 
 const items = [
-  { title: "Leads", url: "/", icon: Inbox },
-  { title: "Ajustes", url: "/ajustes", icon: Settings },
+  { title: "Leads", url: "/", icon: Inbox, soloAdmin: false },
+  { title: "Ajustes", url: "/ajustes", icon: Settings, soloAdmin: true },
 ];
 
 export function AppSidebar({ user }: { user: AdminUser }) {
   const navigate = useNavigate();
+  const visibles = items.filter((item) => !item.soloAdmin || user.role === "ADMIN");
 
   const logout = async () => {
     await api("/auth/logout", { method: "POST" });
@@ -41,7 +42,7 @@ export function AppSidebar({ user }: { user: AdminUser }) {
           <SidebarGroupLabel>Panel</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {visibles.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} end className={({ isActive }) => (isActive ? "bg-sidebar-accent" : "")}>

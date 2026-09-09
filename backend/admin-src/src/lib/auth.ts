@@ -1,10 +1,27 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, ApiError, AuthError } from "./api";
 
 export interface AdminUser {
   id: string;
   email: string;
+  /** ADMIN exporta la base y toca los ajustes; STAFF atiende leads */
+  role: "ADMIN" | "STAFF";
+}
+
+/** El usuario de la sesión, para las pantallas de dentro. Lo pone App tras
+ *  resolver /auth/me, así que ninguna pantalla vuelve a pedirlo. */
+export const SessionContext = createContext<AdminUser | null>(null);
+
+export function useCurrentUser(): AdminUser | null {
+  return useContext(SessionContext);
+}
+
+/** Solo para decidir qué mostrar. Quien manda es el backend: las rutas de
+ *  exportación y ajustes comprueban el rol en la base en cada request, así
+ *  que esconder un botón aquí es comodidad, nunca la barrera. */
+export function useIsAdmin(): boolean {
+  return useCurrentUser()?.role === "ADMIN";
 }
 
 /** Sesión actual: null mientras carga, false si no hay sesión, el usuario si sí. */

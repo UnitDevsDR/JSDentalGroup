@@ -38,7 +38,10 @@ authRouter.post("/logout", (req, res) => {
 });
 
 authRouter.get("/me", requireAuth, async (req, res) => {
-  const user = await prisma.adminUser.findUnique({ where: { id: req.adminId }, select: { id: true, email: true } });
+  const user = await prisma.adminUser.findUnique({
+    where: { id: req.adminId },
+    select: { id: true, email: true, role: true },
+  });
   if (!user) return res.status(401).json({ error: "No autenticado" });
   res.json(user);
 });

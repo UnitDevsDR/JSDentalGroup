@@ -1,7 +1,8 @@
 # De bandeja de mensajes a CRM
 
-**Estado:** en construcción. Hecho: el rastreo de origen de la Fase 3 y el
-paso 1 de la Fase 1 (modelo de contactos e interacciones).
+**Estado:** en construcción. Hecho: el rastreo de origen de la Fase 3 y los
+pasos 1 y 2 de la Fase 1 (modelo de contactos e interacciones; roles y
+registro de exportaciones).
 **Fecha:** 22 de agosto de 2026 (rastreo de origen: 9 de septiembre de 2026)
 **Decisión que hay que tomar:** si se sigue, y hasta dónde.
 
@@ -132,7 +133,8 @@ Se hace en cuatro pasos, en este orden:
 
 1. Esquema, migración y reparto de los mensajes que ya existen. **Hecho** el 9
    de septiembre de 2026.
-2. Roles y registro de exportaciones (la decisión 6.2).
+2. Roles y registro de exportaciones (la decisión 6.2). **Hecho** el 9 de
+   septiembre de 2026.
 3. Endpoints: contactos, interacciones, etapa, responsable y seguimiento.
 4. Panel: ficha de contacto con la línea de tiempo; la lista pasa a ser de
    personas y no de mensajes.
@@ -198,10 +200,10 @@ ligero. Antes de construir conviene definir:
 - Cuánto tiempo se conservan los datos y qué se borra. **Sin definir.**
 - Consentimiento para mensajes de mercadeo, aparte del de la consulta.
   **Sin definir.**
-- Roles en el panel: hoy **todo `AdminUser` ve y exporta todo**, y la
-  exportación a CSV no deja rastro de quién la hizo. **Decidido (9 de
-  septiembre de 2026):** se resuelve dentro de la Fase 1, no después —
-  retrofitear roles sobre una tabla con historial clínico sale mucho más caro.
+- ~~Roles en el panel: hoy todo `AdminUser` ve y exporta todo, y la
+  exportación a CSV no deja rastro de quién la hizo.~~ **Hecho** el 9 de
+  septiembre de 2026: exportar es solo de administradores y queda registrado
+  (quién, cuándo, qué filtro, cuántas filas). Ver «Roles» en el README.
 
 ---
 

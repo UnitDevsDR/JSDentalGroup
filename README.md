@@ -161,14 +161,15 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 | `GET` | `/api/health` | público | healthcheck del contenedor |
 | `POST` | `/api/leads` | público (rate limit propio) | crea un lead desde el formulario |
 | `GET` | `/api/leads` | sesión | lista paginada, la más reciente primero |
-| `GET` | `/api/leads/export` | sesión | exporta los leads a CSV |
+| `GET` | `/api/leads/export` | **admin** | exporta los leads a CSV (queda registrado) |
+| `GET` | `/api/leads/exports` | **admin** | quién exportó, cuándo, con qué filtro y cuántas filas |
 | `PATCH` | `/api/leads/:id` | sesión | cambia el estado (`NEW` / `CONTACTED` / `ARCHIVED`) |
 | `POST` | `/api/auth/login` | público (rate limit propio) | inicia sesión, deja la cookie |
 | `POST` | `/api/auth/logout` | — | borra la cookie |
 | `GET` | `/api/auth/me` | sesión | usuario actual |
 | `GET` | `/api/settings/public` | público | `gtmId` y `gscVerification`, cacheado 5 min |
 | `GET` | `/api/settings` | sesión | valores actuales para el panel |
-| `PUT` | `/api/settings/:key` | sesión | cambia un ajuste (solo las keys de la whitelist) |
+| `PUT` | `/api/settings/:key` | **admin** | cambia un ajuste (solo las keys de la whitelist) |
 
 ### Modelos (`backend/prisma/schema.prisma`)
 
@@ -185,7 +186,10 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
   origen de la visita (`landingPath`, `referrer`, `utmSource`, `utmMedium`,
   `utmCampaign`, `utmTerm`, `utmContent`, `gclid`, `fbclid`).
 - **`AdminUser`** — no hay endpoint público de registro: el acceso al panel se
-  otorga solo desde el servidor, con el seed.
+  otorga solo desde el servidor, con el seed. Tiene rol `ADMIN` o `STAFF`.
+- **`ExportLog`** — quién descargó el CSV, cuándo, con qué filtro y cuántas
+  filas. El correo se copia dentro para que el rastro sobreviva al borrado
+  del usuario.
 - **`SiteSetting`** — pares key/value con whitelist (`gtmId`, `gscVerification`).
 
 > **Ojo:** hoy el sitio estático **no** consume `/api/settings/public` — lee el
@@ -193,6 +197,35 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 > (`src/layouts/Layout.astro`). El endpoint y la pantalla de ajustes ya están,
 > pero falta cablear el fetch en el cliente para que cambiarlos no exija
 > rehacer el build.
+
+## Roles
+
+Dos roles, y el corte va por la exportación masiva, no por ver: atender un
+lead es el trabajo de todos los días, bajarse la base entera en un archivo es
+la forma real de que estos datos salgan por la puerta.
+
+| | `STAFF` | `ADMIN` |
+| --- | --- | --- |
+| Ver y atender leads | sí | sí |
+| Exportar a CSV | no | sí, y queda registrado |
+| Ajustes del sitio | no | sí |
+
+Se otorgan con el seed, que es también la única forma de cambiarle el rol a
+alguien mientras no exista una pantalla de usuarios — se le vuelve a correr
+con el mismo correo:
+
+```bash
+# administradora
+ADMIN_EMAIL=... ADMIN_PASSWORD=... node dist/scripts/seed.js
+# recepción
+ADMIN_EMAIL=... ADMIN_PASSWORD=... ADMIN_ROLE=STAFF node dist/scripts/seed.js
+```
+
+El rol se comprueba contra la base en cada request, no dentro del JWT: la
+sesión dura 8 horas, así que si viajara en el token, a quien se le quita el
+acceso hoy le seguiría sirviendo la cookie hasta mañana. Por lo mismo se
+comprueba que la cuenta siga existiendo. Esconder un botón en el panel es
+comodidad; la barrera está en el backend.
 
 ## Panel admin
 

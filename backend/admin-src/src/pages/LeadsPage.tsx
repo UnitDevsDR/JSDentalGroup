@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/api";
-import { useApiError } from "@/lib/auth";
+import { useApiError, useIsAdmin } from "@/lib/auth";
 import { STATUS_LABEL, STATUS_VARIANT, formatDate, formatDateParts, type Lead } from "@/lib/leads";
 import { cn } from "@/lib/utils";
 
@@ -102,6 +102,7 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const onApiError = useApiError();
+  const esAdmin = useIsAdmin();
   const pageSize = 25;
 
   /** `silent`: recarga sin esqueleto, para después de cambiar un estado — la
@@ -154,14 +155,18 @@ export default function LeadsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-heading text-2xl font-semibold text-navy">Leads</h1>
         <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="sm">
-            {/* GET con cookie de sesión, sin necesidad de fetch/blob — el
-                navegador descarga el archivo directo. Respeta el filtro
-                de estado activo. */}
-            <a href={`/api/leads/export${status === "all" ? "" : `?status=${status}`}`} download>
-              <Download className="size-4" /> Exportar CSV
-            </a>
-          </Button>
+          {/* solo administradores: llevarse la base entera es otra cosa que
+              atender un lead, y queda registrado (ver Ajustes) */}
+          {esAdmin && (
+            <Button asChild variant="outline" size="sm">
+              {/* GET con cookie de sesión, sin necesidad de fetch/blob — el
+                  navegador descarga el archivo directo. Respeta el filtro
+                  de estado activo. */}
+              <a href={`/api/leads/export${status === "all" ? "" : `?status=${status}`}`} download>
+                <Download className="size-4" /> Exportar CSV
+              </a>
+            </Button>
+          )}
           <Select
             value={status}
             onValueChange={(v) => {

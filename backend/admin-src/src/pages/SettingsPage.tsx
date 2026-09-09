@@ -10,6 +10,68 @@ import { useApiError } from "@/lib/auth";
 
 const SITE_URL = "https://jsdentalgroup.com";
 
+interface ExportLog {
+  id: string;
+  adminEmail: string;
+  filter: string;
+  rowCount: number;
+  createdAt: string;
+}
+
+/** Quién se ha llevado datos y cuándo.
+ *
+ *  Un registro que nadie mira no protege nada: la idea es que se pueda
+ *  responder «¿quién bajó la base?» sin entrar al servidor. */
+function ExportsCard() {
+  const [items, setItems] = useState<ExportLog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const onApiError = useApiError();
+
+  useEffect(() => {
+    api<{ items: ExportLog[] }>("/leads/exports")
+      .then((d) => setItems(d.items))
+      .catch((e) => setError(onApiError(e, "No se pudo cargar el registro de exportaciones.")))
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <Card className="mt-6 max-w-lg">
+      <CardHeader>
+        <CardTitle className="font-heading text-navy">Exportaciones</CardTitle>
+        <CardDescription>
+          Cada descarga del CSV queda registrada. Solo los administradores pueden exportar.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-sm">
+        {loading && <Skeleton className="h-16 w-full" />}
+        {error && (
+          <p role="alert" className="text-sm text-destructive">
+            {error}
+          </p>
+        )}
+        {!loading && !error && items.length === 0 && (
+          <p className="text-muted-foreground">Todavía nadie ha exportado nada.</p>
+        )}
+        {!loading && items.length > 0 && (
+          <ul className="space-y-2">
+            {items.map((log) => (
+              <li key={log.id} className="flex flex-wrap justify-between gap-x-3 border-b pb-2 last:border-0">
+                <span className="break-all">{log.adminEmail}</span>
+                <span className="text-muted-foreground">
+                  {new Date(log.createdAt).toLocaleString("es-DO", { dateStyle: "medium", timeStyle: "short" })} ·{" "}
+                  {log.rowCount} {log.rowCount === 1 ? "fila" : "filas"} · {log.filter}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function SettingsPage() {
   const [gtmId, setGtmId] = useState("");
   const [gscVerification, setGscVerification] = useState("");
@@ -126,6 +188,8 @@ export default function SettingsPage() {
           </a>
         </CardContent>
       </Card>
+
+      <ExportsCard />
     </div>
   );
 }
