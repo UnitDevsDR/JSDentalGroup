@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import { env, allowedOrigins } from "./env.js";
 import { leadsRouter } from "./routes/leads.js";
+import { contactsRouter } from "./routes/contacts.js";
 import { authRouter } from "./routes/auth.js";
 import { settingsRouter } from "./routes/settings.js";
 
@@ -56,6 +57,7 @@ app.use("/api", rateLimit({ windowMs: 60 * 1000, limit: 60, standardHeaders: tru
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/leads", leadsRouter);
+app.use("/api/contacts", contactsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/settings", settingsRouter);
 

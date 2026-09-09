@@ -97,6 +97,10 @@ model Contact {
   nextFollowUpAt  DateTime?
   /// cuándo escribió por primera vez
   firstSeenAt     DateTime     @default(now())
+  /// último movimiento real: un mensaje suyo o algo que alguien anotó. Es
+  /// el orden natural de la lista —quien acaba de escribir va arriba— y no
+  /// se puede sacar de `updatedAt`, que cambia también al asignarle dueño.
+  lastActivityAt  DateTime     @default(now())
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
@@ -105,6 +109,7 @@ model Contact {
 
   @@index([stage])
   @@index([nextFollowUpAt])
+  @@index([lastActivityAt])
   /// las dos llaves con las que se buscan duplicados al guardar un lead
   @@index([phoneNormalized])
   @@index([email])

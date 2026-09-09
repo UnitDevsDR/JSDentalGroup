@@ -164,9 +164,15 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 | `GET` | `/api/leads/export` | **admin** | exporta los leads a CSV (queda registrado) |
 | `GET` | `/api/leads/exports` | **admin** | quién exportó, cuándo, con qué filtro y cuántas filas |
 | `PATCH` | `/api/leads/:id` | sesión | cambia el estado (`NEW` / `CONTACTED` / `ARCHIVED`) |
+| `GET` | `/api/contacts` | sesión | lista de personas; filtra por `stage`, `ownerId`, `vencidos=1` y busca con `q` |
+| `GET` | `/api/contacts/:id` | sesión | la ficha: datos, mensajes, anotaciones y posibles duplicados |
+| `PATCH` | `/api/contacts/:id` | sesión | etapa, responsable, próximo seguimiento, motivo de pérdida, datos de contacto |
+| `POST` | `/api/contacts/:id/interactions` | sesión | anota qué se habló |
+| `DELETE` | `/api/contacts/:id/interactions/:id` | sesión (autor, 15 min) | borra una anotación recién escrita |
 | `POST` | `/api/auth/login` | público (rate limit propio) | inicia sesión, deja la cookie |
 | `POST` | `/api/auth/logout` | — | borra la cookie |
 | `GET` | `/api/auth/me` | sesión | usuario actual |
+| `GET` | `/api/auth/users` | sesión | colegas del panel, para el desplegable de responsable |
 | `GET` | `/api/settings/public` | público | `gtmId` y `gscVerification`, cacheado 5 min |
 | `GET` | `/api/settings` | sesión | valores actuales para el panel |
 | `PUT` | `/api/settings/:key` | **admin** | cambia un ajuste (solo las keys de la whitelist) |
@@ -197,6 +203,30 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 > (`src/layouts/Layout.astro`). El endpoint y la pantalla de ajustes ya están,
 > pero falta cablear el fetch en el cliente para que cambiarlos no exija
 > rehacer el build.
+
+## Trabajar una ficha
+
+`GET /api/contacts` ordena por último movimiento —quien acaba de escribir va
+arriba—, que es como se trabaja una bandeja. `?vencidos=1` cambia el orden a
+los que tienen el seguimiento pasado de fecha, del más viejo primero: esa es
+la cola con la que se empieza el día. `?ownerId=mios` filtra por quien esté
+dentro, sin que el panel tenga que saber su id.
+
+La búsqueda con `?q=` mira nombre, correo y teléfono; el teléfono se compara
+normalizado, así que da igual cómo lo escriba quien busca.
+
+Dos detalles de comportamiento que no se ven en la firma de los endpoints:
+
+- **El motivo de pérdida se limpia solo** al sacar una ficha de `LOST`. Un
+  «le pareció caro» viejo colgando de alguien que sí volvió es peor que no
+  tener nada.
+- **Una anotación con fecha vieja no sube la ficha en la lista.** Anotar el
+  martes una llamada del jueves pasado es normal, y no debería hacerla
+  saltar al tope como si acabara de pasar.
+
+Las anotaciones las borra solo quien las escribió y solo dentro de los 15
+minutos siguientes: es para el que se equivocó de ficha, no para reescribir
+el historial.
 
 ## Roles
 

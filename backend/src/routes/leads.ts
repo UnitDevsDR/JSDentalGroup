@@ -80,6 +80,10 @@ leadsRouter.post("/", createLeadLimiter, async (req, res) => {
       locale: locale || "es",
     });
 
+    // un mensaje suyo es lo más reciente que le ha pasado a esa ficha: la
+    // sube al tope de la lista
+    await tx.contact.update({ where: { id: contactId }, data: { lastActivityAt: new Date() } });
+
     return tx.lead.create({
       data: {
         contactId,

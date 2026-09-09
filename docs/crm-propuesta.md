@@ -1,8 +1,8 @@
 # De bandeja de mensajes a CRM
 
 **Estado:** en construcción. Hecho: el rastreo de origen de la Fase 3 y los
-pasos 1 y 2 de la Fase 1 (modelo de contactos e interacciones; roles y
-registro de exportaciones).
+pasos 1, 2 y 3 de la Fase 1 (modelo de contactos e interacciones; roles y
+registro de exportaciones; endpoints). Falta el paso 4: las pantallas.
 **Fecha:** 22 de agosto de 2026 (rastreo de origen: 9 de septiembre de 2026)
 **Decisión que hay que tomar:** si se sigue, y hasta dónde.
 
@@ -136,6 +136,7 @@ Se hace en cuatro pasos, en este orden:
 2. Roles y registro de exportaciones (la decisión 6.2). **Hecho** el 9 de
    septiembre de 2026.
 3. Endpoints: contactos, interacciones, etapa, responsable y seguimiento.
+   **Hecho** el 9 de septiembre de 2026.
 4. Panel: ficha de contacto con la línea de tiempo; la lista pasa a ser de
    personas y no de mensajes.
 

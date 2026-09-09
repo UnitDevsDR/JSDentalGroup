@@ -37,6 +37,16 @@ authRouter.post("/logout", (req, res) => {
   res.json({ ok: true });
 });
 
+/** Panel: con quién se puede compartir el trabajo — llena el desplegable de
+ * responsable en una ficha. Son colegas, no datos de pacientes. */
+authRouter.get("/users", requireAuth, async (_req, res) => {
+  const users = await prisma.adminUser.findMany({
+    select: { id: true, email: true, role: true },
+    orderBy: { email: "asc" },
+  });
+  res.json({ items: users });
+});
+
 authRouter.get("/me", requireAuth, async (req, res) => {
   const user = await prisma.adminUser.findUnique({
     where: { id: req.adminId },
