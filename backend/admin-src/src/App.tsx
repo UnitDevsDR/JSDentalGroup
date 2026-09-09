@@ -3,7 +3,8 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/AppSidebar";
 import { SessionContext, useIsAdmin, useSession } from "@/lib/auth";
 import LoginPage from "@/pages/LoginPage";
-import LeadsPage from "@/pages/LeadsPage";
+import ContactsPage from "@/pages/ContactsPage";
+import ContactDetailPage from "@/pages/ContactDetailPage";
 import SettingsPage from "@/pages/SettingsPage";
 
 function Protected({ children }: { children: React.ReactNode }) {
@@ -53,7 +54,15 @@ export default function App() {
         path="/"
         element={
           <Protected>
-            <LeadsPage />
+            <ContactsPage />
+          </Protected>
+        }
+      />
+      <Route
+        path="/contactos/:id"
+        element={
+          <Protected>
+            <ContactDetailPage />
           </Protected>
         }
       />

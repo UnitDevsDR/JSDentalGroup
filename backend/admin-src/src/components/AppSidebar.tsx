@@ -1,5 +1,5 @@
-import { Inbox, LogOut, Settings } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { LogOut, Settings, Users } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -16,13 +16,20 @@ import { api } from "@/lib/api";
 import type { AdminUser } from "@/lib/auth";
 
 const items = [
-  { title: "Leads", url: "/", icon: Inbox, soloAdmin: false },
+  { title: "Contactos", url: "/", icon: Users, soloAdmin: false },
   { title: "Ajustes", url: "/ajustes", icon: Settings, soloAdmin: true },
 ];
 
 export function AppSidebar({ user }: { user: AdminUser }) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const visibles = items.filter((item) => !item.soloAdmin || user.role === "ADMIN");
+
+  // La ficha de una persona vive en /contactos/:id, así que «Contactos»
+  // tiene que seguir encendido ahí dentro. No se puede resolver con el
+  // `end` de NavLink: sin él, "/" haría match con todas las rutas.
+  const activo = (url: string) =>
+    url === "/" ? pathname === "/" || pathname.startsWith("/contactos") : pathname === url;
 
   const logout = async () => {
     await api("/auth/logout", { method: "POST" });
@@ -45,10 +52,10 @@ export function AppSidebar({ user }: { user: AdminUser }) {
               {visibles.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink to={item.url} end className={({ isActive }) => (isActive ? "bg-sidebar-accent" : "")}>
+                    <Link to={item.url} className={activo(item.url) ? "bg-sidebar-accent" : ""}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </NavLink>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

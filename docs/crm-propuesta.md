@@ -1,8 +1,8 @@
 # De bandeja de mensajes a CRM
 
-**Estado:** en construcción. Hecho: el rastreo de origen de la Fase 3 y los
-pasos 1, 2 y 3 de la Fase 1 (modelo de contactos e interacciones; roles y
-registro de exportaciones; endpoints). Falta el paso 4: las pantallas.
+**Estado:** Fase 1 completa y el rastreo de origen de la Fase 3 también.
+Pendientes: la Fase 2 (velocidad de respuesta), los reportes de la Fase 3 y
+la Fase 4.
 **Fecha:** 22 de agosto de 2026 (rastreo de origen: 9 de septiembre de 2026)
 **Decisión que hay que tomar:** si se sigue, y hasta dónde.
 
@@ -115,7 +115,7 @@ volvió. Por eso la Fase 1 es un cambio de modelo y no una pantalla nueva.
 Los tamaños son aproximados y sirven para comparar entre sí, no como
 compromiso de fecha.
 
-### Fase 1 — Convertirlo en un CRM de verdad · tamaño: grande
+### Fase 1 — Convertirlo en un CRM de verdad · **hecha** (9 de septiembre de 2026)
 
 | Qué | Por qué |
 | --- | --- |
@@ -138,7 +138,7 @@ Se hace en cuatro pasos, en este orden:
 3. Endpoints: contactos, interacciones, etapa, responsable y seguimiento.
    **Hecho** el 9 de septiembre de 2026.
 4. Panel: ficha de contacto con la línea de tiempo; la lista pasa a ser de
-   personas y no de mensajes.
+   personas y no de mensajes. **Hecho** el 9 de septiembre de 2026.
 
 > **Sobre los duplicados:** la unión automática es solo por correo. Por
 > teléfono no, aunque se guarde normalizado: en una casa se comparte el

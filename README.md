@@ -263,13 +263,30 @@ En `/admin` del backend. SPA de React con ruteo del lado del cliente (cualquier
 `/admin/*` que no sea un archivo real cae al mismo `index.html`) y su propia
 CSP, más estricta que la del sitio público.
 
-- **Leads** — tabla, cambio de estado y exportación a CSV
-- **Ajustes** — SEO y analítica (GTM ID, verificación de Search Console) y un
-  enlace al `sitemap-index.xml`, que el sitio estático regenera solo en cada
-  build
+- **Contactos** — la lista de personas, no de mensajes. Tres vistas: todos,
+  míos y «por atender» (seguimiento pasado de fecha, del más viejo primero).
+  Busca por nombre, correo o teléfono, y filtra por etapa. La fila dice de un
+  vistazo cuánto lleva esperando, en qué etapa va y quién la lleva.
+- **Ficha de contacto** (`/admin/contactos/:id`) — arriba, dónde está esa
+  persona: etapa, responsable y próximo seguimiento. Debajo, la historia
+  completa en una sola cuerda, del último para atrás: sus mensajes del
+  formulario (con el origen de cada uno) y todo lo anotado por el equipo,
+  mezclados por fecha. Separarlos en dos listas obligaba a saltar de una a
+  otra para reconstruir qué pasó.
+- **Ajustes** — SEO y analítica (GTM ID, verificación de Search Console), un
+  enlace al `sitemap-index.xml` que el sitio estático regenera solo en cada
+  build, y el registro de exportaciones. Solo administradores.
 
-El primer usuario se crea con `backend/src/scripts/seed.ts`, nunca desde el
-navegador.
+En el teléfono la ficha pone primero el bloque de seguimiento: lo primero que
+se quiere saber es en qué va esa persona, no qué escribió hace un mes.
+
+Los usuarios se crean con `backend/src/scripts/seed.ts`, nunca desde el
+navegador (ver «Roles»).
+
+> La bandeja de mensajes que había antes ya no existe como pantalla: un
+> mensaje es ahora una entrada dentro de la ficha de quien lo escribió.
+> `Lead.status` sigue en la base pero el panel no lo usa — manda
+> `Contact.stage`. Queda para limpiar cuando no haga falta poder volver atrás.
 
 ## SEO
 
