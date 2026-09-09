@@ -115,9 +115,26 @@ Este repo es **privado**; el código de los bloques puede vivir aquí.
 4. Se abre WhatsApp con el mensaje ya compuesto y se redirige a
    `/your-ticket-has-been-submitted` (misma URL que el sitio anterior, para
    que las conversiones de Google Ads sigan midiendo; está fuera del sitemap).
-5. El backend guarda el `Lead` y dispara el correo de aviso sin bloquear la
-   respuesta. El formulario trae un honeypot (`company`): si viene relleno se
-   responde `201` igual, pero no se guarda ni se notifica.
+5. El backend busca a quién pertenece el mensaje (o crea la ficha si es la
+   primera vez), guarda el `Lead` colgando de ese `Contact` —las dos cosas en
+   una transacción— y dispara el correo de aviso sin bloquear la respuesta. El
+   formulario trae un honeypot (`company`): si viene relleno se responde `201`
+   igual, pero no se guarda ni se notifica.
+
+### Cuándo dos mensajes son de la misma persona
+
+Se unen **por correo** en minúsculas, que es el único campo obligatorio del
+formulario. **Por teléfono no**, aunque se guarde normalizado (solo dígitos,
+sin el 1 de país) y con índice: en una casa se comparte el número, y juntar a
+la mamá con el hijo dejaría el dolor de muela de uno colgando de la ficha del
+otro. Separar a una persona en dos fichas es molesto; mezclar a dos personas
+en una con historial clínico no se desenreda después. El índice sobre el
+teléfono está para que el panel pueda señalar los contactos que lo comparten
+y alguien decida a mano.
+
+Tampoco hay índice único sobre el correo: detectar duplicados es una
+heurística, y un constraint la volvería una regla dura que tarde o temprano
+rechazaría un lead legítimo. Perder un lead es lo peor que puede pasar aquí.
 
 ### Origen del lead
 
@@ -155,11 +172,18 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 
 ### Modelos (`backend/prisma/schema.prisma`)
 
-- **`Lead`** — mismos campos que capturaba el Odoo (nombre, teléfono, correo,
-  asunto, mensaje) más `source` (ruta de la página del formulario), `locale`,
-  `userAgent`, `status` y el origen de la visita (`landingPath`, `referrer`,
-  `utmSource`, `utmMedium`, `utmCampaign`, `utmTerm`, `utmContent`, `gclid`,
-  `fbclid`).
+- **`Contact`** — la persona. Agrupa todos sus mensajes y todo lo que se ha
+  hablado con ella: etapa (`NEW` → `CONTACTED` → `APPOINTMENT_SET` →
+  `ATTENDED` → `TREATMENT_ACCEPTED` → `LOST`, más `ARCHIVED`), motivo de
+  pérdida, responsable y fecha del próximo seguimiento.
+- **`Interaction`** — qué se habló y cuándo (llamada, WhatsApp, correo, en
+  persona o nota), con autor y fecha real del hecho. WhatsApp se registra a
+  mano: el sitio abre un enlace `wa.me` y esa conversación no llega aquí.
+- **`Lead`** — un mensaje, colgando de su `Contact`. Mismos campos que
+  capturaba el Odoo (nombre, teléfono, correo, asunto, mensaje) más `source`
+  (ruta de la página del formulario), `locale`, `userAgent`, `status` y el
+  origen de la visita (`landingPath`, `referrer`, `utmSource`, `utmMedium`,
+  `utmCampaign`, `utmTerm`, `utmContent`, `gclid`, `fbclid`).
 - **`AdminUser`** — no hay endpoint público de registro: el acceso al panel se
   otorga solo desde el servidor, con el seed.
 - **`SiteSetting`** — pares key/value con whitelist (`gtmId`, `gscVerification`).

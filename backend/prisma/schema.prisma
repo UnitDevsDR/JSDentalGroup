@@ -17,6 +17,10 @@ datasource db {
 /// partner_phone, partner_email, description) para no perder nada al migrar.
 model Lead {
   id        String     @id @default(cuid())
+  /// la persona que lo escribió: dos mensajes de la misma señora cuelgan
+  /// del mismo Contact en vez de quedar como dos filas sueltas
+  contactId String
+  contact   Contact    @relation(fields: [contactId], references: [id], onDelete: Cascade)
   name      String
   phone     String?
   email     String
@@ -47,29 +51,128 @@ model Lead {
   /// click id de Meta (Facebook/Instagram Ads)
   fbclid      String?
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([createdAt])
   @@index([status])
   /// los reportes de la Fase 3 agrupan por campaña
   @@index([utmSource, utmCampaign])
+  @@index([contactId])
 }
 
+/// El estado de un mensaje suelto. Se conserva mientras el panel siga
+/// listando mensajes; la etapa real de la persona vive en Contact.stage.
 enum LeadStatus {
   NEW
   CONTACTED
   ARCHIVED
 }
 
+/// La persona detrás de los mensajes: la pieza central del CRM.
+///
+/// Antes la unidad era el mensaje, y por eso no había dónde colgar el
+/// historial, el seguimiento ni el motivo por el que alguien no volvió.
+/// Un Contact agrupa todos los mensajes de la misma persona y todo lo que
+/// se ha hablado con ella.
+model Contact {
+  id              String       @id @default(cuid())
+  name            String
+  email           String?
+  /// el teléfono tal como lo escribió la persona, para mostrarlo igual
+  phone           String?
+  /// solo dígitos y sin el 1 de país: la llave con la que se reconoce que
+  /// 809-555-0101 y +1 809 555 0101 son el mismo número
+  phoneNormalized String?
+  locale          String       @default("es")
+  stage           ContactStage @default(NEW)
+  /// por qué se cayó, cuando stage es LOST: sin esto no se aprende nada de
+  /// los que no volvieron
+  lossReason      LossReason?
+  lossNote        String?
+  /// a quién de la clínica le toca esta persona
+  ownerId         String?
+  owner           AdminUser?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  /// sin fecha, el seguimiento no ocurre
+  nextFollowUpAt  DateTime?
+  /// cuándo escribió por primera vez
+  firstSeenAt     DateTime     @default(now())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  leads        Lead[]
+  interactions Interaction[]
+
+  @@index([stage])
+  @@index([nextFollowUpAt])
+  /// las dos llaves con las que se buscan duplicados al guardar un lead
+  @@index([phoneNormalized])
+  @@index([email])
+}
+
+/// Etapas por las que pasa una persona. Reemplazan a los tres estados del
+/// mensaje: la pregunta que importa no es «¿ya le escribí?» sino «¿en qué
+/// va?». ARCHIVED se queda para no perderle el sentido a lo ya archivado.
+enum ContactStage {
+  NEW
+  CONTACTED
+  APPOINTMENT_SET
+  ATTENDED
+  TREATMENT_ACCEPTED
+  LOST
+  ARCHIVED
+}
+
+enum LossReason {
+  PRICE
+  SCHEDULE
+  LOCATION
+  NO_ANSWER
+  OTHER
+}
+
+/// Qué se habló con la persona y cuándo. Es la función que el equipo usa
+/// todos los días (82% de uso según los datos de la propuesta) y la que
+/// hoy no existe: no hay dónde escribir «la llamé, viene el martes».
+///
+/// WhatsApp se registra a mano: el sitio abre un enlace wa.me y nadie ve
+/// esa conversación desde aquí (ver la decisión 6.1 de la propuesta).
+model Interaction {
+  id         String             @id @default(cuid())
+  contactId  String
+  contact    Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  /// quién la registró. Queda en null si después se borra ese usuario del
+  /// panel: se pierde el autor, nunca el historial.
+  authorId   String?
+  author     AdminUser?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  channel    InteractionChannel
+  body       String
+  /// cuándo ocurrió de verdad, que no es lo mismo que cuándo se anotó
+  occurredAt DateTime           @default(now())
+  createdAt  DateTime           @default(now())
+
+  @@index([contactId, occurredAt])
+}
+
+enum InteractionChannel {
+  CALL
+  WHATSAPP
+  EMAIL
+  IN_PERSON
+  NOTE
+}
+
 /// Usuario del panel de administración (no hay registro público: se crea
 /// por seed/CLI, nunca por un endpoint expuesto).
 model AdminUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
   lastLoginAt  DateTime?
+
+  ownedContacts Contact[]
+  interactions  Interaction[]
 }
 
 /// Configuración editable desde el panel sin rehacer el build del sitio

@@ -1,7 +1,7 @@
 # De bandeja de mensajes a CRM
 
-**Estado:** propuesta para discutir. Construido hasta hoy: el rastreo de
-origen de la Fase 3. Todo lo demás sigue sin empezar.
+**Estado:** en construcción. Hecho: el rastreo de origen de la Fase 3 y el
+paso 1 de la Fase 1 (modelo de contactos e interacciones).
 **Fecha:** 22 de agosto de 2026 (rastreo de origen: 9 de septiembre de 2026)
 **Decisión que hay que tomar:** si se sigue, y hasta dónde.
 
@@ -119,7 +119,7 @@ compromiso de fecha.
 | Qué | Por qué |
 | --- | --- |
 | Modelo `Contact` (persona), con `Lead` colgando de él | Que dos mensajes de la misma persona queden juntos |
-| Detección de duplicados por teléfono y correo al guardar | Evitar tres fichas de la misma señora |
+| Detección de duplicados al guardar | Evitar tres fichas de la misma señora |
 | Modelo `Interaction`: llamada, WhatsApp, correo o nota, con autor y fecha | Es la función que el equipo va a usar todos los días (82% de uso) |
 | Etapas reales en vez de tres estados | `nuevo → contactado → cita agendada → asistió → tratamiento aceptado → perdido` |
 | Motivo de pérdida | Aprender por qué se cae la gente: precio, horario, ubicación, no contesta |
@@ -127,6 +127,21 @@ compromiso de fecha.
 
 Toca: esquema de Prisma y migración, endpoints de leads, y una pantalla de ficha
 de contacto en el panel.
+
+Se hace en cuatro pasos, en este orden:
+
+1. Esquema, migración y reparto de los mensajes que ya existen. **Hecho** el 9
+   de septiembre de 2026.
+2. Roles y registro de exportaciones (la decisión 6.2).
+3. Endpoints: contactos, interacciones, etapa, responsable y seguimiento.
+4. Panel: ficha de contacto con la línea de tiempo; la lista pasa a ser de
+   personas y no de mensajes.
+
+> **Sobre los duplicados:** la unión automática es solo por correo. Por
+> teléfono no, aunque se guarde normalizado: en una casa se comparte el
+> número. Separar a una persona en dos fichas es molesto; mezclar a dos
+> personas en una ficha con historial clínico no se desenreda. El paso 4
+> mostrará los contactos que comparten teléfono para unirlos a mano.
 
 ### Fase 2 — Velocidad de respuesta · tamaño: mediano
 
@@ -170,8 +185,9 @@ trabajo perdido.
 | Registrar la respuesta del paciente | No | Sí |
 | Puesta en marcha | Ninguna | Alta de proveedor y plantillas aprobadas |
 
-**Sugerencia:** seguir con el enlace y registrar la interacción a mano en la
-Fase 1. Pasar a la API solo cuando la Fase 4 lo justifique.
+**Decidido (9 de septiembre de 2026):** se sigue con el enlace `wa.me` y la
+interacción se registra a mano. A la API se pasa solo cuando la Fase 4 lo
+justifique.
 
 ### 6.2 Esto pasa a ser información de salud
 
@@ -179,10 +195,13 @@ El campo `message` ya trae lo que el paciente escribió sobre su caso. Al agrega
 etapas de tratamiento e historial, el panel se convierte en un registro clínico
 ligero. Antes de construir conviene definir:
 
-- Cuánto tiempo se conservan los datos y qué se borra.
+- Cuánto tiempo se conservan los datos y qué se borra. **Sin definir.**
 - Consentimiento para mensajes de mercadeo, aparte del de la consulta.
+  **Sin definir.**
 - Roles en el panel: hoy **todo `AdminUser` ve y exporta todo**, y la
-  exportación a CSV no deja rastro de quién la hizo.
+  exportación a CSV no deja rastro de quién la hizo. **Decidido (9 de
+  septiembre de 2026):** se resuelve dentro de la Fase 1, no después —
+  retrofitear roles sobre una tabla con historial clínico sale mucho más caro.
 
 ---
 

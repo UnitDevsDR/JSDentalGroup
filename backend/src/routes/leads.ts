@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "../prisma.js";
 import { requireAuth } from "../auth.js";
 import { notifyNewLead } from "../mailer.js";
+import { findOrCreateContact } from "../contacts.js";
 
 export const leadsRouter = Router();
 
@@ -69,18 +70,30 @@ leadsRouter.post("/", createLeadLimiter, async (req, res) => {
   // falló) pero no se guarda nada ni se notifica por correo
   if (company) return res.status(201).json({ id: "ok" });
 
-  const lead = await prisma.lead.create({
-    data: {
+  // En una transacción: el mensaje y la persona a la que pertenece entran
+  // juntos o no entra ninguno. Un lead sin contacto no existe en este modelo.
+  const lead = await prisma.$transaction(async (tx) => {
+    const contactId = await findOrCreateContact(tx, {
       name,
-      phone: phone || null,
       email,
-      subject,
-      message,
-      source: source || "contactus",
+      phone: phone || null,
       locale: locale || "es",
-      userAgent: req.header("user-agent")?.slice(0, 300),
-      ...attribution,
-    },
+    });
+
+    return tx.lead.create({
+      data: {
+        contactId,
+        name,
+        phone: phone || null,
+        email,
+        subject,
+        message,
+        source: source || "contactus",
+        locale: locale || "es",
+        userAgent: req.header("user-agent")?.slice(0, 300),
+        ...attribution,
+      },
+    });
   });
 
   // no bloquea la respuesta al visitante por un SMTP lento
