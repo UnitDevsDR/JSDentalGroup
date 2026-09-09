@@ -110,18 +110,14 @@ leadsRouter.post("/", createLeadLimiter, async (req, res) => {
 leadsRouter.get("/", requireAuth, async (req, res) => {
   const page = Math.max(1, Number(req.query.page) || 1);
   const pageSize = 25;
-  const status = typeof req.query.status === "string" ? req.query.status : undefined;
-
-  const where = status && ["NEW", "CONTACTED", "ARCHIVED"].includes(status) ? { status: status as never } : {};
 
   const [items, total] = await Promise.all([
     prisma.lead.findMany({
-      where,
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),
-    prisma.lead.count({ where }),
+    prisma.lead.count(),
   ]);
 
   res.json({ items, total, page, pageSize });
@@ -138,7 +134,16 @@ function csvCell(value: string): string {
   return v;
 }
 
-const STATUS_LABEL_ES: Record<string, string> = { NEW: "Nuevo", CONTACTED: "Contactado", ARCHIVED: "Archivado" };
+/** Las etapas en español, para el CSV — quien abre el archivo no lee enums. */
+const STAGE_LABEL_ES: Record<string, string> = {
+  NEW: "Nuevo",
+  CONTACTED: "Contactado",
+  APPOINTMENT_SET: "Cita agendada",
+  ATTENDED: "Asistió",
+  TREATMENT_ACCEPTED: "Tratamiento aceptado",
+  LOST: "Perdido",
+  ARCHIVED: "Archivado",
+};
 
 /** Panel: exporta a CSV (respeta el filtro de estado activo).
  *
@@ -147,10 +152,12 @@ const STATUS_LABEL_ES: Record<string, string> = { NEW: "Nuevo", CONTACTED: "Cont
  * otra cosa, y en datos que rozan la historia clínica tiene que dejar
  * rastro de quién lo hizo. */
 leadsRouter.get("/export", requireAuth, requireAdmin, async (req, res) => {
-  const status = typeof req.query.status === "string" ? req.query.status : undefined;
-  const where = status && ["NEW", "CONTACTED", "ARCHIVED"].includes(status) ? { status: status as never } : {};
-
-  const leads = await prisma.lead.findMany({ where, orderBy: { createdAt: "desc" } });
+  // La etapa y el responsable viven en la persona, no en el mensaje: se
+  // traen de ahí para que cada fila del CSV siga diciendo en qué quedó.
+  const leads = await prisma.lead.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { contact: { select: { stage: true, owner: { select: { email: true } } } } },
+  });
 
   // Las columnas de campaña van al final para no mover de sitio las que ya
   // usaba quien abría el archivo antes.
@@ -161,7 +168,8 @@ leadsRouter.get("/export", requireAuth, requireAdmin, async (req, res) => {
     "Correo",
     "Asunto",
     "Mensaje",
-    "Estado",
+    "Etapa",
+    "Responsable",
     "Página del formulario",
     "Idioma",
     "Página de entrada",
@@ -182,7 +190,8 @@ leadsRouter.get("/export", requireAuth, requireAdmin, async (req, res) => {
       l.email,
       l.subject,
       l.message,
-      STATUS_LABEL_ES[l.status] ?? l.status,
+      STAGE_LABEL_ES[l.contact.stage] ?? l.contact.stage,
+      l.contact.owner?.email ?? "",
       l.source,
       l.locale,
       l.landingPath ?? "",
@@ -207,7 +216,7 @@ leadsRouter.get("/export", requireAuth, requireAdmin, async (req, res) => {
     data: {
       adminId: req.admin!.id,
       adminEmail: req.admin!.email,
-      filter: status && STATUS_LABEL_ES[status] ? STATUS_LABEL_ES[status] : "Todos",
+      filter: "Todos",
       rowCount: leads.length,
     },
   });
@@ -226,19 +235,4 @@ leadsRouter.get("/export", requireAuth, requireAdmin, async (req, res) => {
 leadsRouter.get("/exports", requireAuth, requireAdmin, async (_req, res) => {
   const items = await prisma.exportLog.findMany({ orderBy: { createdAt: "desc" }, take: 50 });
   res.json({ items });
-});
-
-const updateLeadSchema = z.object({ status: z.enum(["NEW", "CONTACTED", "ARCHIVED"]) });
-
-/** Panel: marcar un lead como contactado/archivado. */
-leadsRouter.patch("/:id", requireAuth, async (req, res) => {
-  const parsed = updateLeadSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ error: "Datos inválidos" });
-
-  try {
-    const lead = await prisma.lead.update({ where: { id: String(req.params.id) }, data: { status: parsed.data.status } });
-    res.json(lead);
-  } catch {
-    res.status(404).json({ error: "No encontrado" });
-  }
 });

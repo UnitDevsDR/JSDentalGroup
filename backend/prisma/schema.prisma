@@ -15,6 +15,11 @@ datasource db {
 /// Mensaje recibido desde el formulario de contacto del sitio. Refleja los
 /// mismos campos que capturaba el sitio anterior (Odoo: partner_name,
 /// partner_phone, partner_email, description) para no perder nada al migrar.
+///
+/// Un mensaje no tiene estado propio: en qué va la conversación lo dice la
+/// etapa de la persona (Contact.stage). Antes había un `status` por mensaje
+/// y no se sostenía — dos mensajes de la misma señora podían quedar uno en
+/// «nuevo» y otro en «contactado» sin que eso significara nada.
 model Lead {
   id        String     @id @default(cuid())
   /// la persona que lo escribió: dos mensajes de la misma señora cuelgan
@@ -31,7 +36,6 @@ model Lead {
   /// idioma de la página al momento del envío
   locale    String     @default("es")
   userAgent String?
-  status    LeadStatus @default(NEW)
 
   // Origen de la visita, capturado en el navegador al entrar al sitio (ver
   // src/lib/attribution.ts en el sitio). Sirve para saber qué pauta y qué
@@ -55,18 +59,9 @@ model Lead {
   updatedAt DateTime @updatedAt
 
   @@index([createdAt])
-  @@index([status])
   /// los reportes de la Fase 3 agrupan por campaña
   @@index([utmSource, utmCampaign])
   @@index([contactId])
-}
-
-/// El estado de un mensaje suelto. Se conserva mientras el panel siga
-/// listando mensajes; la etapa real de la persona vive en Contact.stage.
-enum LeadStatus {
-  NEW
-  CONTACTED
-  ARCHIVED
 }
 
 /// La persona detrás de los mensajes: la pieza central del CRM.

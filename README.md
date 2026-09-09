@@ -161,9 +161,8 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 | `GET` | `/api/health` | público | healthcheck del contenedor |
 | `POST` | `/api/leads` | público (rate limit propio) | crea un lead desde el formulario |
 | `GET` | `/api/leads` | sesión | lista paginada, la más reciente primero |
-| `GET` | `/api/leads/export` | **admin** | exporta los leads a CSV (queda registrado) |
+| `GET` | `/api/leads/export` | **admin** | exporta los mensajes a CSV, con la etapa y el responsable de cada persona (queda registrado) |
 | `GET` | `/api/leads/exports` | **admin** | quién exportó, cuándo, con qué filtro y cuántas filas |
-| `PATCH` | `/api/leads/:id` | sesión | cambia el estado (`NEW` / `CONTACTED` / `ARCHIVED`) |
 | `GET` | `/api/contacts` | sesión | lista de personas; filtra por `stage`, `ownerId`, `vencidos=1` y busca con `q` |
 | `GET` | `/api/contacts/:id` | sesión | la ficha: datos, mensajes, anotaciones y posibles duplicados |
 | `PATCH` | `/api/contacts/:id` | sesión | etapa, responsable, próximo seguimiento, motivo de pérdida, datos de contacto |
@@ -186,10 +185,11 @@ Todo cuelga de `/api` y pasa por un rate limit global de 60 req/min.
 - **`Interaction`** — qué se habló y cuándo (llamada, WhatsApp, correo, en
   persona o nota), con autor y fecha real del hecho. WhatsApp se registra a
   mano: el sitio abre un enlace `wa.me` y esa conversación no llega aquí.
-- **`Lead`** — un mensaje, colgando de su `Contact`. Mismos campos que
+- **`Lead`** — un mensaje, colgando de su `Contact`. No tiene estado propio:
+  en qué va la conversación lo dice `Contact.stage`. Mismos campos que
   capturaba el Odoo (nombre, teléfono, correo, asunto, mensaje) más `source`
-  (ruta de la página del formulario), `locale`, `userAgent`, `status` y el
-  origen de la visita (`landingPath`, `referrer`, `utmSource`, `utmMedium`,
+  (ruta de la página del formulario), `locale`, `userAgent` y el origen de
+  la visita (`landingPath`, `referrer`, `utmSource`, `utmMedium`,
   `utmCampaign`, `utmTerm`, `utmContent`, `gclid`, `fbclid`).
 - **`AdminUser`** — no hay endpoint público de registro: el acceso al panel se
   otorga solo desde el servidor, con el seed. Tiene rol `ADMIN` o `STAFF`.
@@ -285,8 +285,6 @@ navegador (ver «Roles»).
 
 > La bandeja de mensajes que había antes ya no existe como pantalla: un
 > mensaje es ahora una entrada dentro de la ficha de quien lo escribió.
-> `Lead.status` sigue en la base pero el panel no lo usa — manda
-> `Contact.stage`. Queda para limpiar cuando no haga falta poder volver atrás.
 
 ## SEO
 

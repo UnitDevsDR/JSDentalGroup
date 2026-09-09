@@ -1,6 +1,6 @@
 /** Un mensaje del formulario, tal como aparece en la historia de una ficha.
- *  `status` sigue viniendo del backend pero el panel ya no lo usa: la etapa
- *  de la persona (Contact.stage) es la que manda. */
+ *  No tiene estado propio: en qué va la conversación lo dice la etapa de la
+ *  persona (Contact.stage). */
 export interface Lead {
   id: string;
   name: string;
@@ -8,7 +8,6 @@ export interface Lead {
   email: string;
   subject: string;
   message: string;
-  status: "NEW" | "CONTACTED" | "ARCHIVED";
   createdAt: string;
   /** ruta de la página desde la que se envió el formulario */
   source: string;
