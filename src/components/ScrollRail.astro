@@ -1,13 +1,12 @@
 ---
 /**
- * Regleta de secciones a la derecha + botón de volver arriba.
+ * Regleta de secciones a la derecha.
  *
  * Cada sección es una marca clicable con su nombre al pasar el cursor; las
  * marcas intermedias se van llenando según el avance del scroll, así la
  * regleta indica posición y sirve para navegar. Todo en vanilla: no hidrata
  * ningún framework y funciona sin JS (las marcas son enlaces a #id).
  */
-import { ArrowUp } from 'lucide-react';
 import { useTranslations, type Lang } from '../i18n';
 
 interface Section {
@@ -71,21 +70,8 @@ const total = sections.length * (SUBTICKS + 1);
   </ul>
 </nav>
 
-<button
-  id="to-top"
-  type="button"
-  aria-label={t.rail.toTop}
-  title={t.rail.toTop}
-  tabindex="-1"
-  class="invisible fixed right-5 bottom-[76px] z-50 flex size-11 translate-y-2 items-center justify-center rounded-full bg-navy text-white opacity-0 shadow-lg shadow-navy/20 transition-all duration-300 hover:bg-navy/90"
->
-  <ArrowUp className="size-5" aria-hidden="true" />
-</button>
-
 <script define:vars={{ total }}>
   const rail = document.getElementById('scroll-rail');
-  const toTop = document.getElementById('to-top');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const ticks = rail ? [...rail.querySelectorAll('[data-rail-tick]')] : [];
   const links = rail ? [...rail.querySelectorAll('[data-rail-link]')] : [];
@@ -127,15 +113,6 @@ const total = sections.length * (SUBTICKS + 1);
       const link = links.find((a) => a.dataset.railLink === s.el.id);
       if (link) link.setAttribute('aria-current', on ? 'true' : 'false');
     });
-
-    // botón de subir: aparece pasada la primera pantalla
-    if (toTop) {
-      const show = window.scrollY > window.innerHeight * 0.8;
-      toTop.classList.toggle('invisible', !show);
-      toTop.classList.toggle('opacity-0', !show);
-      toTop.classList.toggle('translate-y-2', !show);
-      toTop.tabIndex = show ? 0 : -1;
-    }
   };
 
   let ticking = false;
@@ -152,8 +129,4 @@ const total = sections.length * (SUBTICKS + 1);
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
   paint();
-
-  toTop?.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-  });
 </script>
