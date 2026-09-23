@@ -70,13 +70,19 @@ const About13 = ({
           </div>
         </div>
         <div data-animate="up" className="grid overflow-hidden rounded-2xl bg-accent/60 lg:grid-cols-2">
-          <div className="flex items-end justify-center px-8 pt-8">
-            <img
-              src={image.src}
-              alt={image.alt}
-              loading="lazy"
-              className="h-auto max-h-[440px] w-auto"
-            />
+          <div className="flex items-end justify-center p-8">
+            {/* La foto trae fondo blanco de estudio (no transparente): se
+                enmarca en una tarjeta blanca a propósito, así el contraste
+                con el panel verde se ve intencional y no como un error de
+                recorte. */}
+            <div className="w-full max-w-xs overflow-hidden rounded-xl bg-white p-3 shadow-sm">
+              <img
+                src={image.src}
+                alt={image.alt}
+                loading="lazy"
+                className="h-auto max-h-[400px] w-full rounded-lg object-cover"
+              />
+            </div>
           </div>
           <div className="flex flex-col justify-center gap-2 p-8 text-center lg:p-14 lg:text-left">
             <p className="font-heading text-3xl font-bold text-teal-text lg:text-4xl">{imageHeading}</p>
