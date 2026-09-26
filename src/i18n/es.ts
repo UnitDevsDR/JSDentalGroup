@@ -47,6 +47,7 @@ export const es = {
     badgeAnnouncementShort: 'Toda la familia',
     headingWords: ['Es', 'el', 'turno', 'de', 'tu'],
     headingHighlight: 'sonrisa',
+    headingEyebrow: 'Clínica dental en Santiago',
     heroDescription:
       'Inspirados en la más avanzada tecnología y un trato humano, en JS Dental Group te ofrecemos una experiencia única para que sonrías sin límites.',
     heroSecondary: 'Nuestros servicios',

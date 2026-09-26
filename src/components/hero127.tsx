@@ -48,6 +48,8 @@ interface Hero127Props {
   /** palabras del titular; highlightWord se pinta en teal (.text-highlight) */
   headingWords: string[];
   highlightWord: string;
+  /** palabra clave local, dentro del H1 (señal on-page principal) */
+  eyebrow?: string;
   description: string;
   buttons?: Buttons;
   avatars?: AvatarItem[];
@@ -93,6 +95,7 @@ const Hero127 = ({
   badge,
   headingWords,
   highlightWord,
+  eyebrow,
   description,
   buttons,
   avatars = [],
@@ -147,6 +150,11 @@ const Hero127 = ({
               id="hero-headline"
               className="max-w-3xl font-heading text-5xl leading-[1.08] font-bold text-navy md:text-6xl lg:text-7xl lg:leading-[1.05]"
             >
+              {eyebrow && (
+                <span className="mb-4 block text-sm font-semibold tracking-[0.2em] text-teal-text uppercase md:text-base">
+                  {eyebrow}
+                </span>
+              )}
               {headingWords.map((w) => (
                 <span key={w} className="hero-word inline-block">
                   {w}&nbsp;

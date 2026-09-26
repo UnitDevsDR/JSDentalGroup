@@ -46,6 +46,7 @@ export const en: Dictionary = {
     badgeAnnouncementShort: 'Whole family',
     headingWords: ['It', 'is', 'your', "smile's"],
     headingHighlight: 'turn',
+    headingEyebrow: 'Dental clinic in Santiago',
     heroDescription:
       'Guided by advanced technology and genuine human care, at JS Dental Group we offer an experience that lets you smile without limits.',
     heroSecondary: 'Our services',
